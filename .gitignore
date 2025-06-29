@@ -42,4 +42,4 @@ logs
 *.log
 
 # Cache
-.cache/
+.cache/home.html
