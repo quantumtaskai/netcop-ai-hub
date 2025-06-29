@@ -1,12 +1,15 @@
 import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_DATABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL!
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 
-console.log('Supabase Configuration:')
-console.log('URL:', supabaseUrl)
-console.log('Key exists:', !!supabaseAnonKey)
-console.log('Key length:', supabaseAnonKey?.length)
+// Environment variables check for debugging
+if (typeof window === 'undefined') {
+  console.log('Supabase Configuration:')
+  console.log('URL:', supabaseUrl)
+  console.log('Key exists:', !!supabaseAnonKey)
+  console.log('Key length:', supabaseAnonKey?.length)
+}
 
 if (!supabaseUrl || !supabaseAnonKey) {
   console.error('Missing Supabase environment variables!')
@@ -21,10 +24,12 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   }
 })
 
-// Test the connection
-supabase.auth.getSession().then(({ data, error }) => {
-  console.log('Supabase connection test:', { data, error })
-})
+// Test the connection (client-side only)
+if (typeof window !== 'undefined') {
+  supabase.auth.getSession().then(({ data, error }) => {
+    console.log('Supabase connection test:', { data, error })
+  })
+}
 
 // Database types
 export interface User {
