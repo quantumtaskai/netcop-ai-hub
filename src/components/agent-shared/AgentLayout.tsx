@@ -3,6 +3,7 @@
 import { ReactNode } from 'react'
 import { useRouter } from 'next/navigation'
 import { useUserStore } from '@/store/userStore'
+import Header from '@/components/shared/Header'
 
 interface AgentLayoutProps {
   children: ReactNode
@@ -19,11 +20,16 @@ export default function AgentLayout({ children, title, description, icon, cost }
   return (
     <div style={{
       minHeight: '100vh',
-      background: 'linear-gradient(135deg, #f6f8ff 0%, #e8f0fe 50%, #f0f7ff 100%)',
-      padding: '20px'
+      background: 'linear-gradient(135deg, #f6f8ff 0%, #e8f0fe 50%, #f0f7ff 100%)'
     }}>
-      {/* Header */}
+      {/* Shared Header */}
+      <Header currentPage="agent" />
+      
+      {/* Agent Content */}
       <div style={{
+        padding: '20px'
+      }}>
+        <div style={{
         maxWidth: '1200px',
         margin: '0 auto',
         marginBottom: '32px'
@@ -152,6 +158,7 @@ export default function AgentLayout({ children, title, description, icon, cost }
         margin: '0 auto'
       }}>
         {children}
+      </div>
       </div>
     </div>
   )

@@ -652,5 +652,328 @@ Before deploying a new agent, verify:
 
 ---
 
+# 🎨 UI/UX Consistency & Shared Components System
+
+## Overview
+Implemented a comprehensive shared component architecture to ensure consistent branding, navigation, and styling across all pages in the application. This eliminates UI inconsistencies and provides a unified user experience.
+
+## ✅ Completed: Header/Footer Consistency (2025-06-29)
+
+### 🔧 Shared Components Architecture
+
+#### 1. **Shared Header Component** (`/src/components/shared/Header.tsx`)
+**Purpose**: Unified navigation and branding across all pages
+
+**Key Features**:
+- **Consistent 80px logo** matching the enhanced homepage design
+- **Unified branding**: "Netcop Consultancy" (updated from "NetCop AI Hub")
+- **Smart navigation**: Home, AI Marketplace, Pricing with current page highlighting
+- **User state management**: Credit display, profile dropdown, authentication
+- **Responsive design**: Maintains functionality across all screen sizes
+
+**Props Interface**:
+```typescript
+interface HeaderProps {
+  currentPage?: 'home' | 'marketplace' | 'pricing' | 'agent'
+}
+```
+
+**Credit Display Logic**:
+- **Red gradient** (≤100 credits): Warning state with pulse animation
+- **Orange gradient** (101-500 credits): Caution state
+- **Green gradient** (>500 credits): Healthy state
+- **Click-to-purchase**: Redirects to pricing page for credit top-up
+
+#### 2. **Shared Footer Component** (`/src/components/shared/Footer.tsx`)
+**Purpose**: Consistent company information and navigation links
+
+**Key Features**:
+- **80px logo** with white filter for dark background visibility
+- **Compact layout**: Optimized for reduced height while maintaining functionality
+- **Right-aligned sections**: Services and Company navigation grouped on the right
+- **Contact information**: Email and Dubai location displayed prominently
+- **Updated branding**: All text changed from "NetCop AI Hub" to "Netcop Consultancy"
+
+**Props Interface**:
+```typescript
+interface FooterProps {
+  onPrivacyModalOpen?: () => void
+}
+```
+
+**Layout Structure**:
+- **Left section**: Logo, company description, contact info (email, location)
+- **Right section**: Services links, Company links (right-aligned)
+- **Bottom section**: Copyright, legal links (Privacy, Terms, Security)
+
+### 📄 Updated Pages
+
+#### 1. **Homepage** (`/src/app/page.tsx`) ✅
+- **Before**: Custom header/footer with inconsistent styling
+- **After**: Uses shared Header/Footer components
+- **Benefits**: Consistent 80px logo, unified navigation, proper branding
+
+#### 2. **Marketplace** (`/src/app/marketplace/page.tsx`) ✅
+- **Before**: Old 60px logo, "NetCop AI Hub" branding, different styling
+- **After**: Shared components with consistent design
+- **Benefits**: Proper current page highlighting, unified user experience
+
+#### 3. **Pricing Page** (`/src/app/pricing/page.tsx`) ✅
+- **Before**: Simple back button header, no footer
+- **After**: Full shared header with pricing page highlighting
+- **Benefits**: Complete navigation context, consistent branding
+
+#### 4. **Agent Pages** (via `AgentLayout.tsx`) ✅
+- **Before**: Simple back button with local styling
+- **After**: Full shared header with agent page context
+- **Benefits**: Users can navigate anywhere from agent pages, consistent branding
+
+### 🔄 Implementation Strategy
+
+#### Phase 1: Component Creation
+1. **Header Component**: Built with all existing functionality (auth, credits, navigation)
+2. **Footer Component**: Designed for consistency and compactness
+3. **TypeScript interfaces**: Proper typing for props and state management
+
+#### Phase 2: Page Integration
+1. **Import shared components** into all pages
+2. **Replace existing headers/footers** with shared components
+3. **Hide old implementations** (kept for reference, can be removed later)
+4. **Update AgentLayout** to use shared header
+
+#### Phase 3: Testing & Refinement
+1. **Logo size consistency**: Ensured 80px across all pages
+2. **Branding updates**: Changed all references to "Netcop Consultancy"
+3. **Navigation highlighting**: Current page properly indicated
+4. **Responsive behavior**: Verified across different screen sizes
+
+### 🏗️ Technical Implementation Details
+
+#### Header Component Usage Examples
+```typescript
+// Homepage
+<Header currentPage="home" />
+
+// Marketplace  
+<Header currentPage="marketplace" />
+
+// Pricing Page
+<Header currentPage="pricing" />
+
+// Agent Pages (via AgentLayout)
+<Header currentPage="agent" />
+```
+
+#### Footer Component Usage Examples
+```typescript
+// With Privacy Modal (Homepage)
+<Footer onPrivacyModalOpen={() => setIsPrivacyModalOpen(true)} />
+
+// Without Privacy Modal (Other pages)
+<Footer />
+```
+
+#### Header State Management
+```typescript
+const { user, signOut } = useUserStore()
+const [showAuthModal, setShowAuthModal] = useState(false)
+const [authMode, setAuthMode] = useState<'login' | 'register' | 'reset'>('login')
+const [showProfileModal, setShowProfileModal] = useState(false)
+const [dropdownPosition, setDropdownPosition] = useState({ top: 0, right: 0 })
+```
+
+#### Navigation Logic with Active States
+```typescript
+<Link 
+  href="/marketplace" 
+  style={{ 
+    color: currentPage === 'marketplace' ? '#6366f1' : '#9ca3af', 
+    fontWeight: currentPage === 'marketplace' ? '600' : '500'
+  }}
+>
+  AI Marketplace
+</Link>
+```
+
+#### Credit Display with Status Colors
+```typescript
+<div style={{
+  background: user.credits <= 100 
+    ? 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)' // Red warning
+    : user.credits <= 500
+    ? 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)' // Orange caution
+    : 'linear-gradient(135deg, #10b981 0%, #059669 100%)', // Green healthy
+  boxShadow: user.credits <= 100 
+    ? '0 4px 15px rgba(239, 68, 68, 0.3)'
+    : user.credits <= 500
+    ? '0 4px 15px rgba(245, 158, 11, 0.3)'
+    : '0 4px 15px rgba(16, 185, 129, 0.3)',
+  // ... other styling
+}}>
+  💎 {user.credits} Credits
+</div>
+```
+
+#### Logo Implementation
+```typescript
+// Header Logo (Standard)
+<img 
+  src="/logo.png" 
+  alt="Netcop Consultancy Logo"
+  style={{
+    height: '80px',
+    width: 'auto'
+  }}
+/>
+
+// Footer Logo (White Filter for Dark Background)
+<img 
+  src="/logo.png" 
+  alt="Netcop Consultancy Logo"
+  style={{
+    height: '80px',
+    width: 'auto',
+    filter: 'brightness(0) invert(1)'
+  }}
+/>
+```
+
+#### Profile Dropdown Positioning
+```typescript
+const handleProfileClick = (event: React.MouseEvent) => {
+  const rect = (event.target as HTMLElement).getBoundingClientRect()
+  setDropdownPosition({
+    top: rect.bottom + window.scrollY + 10,
+    right: window.innerWidth - rect.right
+  })
+  setShowProfileModal(true)
+}
+```
+
+### 📁 File Structure
+
+```
+/src/components/shared/
+├── Header.tsx          # Unified navigation component
+└── Footer.tsx          # Unified footer component
+
+Updated Files:
+├── /src/app/page.tsx                           # Homepage
+├── /src/app/marketplace/page.tsx               # Marketplace
+├── /src/app/pricing/page.tsx                   # Pricing page
+└── /src/components/agent-shared/AgentLayout.tsx # Agent pages
+```
+
+### 🔧 Migration Notes & Important Details
+
+#### Key Changes Made
+1. **Branding Update**: All instances of "NetCop AI Hub" → "Netcop Consultancy"
+2. **Logo Size Standardization**: All logos now use 80px height consistently
+3. **Header Positioning**: Changed from `position: fixed` to `position: sticky` for better scroll behavior
+4. **Footer Layout**: Switched from grid to flex layout for better control and compactness
+
+#### Old Implementations
+- **Status**: Hidden with `display: 'none'` but kept in code for reference
+- **Removal**: Can be safely removed in future cleanup
+- **Location**: Search for comments containing "old-header" and "old-footer"
+
+#### Dependencies Added
+```typescript
+// New imports in updated pages
+import Header from '@/components/shared/Header'
+import Footer from '@/components/shared/Footer'
+```
+
+#### CSS Considerations
+- **Backdrop Filter**: Uses `backdrop-filter: blur(30px)` for modern glass effect
+- **Gradient Backgrounds**: Consistent gradient patterns across header and footer
+- **Responsive Design**: Maintains functionality across all screen sizes
+- **Z-Index Management**: Header uses `zIndex: 50` to stay above content
+
+#### Modal Integration
+- **AuthModal**: Properly integrated with shared header
+- **ProfileModal**: Maintains dropdown positioning logic
+- **Privacy Modal**: Only available on homepage via footer prop
+
+#### Error Prevention
+- **User State Checks**: Components handle null user states gracefully
+- **Image Fallbacks**: Logo components include error handling (though not currently used)
+- **TypeScript Safety**: All props properly typed to prevent runtime errors
+
+### 🔧 Troubleshooting Guide
+
+#### Common Issues & Solutions
+
+**1. Logo Not Displaying**
+- **Check**: Ensure `/public/logo.png` exists
+- **Fix**: Verify file path and permissions
+- **Fallback**: Logo error handling can be enhanced if needed
+
+**2. Current Page Not Highlighted**
+- **Check**: Verify `currentPage` prop is passed correctly
+- **Valid Values**: 'home', 'marketplace', 'pricing', 'agent'
+- **Example**: `<Header currentPage="marketplace" />`
+
+**3. Profile Dropdown Positioning Issues**
+- **Cause**: Window scroll position or viewport changes
+- **Fix**: Dropdown recalculates position on each click
+- **Enhancement**: Can add scroll listeners for better positioning
+
+**4. Credit Display Not Updating**
+- **Check**: Zustand store state management
+- **Fix**: Ensure `refreshUser()` is called after credit changes
+- **Debug**: Check user state in React DevTools
+
+**5. Navigation Links Not Working**
+- **Check**: Next.js Link components properly imported
+- **Fix**: Verify routing paths match file structure
+- **Enhancement**: Add loading states for better UX
+
+### 🎯 Benefits Achieved
+
+#### 1. **Consistency**
+- **Visual uniformity**: Same logo size, colors, and styling across all pages
+- **Branding consistency**: Unified "Netcop Consultancy" messaging
+- **Navigation patterns**: Identical header structure and behavior
+
+#### 2. **Maintainability**
+- **Single source of truth**: Header/footer changes only need to be made once
+- **Component reusability**: Easy to add new pages with consistent UI
+- **Type safety**: TypeScript interfaces ensure proper usage
+
+#### 3. **User Experience**
+- **Familiar navigation**: Users always know where they are and how to navigate
+- **Professional appearance**: Consistent branding builds trust
+- **Functional consistency**: Credit display and profile access work identically everywhere
+
+#### 4. **Developer Experience**
+- **Faster development**: New pages automatically get consistent UI
+- **Easier debugging**: Shared logic means fewer places to check for issues
+- **Clear architecture**: Well-defined component boundaries and responsibilities
+
+### 🔮 Future Enhancements
+
+#### 1. **Mobile Navigation**
+- Hamburger menu for mobile devices
+- Touch-optimized interactions
+- Responsive breakpoints
+
+#### 2. **Enhanced Animations**
+- Smooth page transitions
+- Header scroll effects
+- Loading states
+
+#### 3. **Accessibility**
+- ARIA labels for navigation
+- Keyboard navigation support
+- Screen reader compatibility
+
+#### 4. **Theming System**
+- Dark/light mode toggle
+- Custom color schemes
+- User preferences storage
+
+---
+
 ## Current Focus
-**Complete marketplace foundation**: Two agents implemented (Data Analyzer with n8n integration, Weather Reporter with external API), full Stripe payment system with 4 credit packages, and comprehensive user management. Ready to scale with additional agents using the established patterns and infrastructure.
+**Complete marketplace foundation**: Two agents implemented (Data Analyzer with n8n integration, Weather Reporter with external API), full Stripe payment system with 4 credit packages, comprehensive user management, and now **unified UI consistency across all pages**. The shared component architecture ensures maintainable, professional, and consistent user experience throughout the application.

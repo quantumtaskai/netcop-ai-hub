@@ -4,6 +4,7 @@ import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { toast, Toaster } from 'react-hot-toast'
 import { useUserStore } from '@/store/userStore'
+import Header from '@/components/shared/Header'
 
 // Credit packages matching Stripe Payment Links configuration
 const CREDIT_PACKAGES = [
@@ -130,8 +131,11 @@ function PricingForm() {
     }}>
       <Toaster position="top-right" />
       
-      {/* Header */}
-      <div style={{
+      {/* Shared Header */}
+      <Header currentPage="pricing" />
+      
+      {/* Old header replaced */}
+      <div style={{ display: 'none' }} old-header={{
         background: 'rgba(255, 255, 255, 0.9)',
         backdropFilter: 'blur(10px)',
         borderBottom: '1px solid rgba(0, 0, 0, 0.1)',
