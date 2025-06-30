@@ -235,7 +235,7 @@ function HomePageContent() {
       {/* Old navigation removed - now using shared Header component */}
 
       {/* Hero Section */}
-      <section style={{ position: 'relative', padding: '32px 24px 64px', overflow: 'hidden' }}>
+      <section style={{ position: 'relative', padding: 'clamp(24px, 6vw, 32px) clamp(16px, 4vw, 24px) clamp(48px, 12vw, 64px)', overflow: 'hidden' }}>
         <div style={{ maxWidth: '1280px', margin: '0 auto', textAlign: 'center', position: 'relative' }}>
           {/* Floating Elements */}
           <div style={{
@@ -272,9 +272,9 @@ function HomePageContent() {
           }}></div>
 
           <h1 style={{
-            fontSize: 'clamp(48px, 8vw, 96px)',
+            fontSize: 'clamp(32px, 8vw, 96px)',
             fontWeight: 'bold',
-            marginBottom: '32px',
+            marginBottom: 'clamp(24px, 6vw, 32px)',
             lineHeight: '1.1'
           }}>
             <span style={{
@@ -289,7 +289,7 @@ function HomePageContent() {
           </h1>
 
           {/* Search */}
-          <div style={{ maxWidth: '512px', margin: '0 auto 64px auto' }}>
+          <div style={{ maxWidth: '512px', margin: '0 auto clamp(48px, 12vw, 64px) auto', padding: '0 clamp(8px, 2vw, 16px)' }}>
             <div style={{ position: 'relative' }}>
               <input
                 type="text"
@@ -298,9 +298,9 @@ function HomePageContent() {
                 onChange={(e) => setSearchTerm(e.target.value)}
                 style={{
                   width: '100%',
-                  padding: '20px 32px',
+                  padding: 'clamp(16px, 4vw, 20px) clamp(24px, 6vw, 32px)',
                   borderRadius: '24px',
-                  fontSize: '18px',
+                  fontSize: 'clamp(16px, 4vw, 18px)',
                   border: 'none',
                   outline: 'none',
                   backdropFilter: 'blur(20px)',
@@ -359,7 +359,7 @@ function HomePageContent() {
       </section>
 
       {/* Assistants Grid Section */}
-      <section style={{ padding: '0 24px 48px' }}>
+      <section style={{ padding: 'clamp(0px, 0vw, 0px) clamp(16px, 4vw, 24px) clamp(32px, 8vw, 48px)' }}>
         <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
 
           {/* Assistants Grid */}
@@ -380,16 +380,17 @@ function HomePageContent() {
           ) : (
             <div style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
-              gap: '32px'
+              gridTemplateColumns: 'repeat(auto-fit, minmax(min(300px, 100%), 1fr))',
+              gap: 'clamp(16px, 4vw, 32px)',
+              padding: '0 clamp(8px, 2vw, 16px)'
             }}>
               {filteredAgents.map(agent => (
                 <div
                   key={agent.id}
                   title=""
                   style={{
-                    borderRadius: '24px',
-                    padding: '32px',
+                    borderRadius: 'clamp(16px, 3vw, 24px)',
+                    padding: 'clamp(20px, 5vw, 32px)',
                     backdropFilter: 'blur(30px)',
                     background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7))',
                     border: '1px solid rgba(255, 255, 255, 0.3)',
@@ -419,8 +420,8 @@ function HomePageContent() {
                     <div 
                       title=""
                       style={{
-                        width: '60px',
-                        height: '60px',
+                        width: 'clamp(50px, 12vw, 60px)',
+                        height: 'clamp(50px, 12vw, 60px)',
                         borderRadius: '16px',
                         background: `linear-gradient(135deg, ${agent.gradient})`,
                         display: 'flex',
@@ -428,7 +429,7 @@ function HomePageContent() {
                         justifyContent: 'center',
                         color: 'white',
                         fontWeight: 'bold',
-                        fontSize: '20px'
+                        fontSize: 'clamp(16px, 4vw, 20px)'
                       }}>
                       {agent.initials}
                     </div>
@@ -436,7 +437,7 @@ function HomePageContent() {
                       <h3 
                         title=""
                         style={{
-                          fontSize: '18px',
+                          fontSize: 'clamp(16px, 4vw, 18px)',
                           fontWeight: 'bold',
                           color: '#1f2937',
                           marginBottom: '4px',
@@ -455,7 +456,7 @@ function HomePageContent() {
                         gap: '8px'
                       }}>
                         <span title="" style={{ color: '#fbbf24' }}>⭐</span>
-                        <span title="" style={{ color: '#6b7280', fontSize: '14px' }}>
+                        <span title="" style={{ color: '#6b7280', fontSize: 'clamp(12px, 3vw, 14px)' }}>
                           {agent.rating} ({agent.reviews.toLocaleString()} reviews)
                         </span>
                       </div>
@@ -468,8 +469,8 @@ function HomePageContent() {
                     style={{
                       color: '#6b7280',
                       lineHeight: '1.5',
-                      marginBottom: '24px',
-                      fontSize: '14px',
+                      marginBottom: 'clamp(16px, 4vw, 24px)',
+                      fontSize: 'clamp(13px, 3.5vw, 14px)',
                       flex: 1,
                       wordWrap: 'break-word',
                       overflow: 'hidden',
@@ -493,7 +494,7 @@ function HomePageContent() {
                       gap: '8px'
                     }}>
                       <span title="" style={{ color: '#10b981', fontWeight: 'bold' }}>✨</span>
-                      <span title="" style={{ color: '#1f2937', fontWeight: '600' }}>
+                      <span title="" style={{ color: '#1f2937', fontWeight: '600', fontSize: 'clamp(13px, 3.5vw, 14px)' }}>
                         {agent.cost} credits
                       </span>
                     </div>
@@ -505,10 +506,12 @@ function HomePageContent() {
                           ? '#9ca3af'
                           : 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)',
                         color: 'white',
-                        padding: '12px 24px',
-                        borderRadius: '12px',
+                        padding: 'clamp(10px, 3vw, 12px) clamp(16px, 4vw, 24px)',
+                        borderRadius: 'clamp(8px, 2vw, 12px)',
                         border: 'none',
                         fontWeight: '600',
+                        fontSize: 'clamp(13px, 3.5vw, 14px)',
+                        minHeight: '44px',
                         cursor: isProcessing === agent.id ? 'not-allowed' : 'pointer',
                         transition: 'all 0.2s ease',
                         opacity: isProcessing === agent.id ? 0.7 : 1

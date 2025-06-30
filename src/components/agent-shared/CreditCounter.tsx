@@ -21,30 +21,30 @@ export default function CreditCounter({ cost, onProcess, disabled = false, proce
     <div style={{
       background: 'rgba(255, 255, 255, 0.9)',
       borderRadius: '16px',
-      padding: '24px',
+      padding: 'clamp(16px, 4vw, 24px)',
       border: '1px solid rgba(255, 255, 255, 0.3)',
       backdropFilter: 'blur(20px)',
       boxShadow: '0 8px 25px rgba(0, 0, 0, 0.1)',
-      marginBottom: '24px'
+      marginBottom: 'clamp(16px, 4vw, 24px)'
     }}>
       <div style={{
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        marginBottom: '16px'
+        marginBottom: 'clamp(12px, 3vw, 16px)'
       }}>
         <div>
           <h3 style={{
-            fontSize: '18px',
+            fontSize: 'clamp(16px, 4vw, 18px)',
             fontWeight: '600',
             color: '#1f2937',
-            marginBottom: '4px'
+            marginBottom: 'clamp(2px, 1vw, 4px)'
           }}>
             Credit Cost
           </h3>
           <p style={{
             color: '#6b7280',
-            fontSize: '14px'
+            fontSize: 'clamp(12px, 3vw, 14px)'
           }}>
             This operation will cost {cost} credits
           </p>
@@ -81,14 +81,14 @@ export default function CreditCounter({ cost, onProcess, disabled = false, proce
       <div style={{
         background: '#f3f4f6',
         borderRadius: '8px',
-        padding: '12px',
-        marginBottom: '16px'
+        padding: 'clamp(10px, 3vw, 12px)',
+        marginBottom: 'clamp(12px, 3vw, 16px)'
       }}>
         <div style={{
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          fontSize: '14px'
+          fontSize: 'clamp(12px, 3vw, 14px)'
         }}>
           <span style={{ color: '#6b7280' }}>Current Balance:</span>
           <span style={{ fontWeight: '600' }}>{user.credits.toLocaleString()} credits</span>
@@ -97,20 +97,20 @@ export default function CreditCounter({ cost, onProcess, disabled = false, proce
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          fontSize: '14px',
-          marginTop: '4px'
+          fontSize: 'clamp(12px, 3vw, 14px)',
+          marginTop: 'clamp(2px, 1vw, 4px)'
         }}>
           <span style={{ color: '#6b7280' }}>Cost:</span>
           <span style={{ color: '#ef4444', fontWeight: '600' }}>-{cost} credits</span>
         </div>
         <div style={{
           borderTop: '1px solid #d1d5db',
-          marginTop: '8px',
-          paddingTop: '8px',
+          marginTop: 'clamp(6px, 2vw, 8px)',
+          paddingTop: 'clamp(6px, 2vw, 8px)',
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          fontSize: '14px'
+          fontSize: 'clamp(12px, 3vw, 14px)'
         }}>
           <span style={{ fontWeight: '600' }}>After Processing:</span>
           <span style={{ 
@@ -132,9 +132,10 @@ export default function CreditCounter({ cost, onProcess, disabled = false, proce
             : 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)',
           color: 'white',
           border: 'none',
-          padding: '16px 24px',
-          borderRadius: '12px',
-          fontSize: '16px',
+          padding: 'clamp(14px, 4vw, 16px) clamp(20px, 5vw, 24px)',
+          borderRadius: 'clamp(8px, 2vw, 12px)',
+          fontSize: 'clamp(14px, 3.5vw, 16px)',
+          minHeight: '48px',
           fontWeight: '600',
           cursor: buttonDisabled ? 'not-allowed' : 'pointer',
           transition: 'all 0.2s ease'
@@ -149,7 +150,7 @@ export default function CreditCounter({ cost, onProcess, disabled = false, proce
         <p style={{
           textAlign: 'center',
           marginTop: '12px',
-          fontSize: '14px',
+          fontSize: 'clamp(12px, 3vw, 14px)',
           color: '#6b7280'
         }}>
           <a href="/" style={{ color: '#3b82f6', textDecoration: 'underline' }}>

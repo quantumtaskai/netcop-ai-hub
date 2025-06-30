@@ -26,18 +26,18 @@ export default function AgentLayout({ children, title, description, icon, cost }
       
       {/* Agent Content */}
       <div style={{
-        padding: '20px'
+        padding: 'clamp(12px, 3vw, 20px)'
       }}>
         <div style={{
         maxWidth: '1200px',
         margin: '0 auto',
-        marginBottom: '32px'
+        marginBottom: 'clamp(24px, 6vw, 32px)'
       }}>
         <div style={{
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          marginBottom: '24px'
+          marginBottom: 'clamp(16px, 4vw, 24px)'
         }}>
           <button
             onClick={() => router.push('/')}
@@ -45,9 +45,9 @@ export default function AgentLayout({ children, title, description, icon, cost }
               background: 'white',
               border: '2px solid #e5e7eb',
               borderRadius: '12px',
-              padding: '12px 24px',
+              padding: 'clamp(10px, 3vw, 12px) clamp(16px, 4vw, 24px)',
               cursor: 'pointer',
-              fontSize: '16px',
+              fontSize: 'clamp(14px, 3.5vw, 16px)',
               fontWeight: '500',
               color: '#374151',
               transition: 'all 0.2s ease'
@@ -73,7 +73,7 @@ export default function AgentLayout({ children, title, description, icon, cost }
         <div style={{
           background: 'rgba(255, 255, 255, 0.9)',
           borderRadius: '20px',
-          padding: '32px',
+          padding: 'clamp(20px, 5vw, 32px)',
           border: '1px solid rgba(255, 255, 255, 0.3)',
           backdropFilter: 'blur(20px)',
           boxShadow: '0 8px 25px rgba(0, 0, 0, 0.1)'
@@ -81,15 +81,15 @@ export default function AgentLayout({ children, title, description, icon, cost }
           <div style={{
             display: 'flex',
             alignItems: 'center',
-            gap: '24px',
-            marginBottom: '16px'
+            gap: 'clamp(16px, 4vw, 24px)',
+            marginBottom: 'clamp(12px, 3vw, 16px)'
           }}>
             <div style={{
-              fontSize: '64px',
+              fontSize: 'clamp(48px, 12vw, 64px)',
               background: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)',
               borderRadius: '20px',
-              width: '80px',
-              height: '80px',
+              width: 'clamp(60px, 15vw, 80px)',
+              height: 'clamp(60px, 15vw, 80px)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center'
@@ -98,7 +98,7 @@ export default function AgentLayout({ children, title, description, icon, cost }
             </div>
             <div>
               <h1 style={{
-                fontSize: '32px',
+                fontSize: 'clamp(24px, 6vw, 32px)',
                 fontWeight: 'bold',
                 color: '#1f2937',
                 marginBottom: '8px'
