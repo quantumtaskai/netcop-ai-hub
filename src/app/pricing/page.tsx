@@ -126,6 +126,37 @@ function PricingForm() {
           margin: 0;
           padding: 0;
         }
+        
+        /* Mobile optimizations for pricing page */
+        @media (max-width: 768px) {
+          /* Single column layout on mobile */
+          div[style*="grid-template-columns: repeat(auto-fit"] {
+            grid-template-columns: 1fr !important;
+          }
+          
+          /* Ensure proper touch targets */
+          button {
+            min-height: 44px !important;
+          }
+          
+          /* Better text wrapping */
+          h1, h2, h3, h4, p {
+            word-break: break-word;
+          }
+          
+          /* Popular badge adjustments */
+          div[style*="position: absolute"][style*="top: clamp"] {
+            font-size: 12px !important;
+            padding: 6px 12px !important;
+          }
+        }
+        
+        @media (max-width: 480px) {
+          /* Extra small screens */
+          div[style*="marginBottom: 'clamp"] {
+            margin-bottom: 16px !important;
+          }
+        }
       `}</style>
       <div style={{
         minHeight: '100vh',
@@ -142,28 +173,30 @@ function PricingForm() {
       <div style={{
         maxWidth: '1200px',
         margin: '0 auto',
-        padding: '32px 24px 48px'
+        padding: 'clamp(20px, 5vw, 32px) clamp(16px, 4vw, 24px) clamp(32px, 8vw, 48px)'
       }}>
         
         {/* Hero Section */}
-        <div style={{ textAlign: 'center', marginBottom: '48px' }}>
+        <div style={{ textAlign: 'center', marginBottom: 'clamp(32px, 8vw, 48px)', padding: '0 clamp(8px, 2vw, 16px)' }}>
           <h2 style={{
-            fontSize: '48px',
+            fontSize: 'clamp(28px, 8vw, 48px)',
             fontWeight: 'bold',
             color: '#1f2937',
-            marginBottom: '16px',
+            marginBottom: 'clamp(12px, 3vw, 16px)',
             background: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)',
             WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent'
+            WebkitTextFillColor: 'transparent',
+            lineHeight: '1.2'
           }}>
             Power Up Your AI Experience
           </h2>
           <p style={{
-            fontSize: '20px',
+            fontSize: 'clamp(16px, 4vw, 20px)',
             color: '#6b7280',
             maxWidth: '600px',
             margin: '0 auto',
-            lineHeight: '1.6'
+            lineHeight: '1.6',
+            padding: '0 clamp(8px, 2vw, 16px)'
           }}>
             Choose the perfect credit package for your needs. Use credits to access our powerful AI agents and unlock unlimited possibilities.
           </p>
@@ -172,10 +205,11 @@ function PricingForm() {
         {/* Pricing Cards */}
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-          gap: '24px',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(min(280px, 100%), 1fr))',
+          gap: 'clamp(16px, 4vw, 24px)',
           maxWidth: '1000px',
-          margin: '0 auto'
+          margin: '0 auto',
+          padding: '0 clamp(8px, 2vw, 16px)'
         }}>
           {CREDIT_PACKAGES.map(pkg => (
             <div
@@ -183,8 +217,8 @@ function PricingForm() {
               style={{
                 background: 'rgba(255, 255, 255, 0.9)',
                 backdropFilter: 'blur(10px)',
-                borderRadius: '20px',
-                padding: '32px',
+                borderRadius: 'clamp(16px, 4vw, 20px)',
+                padding: 'clamp(20px, 5vw, 32px)',
                 border: pkg.popular ? '2px solid #3b82f6' : '1px solid rgba(0, 0, 0, 0.1)',
                 boxShadow: pkg.popular 
                   ? '0 20px 25px -5px rgba(59, 130, 246, 0.25)' 
@@ -197,77 +231,79 @@ function PricingForm() {
               {pkg.popular && (
                 <div style={{
                   position: 'absolute',
-                  top: '-12px',
+                  top: 'clamp(-10px, -3vw, -12px)',
                   left: '50%',
                   transform: 'translateX(-50%)',
                   background: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)',
                   color: 'white',
-                  padding: '8px 24px',
-                  borderRadius: '20px',
-                  fontSize: '14px',
+                  padding: 'clamp(6px, 2vw, 8px) clamp(16px, 4vw, 24px)',
+                  borderRadius: 'clamp(16px, 4vw, 20px)',
+                  fontSize: 'clamp(12px, 3vw, 14px)',
                   fontWeight: '600',
-                  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+                  whiteSpace: 'nowrap' as const
                 }}>
                   MOST POPULAR
                 </div>
               )}
 
-              <div style={{ textAlign: 'center', marginBottom: '24px' }}>
+              <div style={{ textAlign: 'center', marginBottom: 'clamp(16px, 4vw, 24px)' }}>
                 <div style={{
-                  fontSize: '48px',
+                  fontSize: 'clamp(32px, 8vw, 48px)',
                   fontWeight: 'bold',
                   color: '#1f2937',
-                  marginBottom: '8px'
+                  marginBottom: 'clamp(6px, 2vw, 8px)'
                 }}>
                   {pkg.credits}
                 </div>
                 <div style={{
-                  fontSize: '16px',
+                  fontSize: 'clamp(14px, 3.5vw, 16px)',
                   color: '#6b7280',
-                  marginBottom: '16px'
+                  marginBottom: 'clamp(12px, 3vw, 16px)'
                 }}>
                   Credits
                 </div>
                 <div style={{
-                  fontSize: '32px',
+                  fontSize: 'clamp(24px, 6vw, 32px)',
                   fontWeight: 'bold',
                   color: '#3b82f6',
-                  marginBottom: '8px'
+                  marginBottom: 'clamp(6px, 2vw, 8px)'
                 }}>
                   {pkg.price} AED
                 </div>
                 <div style={{
-                  fontSize: '14px',
+                  fontSize: 'clamp(12px, 3vw, 14px)',
                   color: '#6b7280'
                 }}>
                   {pkg.description}
                 </div>
               </div>
 
-              <div style={{ marginBottom: '32px' }}>
+              <div style={{ marginBottom: 'clamp(20px, 5vw, 32px)' }}>
                 {pkg.features.map((feature, index) => (
                   <div
                     key={index}
                     style={{
                       display: 'flex',
                       alignItems: 'center',
-                      gap: '12px',
-                      marginBottom: '12px',
-                      fontSize: '14px',
+                      gap: 'clamp(8px, 2vw, 12px)',
+                      marginBottom: 'clamp(8px, 2vw, 12px)',
+                      fontSize: 'clamp(12px, 3vw, 14px)',
                       color: '#374151'
                     }}
                   >
                     <div style={{
-                      width: '20px',
-                      height: '20px',
+                      width: 'clamp(16px, 4vw, 20px)',
+                      height: 'clamp(16px, 4vw, 20px)',
                       borderRadius: '50%',
                       background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
                       color: 'white',
-                      fontSize: '12px',
-                      fontWeight: 'bold'
+                      fontSize: 'clamp(10px, 2.5vw, 12px)',
+                      fontWeight: 'bold',
+                      flexShrink: 0
                     }}>
                       ✓
                     </div>
@@ -285,14 +321,15 @@ function PricingForm() {
                     ? 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)'
                     : 'linear-gradient(135deg, #6b7280 0%, #4b5563 100%)',
                   color: 'white',
-                  padding: '16px 24px',
-                  borderRadius: '12px',
-                  fontSize: '16px',
+                  padding: 'clamp(14px, 4vw, 16px) clamp(20px, 5vw, 24px)',
+                  borderRadius: 'clamp(8px, 2vw, 12px)',
+                  fontSize: 'clamp(14px, 3.5vw, 16px)',
                   fontWeight: '600',
                   border: 'none',
                   cursor: isProcessing ? 'not-allowed' : 'pointer',
                   transition: 'all 0.2s ease',
-                  opacity: isProcessing && selectedPackage === pkg.id ? 0.7 : 1
+                  opacity: isProcessing && selectedPackage === pkg.id ? 0.7 : 1,
+                  minHeight: '48px'
                 }}
                 onMouseEnter={(e) => {
                   if (!isProcessing) {
@@ -317,38 +354,40 @@ function PricingForm() {
 
         {/* FAQ Section */}
         <div style={{
-          marginTop: '80px',
-          textAlign: 'center'
+          marginTop: 'clamp(40px, 10vw, 80px)',
+          textAlign: 'center',
+          padding: '0 clamp(8px, 2vw, 16px)'
         }}>
           <h3 style={{
-            fontSize: '32px',
+            fontSize: 'clamp(24px, 6vw, 32px)',
             fontWeight: 'bold',
             color: '#1f2937',
-            marginBottom: '48px'
+            marginBottom: 'clamp(24px, 6vw, 48px)'
           }}>
             Frequently Asked Questions
           </h3>
           
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))',
-            gap: '32px',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(min(300px, 100%), 1fr))',
+            gap: 'clamp(20px, 5vw, 32px)',
             maxWidth: '800px',
             margin: '0 auto',
             textAlign: 'left'
           }}>
             <div>
               <h4 style={{
-                fontSize: '18px',
+                fontSize: 'clamp(16px, 4vw, 18px)',
                 fontWeight: '600',
                 color: '#1f2937',
-                marginBottom: '8px'
+                marginBottom: 'clamp(6px, 2vw, 8px)'
               }}>
                 How do credits work?
               </h4>
               <p style={{
                 color: '#6b7280',
-                lineHeight: '1.6'
+                lineHeight: '1.6',
+                fontSize: 'clamp(14px, 3.5vw, 16px)'
               }}>
                 Each AI agent costs a certain number of credits to use. For example, the Data Analyzer costs 45 credits, while the Weather Reporter costs 15 credits.
               </p>
@@ -356,16 +395,17 @@ function PricingForm() {
             
             <div>
               <h4 style={{
-                fontSize: '18px',
+                fontSize: 'clamp(16px, 4vw, 18px)',
                 fontWeight: '600',
                 color: '#1f2937',
-                marginBottom: '8px'
+                marginBottom: 'clamp(6px, 2vw, 8px)'
               }}>
                 Do credits expire?
               </h4>
               <p style={{
                 color: '#6b7280',
-                lineHeight: '1.6'
+                lineHeight: '1.6',
+                fontSize: 'clamp(14px, 3.5vw, 16px)'
               }}>
                 Credits expire based on the package you choose. Basic packages last 30 days, while premium packages can last up to 6 months.
               </p>
@@ -373,16 +413,17 @@ function PricingForm() {
             
             <div>
               <h4 style={{
-                fontSize: '18px',
+                fontSize: 'clamp(16px, 4vw, 18px)',
                 fontWeight: '600',
                 color: '#1f2937',
-                marginBottom: '8px'
+                marginBottom: 'clamp(6px, 2vw, 8px)'
               }}>
                 Can I get a refund?
               </h4>
               <p style={{
                 color: '#6b7280',
-                lineHeight: '1.6'
+                lineHeight: '1.6',
+                fontSize: 'clamp(14px, 3.5vw, 16px)'
               }}>
                 We offer a 7-day money-back guarantee for all credit packages. Contact support if you're not satisfied with your purchase.
               </p>
@@ -390,16 +431,17 @@ function PricingForm() {
             
             <div>
               <h4 style={{
-                fontSize: '18px',
+                fontSize: 'clamp(16px, 4vw, 18px)',
                 fontWeight: '600',
                 color: '#1f2937',
-                marginBottom: '8px'
+                marginBottom: 'clamp(6px, 2vw, 8px)'
               }}>
                 Is payment secure?
               </h4>
               <p style={{
                 color: '#6b7280',
-                lineHeight: '1.6'
+                lineHeight: '1.6',
+                fontSize: 'clamp(14px, 3.5vw, 16px)'
               }}>
                 Yes! All payments are processed securely through Stripe with industry-standard encryption and security measures.
               </p>
@@ -433,7 +475,7 @@ export default function PricingPage() {
         background: 'linear-gradient(135deg, #f6f8ff 0%, #e8f0fe 50%, #f0f7ff 100%)'
       }}>
         <div style={{
-          fontSize: '18px',
+          fontSize: 'clamp(16px, 4vw, 18px)',
           color: '#6b7280'
         }}>
           Loading pricing...

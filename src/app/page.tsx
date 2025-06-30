@@ -823,6 +823,7 @@ const HomePage: React.FC = () => {
 
         /* Enhanced Responsive Design */
         @media (max-width: 768px) {
+          /* Mobile-specific overrides */
           .nav-menu {
             position: fixed;
             left: -100%;
@@ -844,18 +845,16 @@ const HomePage: React.FC = () => {
             display: flex;
           }
 
-          /* Two-column grids become single column */
-          div[style*="grid-template-columns: 1fr 1fr"] {
+          /* Ensure single column layouts on mobile */
+          div[style*="auto-fit, minmax(min(350px, 100%), 1fr)"] {
             grid-template-columns: 1fr !important;
-            gap: 32px !important;
           }
 
-          /* Company Profile responsive */
-          div[style*="grid-template-columns: 1fr 1fr"][style*="gap: 60px"] {
-            gap: 40px !important;
+          div[style*="auto-fit, minmax(min(400px, 100%), 1fr)"] {
+            grid-template-columns: 1fr !important;
           }
 
-          /* Founder section responsive - swap order */
+          /* Mobile order fixes for founder section */
           div[style*="order: 2"] {
             order: 1 !important;
           }
@@ -864,43 +863,25 @@ const HomePage: React.FC = () => {
             order: 2 !important;
           }
 
-          /* Contact form responsive */
-          div[style*="grid-template-columns: 1fr 1fr"][style*="alignItems: start"] {
-            gap: 40px !important;
-          }
-
-          /* Hero responsive */
-          h1[style*="clamp(48px, 8vw, 80px)"] {
-            font-size: clamp(36px, 8vw, 64px) !important;
-          }
-
-          /* Services grid responsive */
-          div[style*="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr))"] {
-            grid-template-columns: 1fr !important;
-          }
-
-          /* Client grid responsive */
-          div[style*="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr))"] {
-            grid-template-columns: 1fr !important;
-          }
-
-          /* Navigation improvements */
-          nav div[style*="gap: 40px"] {
+          /* Hide floating elements on small screens */
+          div[style*="position: absolute"][style*="animation: float"] {
             display: none !important;
           }
 
-          nav div[style*="gap: 32px"] {
-            display: none !important;
+          /* Improve button spacing on mobile */
+          button, a[style*="padding"] {
+            min-height: 44px !important;
           }
         }
 
         /* Tablet responsive */
         @media (max-width: 1024px) and (min-width: 769px) {
-          div[style*="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr))"] {
+          /* Ensure 2-column layouts on tablet */
+          div[style*="auto-fit, minmax(min(220px, 100%), 1fr)"] {
             grid-template-columns: repeat(2, 1fr) !important;
           }
 
-          div[style*="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr))"] {
+          div[style*="auto-fit, minmax(min(280px, 100%), 1fr)"] {
             grid-template-columns: repeat(2, 1fr) !important;
           }
         }
@@ -983,10 +964,10 @@ const HomePage: React.FC = () => {
         {/* Enhanced Hero Section with Light Background */}
         <section style={{ 
           position: 'relative', 
-          padding: '80px 24px 100px', 
+          padding: 'clamp(40px, 10vw, 80px) clamp(16px, 4vw, 24px) clamp(60px, 15vw, 100px)', 
           background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 30%, #f1f5f9 70%, #f8fafc 100%)',
           overflow: 'hidden',
-          minHeight: '85vh',
+          minHeight: 'clamp(70vh, 85vh, 85vh)',
           display: 'flex',
           alignItems: 'center'
         }}>
@@ -1001,14 +982,14 @@ const HomePage: React.FC = () => {
             pointerEvents: 'none'
           }}></div>
 
-          <div style={{ maxWidth: '1280px', margin: '0 auto', textAlign: 'center', position: 'relative', zIndex: 1, width: '100%' }}>
+          <div style={{ maxWidth: '1280px', margin: '0 auto', textAlign: 'center', position: 'relative', zIndex: 1, width: '100%', padding: '0 clamp(8px, 2vw, 16px)' }}>
             {/* Floating Elements with Better Positioning */}
             <div style={{
               position: 'absolute',
-              top: '60px',
-              left: '10%',
-              width: '100px',
-              height: '100px',
+              top: 'clamp(30px, 8vw, 60px)',
+              left: 'clamp(5%, 10%, 15%)',
+              width: 'clamp(60px, 15vw, 100px)',
+              height: 'clamp(60px, 15vw, 100px)',
               background: 'linear-gradient(135deg, rgba(147, 51, 234, 0.15) 0%, rgba(147, 51, 234, 0.05) 100%)',
               borderRadius: '50%',
               animation: 'float 8s ease-in-out infinite',
@@ -1016,10 +997,10 @@ const HomePage: React.FC = () => {
             }}></div>
             <div style={{
               position: 'absolute',
-              top: '120px',
-              right: '15%',
-              width: '80px',
-              height: '80px',
+              top: 'clamp(60px, 12vw, 120px)',
+              right: 'clamp(5%, 15%, 20%)',
+              width: 'clamp(50px, 12vw, 80px)',
+              height: 'clamp(50px, 12vw, 80px)',
               background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(59, 130, 246, 0.05) 100%)',
               borderRadius: '50%',
               animation: 'float 6s ease-in-out infinite',
@@ -1028,10 +1009,10 @@ const HomePage: React.FC = () => {
             }}></div>
             <div style={{
               position: 'absolute',
-              bottom: '120px',
-              left: '30%',
-              width: '60px',
-              height: '60px',
+              bottom: 'clamp(60px, 12vw, 120px)',
+              left: 'clamp(20%, 30%, 40%)',
+              width: 'clamp(40px, 10vw, 60px)',
+              height: 'clamp(40px, 10vw, 60px)',
               background: 'linear-gradient(135deg, rgba(236, 72, 153, 0.15) 0%, rgba(236, 72, 153, 0.05) 100%)',
               borderRadius: '50%',
               animation: 'float 7s ease-in-out infinite',
@@ -1059,10 +1040,10 @@ const HomePage: React.FC = () => {
             </div>
 
             <h1 style={{
-              fontSize: 'clamp(56px, 9vw, 110px)',
+              fontSize: 'clamp(36px, 8vw, 110px)',
               fontWeight: 800,
-              marginBottom: '40px',
-              lineHeight: '1.05',
+              marginBottom: 'clamp(24px, 6vw, 40px)',
+              lineHeight: '1.1',
               letterSpacing: '-0.02em'
             }}>
               <span style={{
@@ -1084,13 +1065,14 @@ const HomePage: React.FC = () => {
             </h1>
 
             <p style={{
-              fontSize: '1.4rem',
+              fontSize: 'clamp(1.1rem, 3vw, 1.4rem)',
               color: '#475569',
-              marginBottom: '56px',
+              marginBottom: 'clamp(32px, 8vw, 56px)',
               maxWidth: '720px',
-              margin: '0 auto 56px auto',
+              margin: '0 auto clamp(32px, 8vw, 56px) auto',
               lineHeight: '1.7',
-              fontWeight: 400
+              fontWeight: 400,
+              padding: '0 clamp(8px, 2vw, 16px)'
             }}>
               Secure your digital future with state-of-the-art AI solutions and expert cybersecurity strategies tailored for your business needs.
             </p>
@@ -1099,24 +1081,28 @@ const HomePage: React.FC = () => {
             <div style={{
               display: 'flex',
               justifyContent: 'center',
-              gap: '20px',
+              gap: 'clamp(12px, 3vw, 20px)',
               flexWrap: 'wrap',
-              marginBottom: '80px'
+              marginBottom: 'clamp(40px, 10vw, 80px)',
+              padding: '0 clamp(8px, 2vw, 16px)'
             }}>
               <button
                 onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
                 style={{
                   background: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)',
                   color: 'white',
-                  padding: '18px 36px',
+                  padding: 'clamp(14px, 4vw, 18px) clamp(24px, 6vw, 36px)',
                   borderRadius: '14px',
                   fontWeight: 700,
-                  fontSize: '1.1rem',
+                  fontSize: 'clamp(14px, 3.5vw, 18px)',
                   border: 'none',
                   cursor: 'pointer',
                   boxShadow: '0 8px 24px rgba(59, 130, 246, 0.25), 0 4px 12px rgba(0, 0, 0, 0.05)',
                   transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                  letterSpacing: '0.01em'
+                  letterSpacing: '0.01em',
+                  minHeight: '48px',
+                  minWidth: 'clamp(140px, 40vw, 180px)',
+                  textAlign: 'center' as const
                 }}
                 onMouseEnter={e => {
                   (e.target as HTMLElement).style.transform = 'translateY(-3px) scale(1.02)'
@@ -1132,16 +1118,19 @@ const HomePage: React.FC = () => {
               <Link href="/marketplace" style={{
                 background: 'white',
                 color: '#3b82f6',
-                padding: '18px 36px',
+                padding: 'clamp(14px, 4vw, 18px) clamp(24px, 6vw, 36px)',
                 borderRadius: '14px',
                 fontWeight: 600,
-                fontSize: '1.1rem',
+                fontSize: 'clamp(14px, 3.5vw, 18px)',
                 border: '2px solid #e2e8f0',
                 textDecoration: 'none',
                 boxShadow: '0 8px 24px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(59, 130, 246, 0.08)',
                 transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                 display: 'inline-block',
-                letterSpacing: '0.01em'
+                letterSpacing: '0.01em',
+                minHeight: '48px',
+                minWidth: 'clamp(140px, 40vw, 180px)',
+                textAlign: 'center' as const
               }}>
                 Explore AI Hub
               </Link>
@@ -1150,14 +1139,15 @@ const HomePage: React.FC = () => {
             {/* Enhanced Trust Indicators */}
             <div style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(3, 1fr)',
-              gap: '48px',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(min(150px, 100%), 1fr))',
+              gap: 'clamp(16px, 4vw, 48px)',
               maxWidth: '600px',
-              margin: '0 auto'
+              margin: '0 auto',
+              padding: '0 clamp(8px, 2vw, 16px)'
             }}>
               <div style={{ 
                 textAlign: 'center',
-                padding: '24px 16px',
+                padding: 'clamp(16px, 4vw, 24px) clamp(12px, 3vw, 16px)',
                 background: 'rgba(255, 255, 255, 0.5)',
                 borderRadius: '16px',
                 border: '1px solid rgba(255, 255, 255, 0.8)',
@@ -1165,7 +1155,7 @@ const HomePage: React.FC = () => {
                 boxShadow: '0 4px 16px rgba(0, 0, 0, 0.03)'
               }}>
                 <div style={{ 
-                  fontSize: '2.5rem', 
+                  fontSize: 'clamp(1.8rem, 5vw, 2.5rem)', 
                   fontWeight: '800', 
                   marginBottom: '8px', 
                   background: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)',
@@ -1175,7 +1165,7 @@ const HomePage: React.FC = () => {
                   18+
                 </div>
                 <div style={{ 
-                  fontSize: '0.95rem', 
+                  fontSize: 'clamp(12px, 3vw, 15px)', 
                   color: '#64748b',
                   fontWeight: '500',
                   letterSpacing: '0.01em'
@@ -1185,7 +1175,7 @@ const HomePage: React.FC = () => {
               </div>
               <div style={{ 
                 textAlign: 'center',
-                padding: '24px 16px',
+                padding: 'clamp(16px, 4vw, 24px) clamp(12px, 3vw, 16px)',
                 background: 'rgba(255, 255, 255, 0.5)',
                 borderRadius: '16px',
                 border: '1px solid rgba(255, 255, 255, 0.8)',
@@ -1193,7 +1183,7 @@ const HomePage: React.FC = () => {
                 boxShadow: '0 4px 16px rgba(0, 0, 0, 0.03)'
               }}>
                 <div style={{ 
-                  fontSize: '2.5rem', 
+                  fontSize: 'clamp(1.8rem, 5vw, 2.5rem)', 
                   fontWeight: '800', 
                   marginBottom: '8px', 
                   background: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)',
@@ -1203,7 +1193,7 @@ const HomePage: React.FC = () => {
                   24/7
                 </div>
                 <div style={{ 
-                  fontSize: '0.95rem', 
+                  fontSize: 'clamp(12px, 3vw, 15px)', 
                   color: '#64748b',
                   fontWeight: '500',
                   letterSpacing: '0.01em'
@@ -1213,7 +1203,7 @@ const HomePage: React.FC = () => {
               </div>
               <div style={{ 
                 textAlign: 'center',
-                padding: '24px 16px',
+                padding: 'clamp(16px, 4vw, 24px) clamp(12px, 3vw, 16px)',
                 background: 'rgba(255, 255, 255, 0.5)',
                 borderRadius: '16px',
                 border: '1px solid rgba(255, 255, 255, 0.8)',
@@ -1221,7 +1211,7 @@ const HomePage: React.FC = () => {
                 boxShadow: '0 4px 16px rgba(0, 0, 0, 0.03)'
               }}>
                 <div style={{ 
-                  fontSize: '2.5rem', 
+                  fontSize: 'clamp(1.8rem, 5vw, 2.5rem)', 
                   fontWeight: '800', 
                   marginBottom: '8px', 
                   background: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)',
@@ -1231,7 +1221,7 @@ const HomePage: React.FC = () => {
                   100%
                 </div>
                 <div style={{ 
-                  fontSize: '0.95rem', 
+                  fontSize: 'clamp(12px, 3vw, 15px)', 
                   color: '#64748b',
                   fontWeight: '500',
                   letterSpacing: '0.01em'
@@ -1245,7 +1235,7 @@ const HomePage: React.FC = () => {
 
         {/* Enhanced Company Profile Section */}
         <section style={{ 
-          padding: '120px 24px', 
+          padding: 'clamp(60px, 15vw, 120px) clamp(16px, 4vw, 24px)', 
           background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #f1f5f9 100%)',
           position: 'relative',
           overflow: 'hidden'
@@ -1274,7 +1264,7 @@ const HomePage: React.FC = () => {
 
           <div style={{ maxWidth: '1200px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
             {/* Section Header */}
-            <div style={{ textAlign: 'center', marginBottom: '80px' }}>
+            <div style={{ textAlign: 'center', marginBottom: 'clamp(40px, 10vw, 80px)' }}>
               <div style={{
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -1308,12 +1298,17 @@ const HomePage: React.FC = () => {
               </p>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '80px', alignItems: 'center' }}>
+            <div style={{ 
+              display: 'grid', 
+              gridTemplateColumns: 'repeat(auto-fit, minmax(min(400px, 100%), 1fr))', 
+              gap: 'clamp(40px, 10vw, 80px)', 
+              alignItems: 'center' 
+            }}>
               {/* Content Side */}
               <div>
                 <div style={{
                   background: 'white',
-                  padding: '48px',
+                  padding: 'clamp(24px, 6vw, 48px)',
                   borderRadius: '24px',
                   boxShadow: '0 20px 60px rgba(30, 64, 175, 0.08)',
                   border: '1px solid rgba(255, 255, 255, 0.8)',
@@ -1338,50 +1333,55 @@ const HomePage: React.FC = () => {
                   </div>
 
                   <h3 style={{ 
-                    fontSize: '1.8rem', 
+                    fontSize: 'clamp(1.3rem, 4vw, 1.8rem)', 
                     fontWeight: 700, 
                     color: '#1E40AF', 
-                    marginBottom: '24px',
-                    marginTop: '20px'
+                    marginBottom: 'clamp(16px, 4vw, 24px)',
+                    marginTop: 'clamp(12px, 3vw, 20px)'
                   }}>
                     Defending Digital Frontiers
                   </h3>
                   
                   <p style={{ 
                     color: '#4b5563', 
-                    fontSize: '1.1rem', 
+                    fontSize: 'clamp(14px, 3.5vw, 18px)', 
                     lineHeight: '1.8', 
-                    marginBottom: '32px' 
+                    marginBottom: 'clamp(20px, 5vw, 32px)' 
                   }}>
                     At Netcop Consultancy, we provide <strong>state-of-the-art AI & Cybersecurity solutions</strong> tailored to safeguard your business. From advanced AI Agents to robust defense strategies, we empower you to navigate the digital world with confidence.
                   </p>
 
                   {/* Enhanced badges */}
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '32px' }}>
+                  <div style={{ 
+                    display: 'grid', 
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(min(120px, 100%), 1fr))', 
+                    gap: 'clamp(12px, 3vw, 16px)', 
+                    marginBottom: 'clamp(20px, 5vw, 32px)' 
+                  }}>
                     <div style={{ 
                       background: 'linear-gradient(135deg, #40E0D0 0%, #1E40AF 100%)', 
                       color: 'white', 
-                      padding: '16px', 
+                      padding: 'clamp(12px, 3vw, 16px)', 
                       borderRadius: '12px', 
-                      fontSize: '14px', 
+                      fontSize: 'clamp(12px, 3vw, 14px)', 
                       fontWeight: '600',
                       textAlign: 'center',
                       boxShadow: '0 4px 16px rgba(64, 224, 208, 0.3)'
                     }}>
-                      <div style={{ fontSize: '24px', marginBottom: '8px' }}>📅</div>
+                      <div style={{ fontSize: 'clamp(18px, 4vw, 24px)', marginBottom: '8px' }}>📅</div>
                       18+ Years Experience
                     </div>
                     <div style={{ 
                       background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', 
                       color: 'white', 
-                      padding: '16px', 
+                      padding: 'clamp(12px, 3vw, 16px)', 
                       borderRadius: '12px', 
-                      fontSize: '14px', 
+                      fontSize: 'clamp(12px, 3vw, 14px)', 
                       fontWeight: '600',
                       textAlign: 'center',
                       boxShadow: '0 4px 16px rgba(102, 126, 234, 0.3)'
                     }}>
-                      <div style={{ fontSize: '24px', marginBottom: '8px' }}>🏆</div>
+                      <div style={{ fontSize: 'clamp(18px, 4vw, 24px)', marginBottom: '8px' }}>🏆</div>
                       Top Certifications
                     </div>
                   </div>
@@ -1389,14 +1389,14 @@ const HomePage: React.FC = () => {
                   <div style={{ 
                     background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)', 
                     color: 'white', 
-                    padding: '16px', 
+                    padding: 'clamp(12px, 3vw, 16px)', 
                     borderRadius: '12px', 
-                    fontSize: '14px', 
+                    fontSize: 'clamp(12px, 3vw, 14px)', 
                     fontWeight: '600',
                     textAlign: 'center',
                     boxShadow: '0 4px 16px rgba(245, 158, 11, 0.3)'
                   }}>
-                    <div style={{ fontSize: '24px', marginBottom: '8px' }}>⚫</div>
+                    <div style={{ fontSize: 'clamp(18px, 4vw, 24px)', marginBottom: '8px' }}>⚫</div>
                     Lean Six Sigma Black Belt
                   </div>
                 </div>
@@ -1408,13 +1408,13 @@ const HomePage: React.FC = () => {
                 <div style={{ 
                   width: '100%', 
                   maxWidth: '500px',
-                  height: '400px', 
+                  height: 'clamp(250px, 50vw, 400px)', 
                   background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', 
-                  borderRadius: '32px',
+                  borderRadius: 'clamp(16px, 4vw, 32px)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  fontSize: '5rem',
+                  fontSize: 'clamp(3rem, 8vw, 5rem)',
                   boxShadow: '0 32px 80px rgba(30, 64, 175, 0.2)',
                   position: 'relative',
                   margin: '0 auto',
@@ -1458,16 +1458,16 @@ const HomePage: React.FC = () => {
                 <div style={{
                   position: 'absolute',
                   top: '10%',
-                  right: '-10%',
-                  width: '80px',
-                  height: '80px',
+                  right: 'clamp(-20%, -10%, -5%)',
+                  width: 'clamp(50px, 12vw, 80px)',
+                  height: 'clamp(50px, 12vw, 80px)',
                   background: 'white',
-                  borderRadius: '16px',
+                  borderRadius: 'clamp(8px, 2vw, 16px)',
                   boxShadow: '0 8px 32px rgba(30, 64, 175, 0.15)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  fontSize: '2rem',
+                  fontSize: 'clamp(1.2rem, 3vw, 2rem)',
                   animation: 'float 5s ease-in-out infinite'
                 }}>
                   🔒
@@ -1475,16 +1475,16 @@ const HomePage: React.FC = () => {
                 <div style={{
                   position: 'absolute',
                   bottom: '15%',
-                  left: '-5%',
-                  width: '60px',
-                  height: '60px',
+                  left: 'clamp(-10%, -5%, 0%)',
+                  width: 'clamp(40px, 10vw, 60px)',
+                  height: 'clamp(40px, 10vw, 60px)',
                   background: 'white',
                   borderRadius: '50%',
                   boxShadow: '0 8px 32px rgba(64, 224, 208, 0.15)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  fontSize: '1.5rem',
+                  fontSize: 'clamp(1rem, 2.5vw, 1.5rem)',
                   animation: 'float 7s ease-in-out infinite',
                   animationDelay: '1s'
                 }}>
@@ -1495,69 +1495,68 @@ const HomePage: React.FC = () => {
 
             {/* Bottom achievement strip */}
             <div style={{
-              marginTop: '80px',
+              marginTop: 'clamp(40px, 10vw, 80px)',
               background: 'white',
-              borderRadius: '20px',
-              padding: '32px',
+              borderRadius: 'clamp(12px, 3vw, 20px)',
+              padding: 'clamp(20px, 5vw, 32px)',
               boxShadow: '0 16px 48px rgba(30, 64, 175, 0.08)',
-              display: 'flex',
-              justifyContent: 'space-around',
-              alignItems: 'center',
-              flexWrap: 'wrap',
-              gap: '32px'
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(min(120px, 100%), 1fr))',
+              gap: 'clamp(16px, 4vw, 32px)',
+              alignItems: 'center'
             }}>
               <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: '2rem', marginBottom: '8px' }}>🎯</div>
-                <div style={{ fontSize: '1.1rem', fontWeight: '600', color: '#1E40AF' }}>Mission Critical</div>
-                <div style={{ fontSize: '0.9rem', color: '#6b7280' }}>Zero Compromise</div>
+                <div style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', marginBottom: '8px' }}>🎯</div>
+                <div style={{ fontSize: 'clamp(14px, 3.5vw, 18px)', fontWeight: '600', color: '#1E40AF' }}>Mission Critical</div>
+                <div style={{ fontSize: 'clamp(12px, 3vw, 14px)', color: '#6b7280' }}>Zero Compromise</div>
               </div>
               <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: '2rem', marginBottom: '8px' }}>⚡</div>
-                <div style={{ fontSize: '1.1rem', fontWeight: '600', color: '#1E40AF' }}>Rapid Response</div>
-                <div style={{ fontSize: '0.9rem', color: '#6b7280' }}>24/7 Protection</div>
+                <div style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', marginBottom: '8px' }}>⚡</div>
+                <div style={{ fontSize: 'clamp(14px, 3.5vw, 18px)', fontWeight: '600', color: '#1E40AF' }}>Rapid Response</div>
+                <div style={{ fontSize: 'clamp(12px, 3vw, 14px)', color: '#6b7280' }}>24/7 Protection</div>
               </div>
               <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: '2rem', marginBottom: '8px' }}>🔬</div>
-                <div style={{ fontSize: '1.1rem', fontWeight: '600', color: '#1E40AF' }}>Innovation</div>
-                <div style={{ fontSize: '0.9rem', color: '#6b7280' }}>Cutting Edge Tech</div>
+                <div style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', marginBottom: '8px' }}>🔬</div>
+                <div style={{ fontSize: 'clamp(14px, 3.5vw, 18px)', fontWeight: '600', color: '#1E40AF' }}>Innovation</div>
+                <div style={{ fontSize: 'clamp(12px, 3vw, 14px)', color: '#6b7280' }}>Cutting Edge Tech</div>
               </div>
               <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: '2rem', marginBottom: '8px' }}>🤝</div>
-                <div style={{ fontSize: '1.1rem', fontWeight: '600', color: '#1E40AF' }}>Trusted Partner</div>
-                <div style={{ fontSize: '0.9rem', color: '#6b7280' }}>Industry Leaders</div>
+                <div style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', marginBottom: '8px' }}>🤝</div>
+                <div style={{ fontSize: 'clamp(14px, 3.5vw, 18px)', fontWeight: '600', color: '#1E40AF' }}>Trusted Partner</div>
+                <div style={{ fontSize: 'clamp(12px, 3vw, 14px)', color: '#6b7280' }}>Industry Leaders</div>
               </div>
             </div>
           </div>
         </section>
 
         {/* Services Section - Modern Cards */}
-        <section style={{ padding: '80px 24px', background: 'linear-gradient(135deg, #f6f8ff 0%, #e8f0fe 100%)' }}>
+        <section style={{ padding: 'clamp(40px, 10vw, 80px) clamp(16px, 4vw, 24px)', background: 'linear-gradient(135deg, #f6f8ff 0%, #e8f0fe 100%)' }}>
           <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-            <h2 style={{ fontSize: '2.5rem', fontWeight: 700, textAlign: 'center', marginBottom: '16px', color: '#1E40AF' }}>
+            <h2 style={{ fontSize: 'clamp(1.8rem, 5vw, 2.5rem)', fontWeight: 700, textAlign: 'center', marginBottom: '16px', color: '#1E40AF' }}>
               Our Services
             </h2>
-            <p style={{ textAlign: 'center', color: '#6b7280', fontSize: '1.2rem', marginBottom: '48px' }}>
+            <p style={{ textAlign: 'center', color: '#6b7280', fontSize: 'clamp(16px, 4vw, 20px)', marginBottom: 'clamp(24px, 6vw, 48px)' }}>
               Tailored strategies for your business
             </p>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '32px' }}>
-              <div style={{ background: 'white', borderRadius: '20px', padding: '40px', boxShadow: '0 8px 32px rgba(30, 64, 175, 0.08)', textAlign: 'center', transition: 'transform 0.3s ease' }}>
-                <div style={{ fontSize: '3rem', marginBottom: '20px' }}>🛡️</div>
-                <h3 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#1E40AF', marginBottom: '16px' }}>Cybersecurity Consultation</h3>
-                <p style={{ color: '#6b7280', fontSize: '1.1rem', lineHeight: '1.6' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(280px, 100%), 1fr))', gap: 'clamp(16px, 4vw, 32px)' }}>
+              <div style={{ background: 'white', borderRadius: 'clamp(12px, 3vw, 20px)', padding: 'clamp(20px, 5vw, 40px)', boxShadow: '0 8px 32px rgba(30, 64, 175, 0.08)', textAlign: 'center', transition: 'transform 0.3s ease' }}>
+                <div style={{ fontSize: 'clamp(2rem, 6vw, 3rem)', marginBottom: 'clamp(12px, 3vw, 20px)' }}>🛡️</div>
+                <h3 style={{ fontSize: 'clamp(1.2rem, 4vw, 1.5rem)', fontWeight: 700, color: '#1E40AF', marginBottom: 'clamp(12px, 3vw, 16px)' }}>Cybersecurity Consultation</h3>
+                <p style={{ color: '#6b7280', fontSize: 'clamp(14px, 3.5vw, 18px)', lineHeight: '1.6' }}>
                   Tailored strategies, advanced threat detection, and comprehensive security frameworks to protect your digital assets and business operations.
                 </p>
               </div>
-              <div style={{ background: 'white', borderRadius: '20px', padding: '40px', boxShadow: '0 8px 32px rgba(30, 64, 175, 0.08)', textAlign: 'center', transition: 'transform 0.3s ease' }}>
-                <div style={{ fontSize: '3rem', marginBottom: '20px' }}>🤖</div>
-                <h3 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#1E40AF', marginBottom: '16px' }}>AI Based Automation</h3>
-                <p style={{ color: '#6b7280', fontSize: '1.1rem', lineHeight: '1.6' }}>
+              <div style={{ background: 'white', borderRadius: 'clamp(12px, 3vw, 20px)', padding: 'clamp(20px, 5vw, 40px)', boxShadow: '0 8px 32px rgba(30, 64, 175, 0.08)', textAlign: 'center', transition: 'transform 0.3s ease' }}>
+                <div style={{ fontSize: 'clamp(2rem, 6vw, 3rem)', marginBottom: 'clamp(12px, 3vw, 20px)' }}>🤖</div>
+                <h3 style={{ fontSize: 'clamp(1.2rem, 4vw, 1.5rem)', fontWeight: 700, color: '#1E40AF', marginBottom: 'clamp(12px, 3vw, 16px)' }}>AI Based Automation</h3>
+                <p style={{ color: '#6b7280', fontSize: 'clamp(14px, 3.5vw, 18px)', lineHeight: '1.6' }}>
                   Empower your Business with AI. Strategic AI adoption, machine learning solutions, and intelligent automation to transform your processes.
                 </p>
               </div>
-              <div style={{ background: 'white', borderRadius: '20px', padding: '40px', boxShadow: '0 8px 32px rgba(30, 64, 175, 0.08)', textAlign: 'center', transition: 'transform 0.3s ease' }}>
-                <div style={{ fontSize: '3rem', marginBottom: '20px' }}>⚡</div>
-                <h3 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#1E40AF', marginBottom: '16px' }}>Rapid Response Solutions</h3>
-                <p style={{ color: '#6b7280', fontSize: '1.1rem', lineHeight: '1.6' }}>
+              <div style={{ background: 'white', borderRadius: 'clamp(12px, 3vw, 20px)', padding: 'clamp(20px, 5vw, 40px)', boxShadow: '0 8px 32px rgba(30, 64, 175, 0.08)', textAlign: 'center', transition: 'transform 0.3s ease' }}>
+                <div style={{ fontSize: 'clamp(2rem, 6vw, 3rem)', marginBottom: 'clamp(12px, 3vw, 20px)' }}>⚡</div>
+                <h3 style={{ fontSize: 'clamp(1.2rem, 4vw, 1.5rem)', fontWeight: 700, color: '#1E40AF', marginBottom: 'clamp(12px, 3vw, 16px)' }}>Rapid Response Solutions</h3>
+                <p style={{ color: '#6b7280', fontSize: 'clamp(14px, 3.5vw, 18px)', lineHeight: '1.6' }}>
                   Rapid response to minimize damage. Emergency incident response and real-time threat mitigation to protect your business.
                 </p>
               </div>
@@ -1566,82 +1565,87 @@ const HomePage: React.FC = () => {
         </section>
 
         {/* Clients Section - Modern Cards */}
-        <section style={{ padding: '80px 24px', background: 'linear-gradient(135deg, #e0f7fa 0%, #f0f9ff 100%)' }}>
+        <section style={{ padding: 'clamp(40px, 10vw, 80px) clamp(16px, 4vw, 24px)', background: 'linear-gradient(135deg, #e0f7fa 0%, #f0f9ff 100%)' }}>
           <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-            <h2 style={{ fontSize: '2.5rem', fontWeight: 700, textAlign: 'center', marginBottom: '48px', color: '#1E40AF' }}>
+            <h2 style={{ fontSize: 'clamp(1.8rem, 5vw, 2.5rem)', fontWeight: 700, textAlign: 'center', marginBottom: 'clamp(24px, 6vw, 48px)', color: '#1E40AF' }}>
               Our Clients
             </h2>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '32px' }}>
-              <div style={{ background: 'white', borderRadius: '16px', padding: '32px', boxShadow: '0 4px 16px rgba(30, 64, 175, 0.07)', textAlign: 'center' }}>
-                <div style={{ fontSize: '2rem', marginBottom: '8px' }}>🏭</div>
-                <h3 style={{ fontSize: '1.2rem', fontWeight: 600, color: '#1E40AF', marginBottom: '6px' }}>MTSV Foods Industries Pvt Ltd</h3>
-                <p style={{ color: '#6b7280', fontSize: '1rem' }}>Food & Beverage Industry</p>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(220px, 100%), 1fr))', gap: 'clamp(16px, 4vw, 32px)' }}>
+              <div style={{ background: 'white', borderRadius: 'clamp(12px, 3vw, 16px)', padding: 'clamp(20px, 5vw, 32px)', boxShadow: '0 4px 16px rgba(30, 64, 175, 0.07)', textAlign: 'center' }}>
+                <div style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', marginBottom: '8px' }}>🏭</div>
+                <h3 style={{ fontSize: 'clamp(14px, 3.5vw, 18px)', fontWeight: 600, color: '#1E40AF', marginBottom: '6px' }}>MTSV Foods Industries Pvt Ltd</h3>
+                <p style={{ color: '#6b7280', fontSize: 'clamp(12px, 3vw, 16px)' }}>Food & Beverage Industry</p>
               </div>
-              <div style={{ background: 'white', borderRadius: '16px', padding: '32px', boxShadow: '0 4px 16px rgba(30, 64, 175, 0.07)', textAlign: 'center' }}>
-                <div style={{ fontSize: '2rem', marginBottom: '8px' }}>🏗️</div>
-                <h3 style={{ fontSize: '1.2rem', fontWeight: 600, color: '#1E40AF', marginBottom: '6px' }}>Apple Tree Industries</h3>
-                <p style={{ color: '#6b7280', fontSize: '1rem' }}>Manufacturing & Processing</p>
+              <div style={{ background: 'white', borderRadius: 'clamp(12px, 3vw, 16px)', padding: 'clamp(20px, 5vw, 32px)', boxShadow: '0 4px 16px rgba(30, 64, 175, 0.07)', textAlign: 'center' }}>
+                <div style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', marginBottom: '8px' }}>🏗️</div>
+                <h3 style={{ fontSize: 'clamp(14px, 3.5vw, 18px)', fontWeight: 600, color: '#1E40AF', marginBottom: '6px' }}>Apple Tree Industries</h3>
+                <p style={{ color: '#6b7280', fontSize: 'clamp(12px, 3vw, 16px)' }}>Manufacturing & Processing</p>
               </div>
-              <div style={{ background: 'white', borderRadius: '16px', padding: '32px', boxShadow: '0 4px 16px rgba(30, 64, 175, 0.07)', textAlign: 'center' }}>
-                <div style={{ fontSize: '2rem', marginBottom: '8px' }}>💻</div>
-                <h3 style={{ fontSize: '1.2rem', fontWeight: 600, color: '#1E40AF', marginBottom: '6px' }}>TechStart Solutions</h3>
-                <p style={{ color: '#6b7280', fontSize: '1rem' }}>Technology Consulting</p>
+              <div style={{ background: 'white', borderRadius: 'clamp(12px, 3vw, 16px)', padding: 'clamp(20px, 5vw, 32px)', boxShadow: '0 4px 16px rgba(30, 64, 175, 0.07)', textAlign: 'center' }}>
+                <div style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', marginBottom: '8px' }}>💻</div>
+                <h3 style={{ fontSize: 'clamp(14px, 3.5vw, 18px)', fontWeight: 600, color: '#1E40AF', marginBottom: '6px' }}>TechStart Solutions</h3>
+                <p style={{ color: '#6b7280', fontSize: 'clamp(12px, 3vw, 16px)' }}>Technology Consulting</p>
               </div>
-              <div style={{ background: 'white', borderRadius: '16px', padding: '32px', boxShadow: '0 4px 16px rgba(30, 64, 175, 0.07)', textAlign: 'center' }}>
-                <div style={{ fontSize: '2rem', marginBottom: '8px' }}>🚚</div>
-                <h3 style={{ fontSize: '1.2rem', fontWeight: 600, color: '#1E40AF', marginBottom: '6px' }}>Global Logistics Corp</h3>
-                <p style={{ color: '#6b7280', fontSize: '1rem' }}>Supply Chain Management</p>
+              <div style={{ background: 'white', borderRadius: 'clamp(12px, 3vw, 16px)', padding: 'clamp(20px, 5vw, 32px)', boxShadow: '0 4px 16px rgba(30, 64, 175, 0.07)', textAlign: 'center' }}>
+                <div style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', marginBottom: '8px' }}>🚚</div>
+                <h3 style={{ fontSize: 'clamp(14px, 3.5vw, 18px)', fontWeight: 600, color: '#1E40AF', marginBottom: '6px' }}>Global Logistics Corp</h3>
+                <p style={{ color: '#6b7280', fontSize: 'clamp(12px, 3vw, 16px)' }}>Supply Chain Management</p>
               </div>
             </div>
           </div>
         </section>
 
         {/* Our Founder Section */}
-        <section style={{ padding: '80px 24px', background: 'white' }}>
+        <section style={{ padding: 'clamp(40px, 10vw, 80px) clamp(16px, 4vw, 24px)', background: 'white' }}>
           <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-            <h2 style={{ fontSize: '2.5rem', fontWeight: 700, textAlign: 'center', marginBottom: '48px', color: '#1E40AF' }}>
+            <h2 style={{ fontSize: 'clamp(1.8rem, 5vw, 2.5rem)', fontWeight: 700, textAlign: 'center', marginBottom: 'clamp(24px, 6vw, 48px)', color: '#1E40AF' }}>
               Our Founder
             </h2>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '60px', alignItems: 'center' }}>
+            <div style={{ 
+              display: 'grid', 
+              gridTemplateColumns: 'repeat(auto-fit, minmax(min(350px, 100%), 1fr))', 
+              gap: 'clamp(30px, 8vw, 60px)', 
+              alignItems: 'center' 
+            }}>
               <div style={{ order: 2 }}>
                 <div style={{ 
                   width: '100%', 
                   maxWidth: '400px',
                   margin: '0 auto',
                   background: 'linear-gradient(135deg, #40E0D0 0%, #1E40AF 100%)', 
-                  borderRadius: '24px',
-                  padding: '40px',
+                  borderRadius: 'clamp(16px, 4vw, 24px)',
+                  padding: 'clamp(24px, 6vw, 40px)',
                   textAlign: 'center',
                   color: 'white',
                   boxShadow: '0 20px 40px rgba(30, 64, 175, 0.15)'
                 }}>
-                  <div style={{ fontSize: '4rem', marginBottom: '20px' }}>👨‍💼</div>
-                  <h3 style={{ fontSize: '1.8rem', fontWeight: 700, marginBottom: '8px' }}>Abhay Pal Chauhan</h3>
-                  <p style={{ fontSize: '1.1rem', opacity: 0.9, marginBottom: '16px' }}>
+                  <div style={{ fontSize: 'clamp(2.5rem, 8vw, 4rem)', marginBottom: 'clamp(12px, 3vw, 20px)' }}>👨‍💼</div>
+                  <h3 style={{ fontSize: 'clamp(1.3rem, 4vw, 1.8rem)', fontWeight: 700, marginBottom: '8px' }}>Abhay Pal Chauhan</h3>
+                  <p style={{ fontSize: 'clamp(14px, 3.5vw, 18px)', opacity: 0.9, marginBottom: '16px' }}>
                     Founder & Principal Consultant
                   </p>
-                  <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', justifyContent: 'center' }}>
-                    <div style={{ background: 'rgba(255, 255, 255, 0.2)', padding: '8px 16px', borderRadius: '20px', fontSize: '12px', fontWeight: '600' }}>
+                  <div style={{ display: 'flex', gap: 'clamp(8px, 2vw, 12px)', flexWrap: 'wrap', justifyContent: 'center' }}>
+                    <div style={{ background: 'rgba(255, 255, 255, 0.2)', padding: 'clamp(6px, 2vw, 8px) clamp(12px, 3vw, 16px)', borderRadius: 'clamp(16px, 4vw, 20px)', fontSize: 'clamp(10px, 2.5vw, 12px)', fontWeight: '600' }}>
                       18+ Years Experience
                     </div>
-                    <div style={{ background: 'rgba(255, 255, 255, 0.2)', padding: '8px 16px', borderRadius: '20px', fontSize: '12px', fontWeight: '600' }}>
+                    <div style={{ background: 'rgba(255, 255, 255, 0.2)', padding: 'clamp(6px, 2vw, 8px) clamp(12px, 3vw, 16px)', borderRadius: 'clamp(16px, 4vw, 20px)', fontSize: 'clamp(10px, 2.5vw, 12px)', fontWeight: '600' }}>
                       Cybersecurity Expert
                     </div>
-                    <div style={{ background: 'rgba(255, 255, 255, 0.2)', padding: '8px 16px', borderRadius: '20px', fontSize: '12px', fontWeight: '600' }}>
+                    <div style={{ background: 'rgba(255, 255, 255, 0.2)', padding: 'clamp(6px, 2vw, 8px) clamp(12px, 3vw, 16px)', borderRadius: 'clamp(16px, 4vw, 20px)', fontSize: 'clamp(10px, 2.5vw, 12px)', fontWeight: '600' }}>
                       Six Sigma Black Belt
                     </div>
                   </div>
                 </div>
               </div>
               <div style={{ order: 1 }}>
-                <p style={{ color: '#6b7280', fontSize: '1.2rem', lineHeight: '1.8', marginBottom: '24px' }}>
+                <p style={{ color: '#6b7280', fontSize: 'clamp(16px, 4vw, 19px)', lineHeight: '1.8', marginBottom: 'clamp(16px, 4vw, 24px)' }}>
                   Our Founder leverages over <strong style={{ color: '#1E40AF' }}>18 years of expertise</strong> in cybersecurity and process automation and optimization, backed by top certifications in Cybersecurity and <strong style={{ color: '#1E40AF' }}>Black Belt in Lean Six Sigma</strong>.
                 </p>
-                <p style={{ color: '#6b7280', fontSize: '1.2rem', lineHeight: '1.8', marginBottom: '32px' }}>
+                <p style={{ color: '#6b7280', fontSize: 'clamp(16px, 4vw, 19px)', lineHeight: '1.8', marginBottom: 'clamp(20px, 5vw, 32px)' }}>
                   His unique blend of technical knowledge and operational excellence ensures <strong style={{ color: '#1E40AF' }}>tailored, secure, and efficient solutions</strong> for our clients, driving business resilience and maximizing value in every engagement.
                 </p>
-                <div style={{ background: 'linear-gradient(135deg, #f6f8ff 0%, #e8f0fe 100%)', padding: '24px', borderRadius: '16px', borderLeft: '4px solid #1E40AF' }}>
-                  <p style={{ color: '#1E40AF', fontSize: '1.1rem', fontWeight: '600', fontStyle: 'italic' }}>
+                <div style={{ background: 'linear-gradient(135deg, #f6f8ff 0%, #e8f0fe 100%)', padding: 'clamp(16px, 4vw, 24px)', borderRadius: 'clamp(12px, 3vw, 16px)', borderLeft: '4px solid #1E40AF' }}>
+                  <p style={{ color: '#1E40AF', fontSize: 'clamp(14px, 3.5vw, 18px)', fontWeight: '600', fontStyle: 'italic' }}>
                     "Delivering top-tier solutions that combine cutting-edge technology with proven operational methodologies to secure and optimize your business operations."
                   </p>
                 </div>
@@ -1651,15 +1655,20 @@ const HomePage: React.FC = () => {
         </section>
 
         {/* Contact Section - Modern Form */}
-        <section id="contact" style={{ padding: '80px 24px', background: 'linear-gradient(135deg, #f0f9ff 0%, #e0f7fa 100%)' }}>
+        <section id="contact" style={{ padding: 'clamp(40px, 10vw, 80px) clamp(16px, 4vw, 24px)', background: 'linear-gradient(135deg, #f0f9ff 0%, #e0f7fa 100%)' }}>
           <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-            <h2 style={{ fontSize: '2.5rem', fontWeight: 700, textAlign: 'center', marginBottom: '48px', color: '#1E40AF' }}>
+            <h2 style={{ fontSize: 'clamp(1.8rem, 5vw, 2.5rem)', fontWeight: 700, textAlign: 'center', marginBottom: 'clamp(24px, 6vw, 48px)', color: '#1E40AF' }}>
               Get In Touch
             </h2>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '60px', alignItems: 'start' }}>
+            <div style={{ 
+              display: 'grid', 
+              gridTemplateColumns: 'repeat(auto-fit, minmax(min(350px, 100%), 1fr))', 
+              gap: 'clamp(30px, 8vw, 60px)', 
+              alignItems: 'start' 
+            }}>
               {/* Contact Form */}
-              <form onSubmit={handleFormSubmit} style={{ background: 'white', borderRadius: '20px', padding: '40px', boxShadow: '0 8px 32px rgba(30, 64, 175, 0.08)' }}>
-                <h3 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#1E40AF', marginBottom: '24px' }}>Send us a Message</h3>
+              <form onSubmit={handleFormSubmit} style={{ background: 'white', borderRadius: 'clamp(16px, 4vw, 20px)', padding: 'clamp(24px, 6vw, 40px)', boxShadow: '0 8px 32px rgba(30, 64, 175, 0.08)' }}>
+                <h3 style={{ fontSize: 'clamp(1.2rem, 4vw, 1.5rem)', fontWeight: 700, color: '#1E40AF', marginBottom: 'clamp(16px, 4vw, 24px)' }}>Send us a Message</h3>
                 <div style={{ marginBottom: '24px' }}>
                   <label htmlFor="name" style={{ display: 'block', marginBottom: '8px', color: '#1E40AF', fontWeight: 600 }}>Full Name</label>
                   <input
@@ -1669,7 +1678,7 @@ const HomePage: React.FC = () => {
                     value={formData.name}
                     onChange={handleInputChange}
                     required
-                    style={{ width: '100%', padding: '14px', borderRadius: '12px', border: '2px solid #e5e7eb', fontSize: '1rem', transition: 'border-color 0.2s ease' }}
+                    style={{ width: '100%', padding: 'clamp(12px, 3vw, 14px)', borderRadius: 'clamp(8px, 2vw, 12px)', border: '2px solid #e5e7eb', fontSize: 'clamp(14px, 3.5vw, 16px)', transition: 'border-color 0.2s ease' }}
                   />
                 </div>
                 <div style={{ marginBottom: '24px' }}>
@@ -1681,7 +1690,7 @@ const HomePage: React.FC = () => {
                     value={formData.email}
                     onChange={handleInputChange}
                     required
-                    style={{ width: '100%', padding: '14px', borderRadius: '12px', border: '2px solid #e5e7eb', fontSize: '1rem', transition: 'border-color 0.2s ease' }}
+                    style={{ width: '100%', padding: 'clamp(12px, 3vw, 14px)', borderRadius: 'clamp(8px, 2vw, 12px)', border: '2px solid #e5e7eb', fontSize: 'clamp(14px, 3.5vw, 16px)', transition: 'border-color 0.2s ease' }}
                   />
                 </div>
                 <div style={{ marginBottom: '24px' }}>
@@ -1692,7 +1701,7 @@ const HomePage: React.FC = () => {
                     name="company"
                     value={formData.company}
                     onChange={handleInputChange}
-                    style={{ width: '100%', padding: '14px', borderRadius: '12px', border: '2px solid #e5e7eb', fontSize: '1rem', transition: 'border-color 0.2s ease' }}
+                    style={{ width: '100%', padding: 'clamp(12px, 3vw, 14px)', borderRadius: 'clamp(8px, 2vw, 12px)', border: '2px solid #e5e7eb', fontSize: 'clamp(14px, 3.5vw, 16px)', transition: 'border-color 0.2s ease' }}
                   />
                 </div>
                 <div style={{ marginBottom: '32px' }}>
@@ -1704,36 +1713,36 @@ const HomePage: React.FC = () => {
                     value={formData.message}
                     onChange={handleInputChange}
                     required
-                    style={{ width: '100%', padding: '14px', borderRadius: '12px', border: '2px solid #e5e7eb', fontSize: '1rem', resize: 'vertical', transition: 'border-color 0.2s ease' }}
+                    style={{ width: '100%', padding: 'clamp(12px, 3vw, 14px)', borderRadius: 'clamp(8px, 2vw, 12px)', border: '2px solid #e5e7eb', fontSize: 'clamp(14px, 3.5vw, 16px)', resize: 'vertical', transition: 'border-color 0.2s ease' }}
                   />
                 </div>
-                <button type="submit" style={{ width: '100%', background: 'linear-gradient(135deg, #40E0D0 0%, #1E40AF 100%)', color: 'white', padding: '16px', borderRadius: '12px', fontWeight: 600, fontSize: '1.1rem', border: 'none', cursor: 'pointer', boxShadow: '0 4px 16px rgba(30, 64, 175, 0.20)', transition: 'all 0.2s ease' }}>
+                <button type="submit" style={{ width: '100%', background: 'linear-gradient(135deg, #40E0D0 0%, #1E40AF 100%)', color: 'white', padding: 'clamp(14px, 4vw, 16px)', borderRadius: 'clamp(8px, 2vw, 12px)', fontWeight: 600, fontSize: 'clamp(14px, 3.5vw, 18px)', border: 'none', cursor: 'pointer', boxShadow: '0 4px 16px rgba(30, 64, 175, 0.20)', transition: 'all 0.2s ease', minHeight: '48px' }}>
                   Send Message
                 </button>
               </form>
 
               {/* Contact Information */}
-              <div style={{ background: 'white', borderRadius: '20px', padding: '40px', boxShadow: '0 8px 32px rgba(30, 64, 175, 0.08)' }}>
-                <h3 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#1E40AF', marginBottom: '24px' }}>Contact Information</h3>
+              <div style={{ background: 'white', borderRadius: 'clamp(16px, 4vw, 20px)', padding: 'clamp(24px, 6vw, 40px)', boxShadow: '0 8px 32px rgba(30, 64, 175, 0.08)' }}>
+                <h3 style={{ fontSize: 'clamp(1.2rem, 4vw, 1.5rem)', fontWeight: 700, color: '#1E40AF', marginBottom: 'clamp(16px, 4vw, 24px)' }}>Contact Information</h3>
                 
                 {/* Mailing Address */}
-                <div style={{ marginBottom: '32px', display: 'flex', alignItems: 'flex-start', gap: '16px' }}>
+                <div style={{ marginBottom: 'clamp(20px, 5vw, 32px)', display: 'flex', alignItems: 'flex-start', gap: 'clamp(12px, 3vw, 16px)' }}>
                   <div style={{ 
-                    width: '50px', 
-                    height: '50px', 
+                    width: 'clamp(40px, 10vw, 50px)', 
+                    height: 'clamp(40px, 10vw, 50px)', 
                     background: 'linear-gradient(135deg, #40E0D0 0%, #1E40AF 100%)', 
-                    borderRadius: '12px',
+                    borderRadius: 'clamp(8px, 2vw, 12px)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    fontSize: '20px',
+                    fontSize: 'clamp(16px, 4vw, 20px)',
                     flexShrink: 0
                   }}>
                     📍
                   </div>
                   <div>
-                    <h4 style={{ fontSize: '1.2rem', fontWeight: 600, color: '#1E40AF', marginBottom: '8px' }}>Mailing Address</h4>
-                    <p style={{ color: '#6b7280', lineHeight: '1.6' }}>
+                    <h4 style={{ fontSize: 'clamp(16px, 4vw, 19px)', fontWeight: 600, color: '#1E40AF', marginBottom: '8px' }}>Mailing Address</h4>
+                    <p style={{ color: '#6b7280', lineHeight: '1.6', fontSize: 'clamp(14px, 3.5vw, 16px)' }}>
                       Meydan Grandstand, 6th floor<br />
                       Meydan Road, Nad Al Sheba<br />
                       Dubai, U.A.E.
@@ -1742,23 +1751,23 @@ const HomePage: React.FC = () => {
                 </div>
 
                 {/* Email Address */}
-                <div style={{ marginBottom: '32px', display: 'flex', alignItems: 'flex-start', gap: '16px' }}>
+                <div style={{ marginBottom: 'clamp(20px, 5vw, 32px)', display: 'flex', alignItems: 'flex-start', gap: 'clamp(12px, 3vw, 16px)' }}>
                   <div style={{ 
-                    width: '50px', 
-                    height: '50px', 
+                    width: 'clamp(40px, 10vw, 50px)', 
+                    height: 'clamp(40px, 10vw, 50px)', 
                     background: 'linear-gradient(135deg, #40E0D0 0%, #1E40AF 100%)', 
-                    borderRadius: '12px',
+                    borderRadius: 'clamp(8px, 2vw, 12px)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    fontSize: '20px',
+                    fontSize: 'clamp(16px, 4vw, 20px)',
                     flexShrink: 0
                   }}>
                     ✉️
                   </div>
                   <div>
-                    <h4 style={{ fontSize: '1.2rem', fontWeight: 600, color: '#1E40AF', marginBottom: '8px' }}>Email Address</h4>
-                    <p style={{ color: '#6b7280', lineHeight: '1.6' }}>
+                    <h4 style={{ fontSize: 'clamp(16px, 4vw, 19px)', fontWeight: 600, color: '#1E40AF', marginBottom: '8px' }}>Email Address</h4>
+                    <p style={{ color: '#6b7280', lineHeight: '1.6', fontSize: 'clamp(14px, 3.5vw, 16px)' }}>
                       <a href="mailto:abhay@netcopconsultancy.com" style={{ color: '#6366f1', textDecoration: 'none' }}>
                         abhay@netcopconsultancy.com
                       </a>
@@ -1769,12 +1778,12 @@ const HomePage: React.FC = () => {
                 {/* Commitment Statement */}
                 <div style={{ 
                   background: 'linear-gradient(135deg, #f6f8ff 0%, #e8f0fe 100%)', 
-                  padding: '24px', 
-                  borderRadius: '16px',
+                  padding: 'clamp(16px, 4vw, 24px)', 
+                  borderRadius: 'clamp(12px, 3vw, 16px)',
                   borderLeft: '4px solid #1E40AF',
-                  marginTop: '32px'
+                  marginTop: 'clamp(20px, 5vw, 32px)'
                 }}>
-                  <p style={{ color: '#1E40AF', fontSize: '1.1rem', fontWeight: 600, textAlign: 'center' }}>
+                  <p style={{ color: '#1E40AF', fontSize: 'clamp(14px, 3.5vw, 18px)', fontWeight: 600, textAlign: 'center' }}>
                     We are committed to deliver top-tier AI & Cybersecurity solutions for businesses of all sizes.
                   </p>
                 </div>

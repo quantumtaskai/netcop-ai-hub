@@ -69,10 +69,11 @@ export default function AuthModal({ isOpen, onClose, mode, setAuthMode }: AuthMo
     }}>
       <div style={{
         background: 'white',
-        borderRadius: '20px',
-        padding: '40px',
+        borderRadius: 'clamp(12px, 4vw, 20px)',
+        padding: 'clamp(20px, 6vw, 40px)',
         width: '100%',
         maxWidth: '400px',
+        margin: 'clamp(16px, 4vw, 0px)',
         boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)',
         position: 'relative'
       }}>
@@ -94,14 +95,14 @@ export default function AuthModal({ isOpen, onClose, mode, setAuthMode }: AuthMo
 
         <div style={{ textAlign: 'center', marginBottom: '32px' }}>
           <h2 style={{
-            fontSize: '28px',
+            fontSize: 'clamp(20px, 6vw, 28px)',
             fontWeight: 'bold',
             color: '#1f2937',
             marginBottom: '8px'
           }}>
             {mode === 'register' ? 'Create Account' : mode === 'reset' ? 'Reset Password' : 'Welcome Back'}
           </h2>
-          <p style={{ color: '#6b7280' }}>
+          <p style={{ color: '#6b7280', fontSize: 'clamp(14px, 3.5vw, 16px)' }}>
             {mode === 'register' 
               ? 'Join AgentHub and get 1,000 free credits!' 
               : mode === 'reset'
@@ -161,11 +162,12 @@ export default function AuthModal({ isOpen, onClose, mode, setAuthMode }: AuthMo
                   required
                   style={{
                     width: '100%',
-                    padding: '12px 16px',
+                    padding: 'clamp(10px, 3vw, 12px) clamp(12px, 4vw, 16px)',
                     border: '2px solid #e5e7eb',
-                    borderRadius: '12px',
-                    fontSize: '16px',
-                    transition: 'border-color 0.2s'
+                    borderRadius: 'clamp(8px, 2vw, 12px)',
+                    fontSize: 'clamp(14px, 4vw, 16px)',
+                    transition: 'border-color 0.2s',
+                    minHeight: '44px'
                   }}
                   placeholder="Enter your full name"
                 />
@@ -215,11 +217,12 @@ export default function AuthModal({ isOpen, onClose, mode, setAuthMode }: AuthMo
                   required
                   style={{
                     width: '100%',
-                    padding: '12px 16px',
+                    padding: 'clamp(10px, 3vw, 12px) clamp(12px, 4vw, 16px)',
                     border: '2px solid #e5e7eb',
-                    borderRadius: '12px',
-                    fontSize: '16px',
-                    transition: 'border-color 0.2s'
+                    borderRadius: 'clamp(8px, 2vw, 12px)',
+                    fontSize: 'clamp(14px, 4vw, 16px)',
+                    transition: 'border-color 0.2s',
+                    minHeight: '44px'
                   }}
                   placeholder="Enter your password"
                 />
@@ -266,14 +269,15 @@ export default function AuthModal({ isOpen, onClose, mode, setAuthMode }: AuthMo
               style={{
                 background: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)',
                 color: 'white',
-                padding: '14px 24px',
-                borderRadius: '12px',
-                fontSize: '16px',
+                padding: 'clamp(12px, 3vw, 14px) clamp(20px, 5vw, 24px)',
+                borderRadius: 'clamp(8px, 2vw, 12px)',
+                fontSize: 'clamp(14px, 4vw, 16px)',
                 fontWeight: '600',
                 border: 'none',
                 cursor: isLoading ? 'not-allowed' : 'pointer',
                 opacity: isLoading ? 0.7 : 1,
-                transition: 'transform 0.2s'
+                transition: 'transform 0.2s',
+                minHeight: '48px'
               }}
               onMouseEnter={(e) => !isLoading && ((e.target as HTMLElement).style.transform = 'scale(1.02)')}
               onMouseLeave={(e) => !isLoading && ((e.target as HTMLElement).style.transform = 'scale(1)')}

@@ -189,8 +189,8 @@ function WeatherReporterForm() {
       
       <div style={{
         display: 'grid',
-        gridTemplateColumns: '1fr 400px',
-        gap: '24px',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(min(350px, 100%), 1fr))',
+        gap: 'clamp(16px, 4vw, 24px)',
         alignItems: 'start'
       }}>
         {/* Main Content */}
@@ -198,18 +198,18 @@ function WeatherReporterForm() {
           {/* Location Input Section */}
           <div style={{
             background: 'rgba(255, 255, 255, 0.9)',
-            borderRadius: '16px',
-            padding: '24px',
+            borderRadius: 'clamp(12px, 3vw, 16px)',
+            padding: 'clamp(16px, 4vw, 24px)',
             border: '1px solid rgba(255, 255, 255, 0.3)',
             backdropFilter: 'blur(20px)',
             boxShadow: '0 8px 25px rgba(0, 0, 0, 0.1)',
-            marginBottom: '24px'
+            marginBottom: 'clamp(16px, 4vw, 24px)'
           }}>
             <h3 style={{
-              fontSize: '18px',
+              fontSize: 'clamp(16px, 4vw, 18px)',
               fontWeight: '600',
               color: '#1f2937',
-              marginBottom: '16px'
+              marginBottom: 'clamp(12px, 3vw, 16px)'
             }}>
               📍 Enter Location
             </h3>
@@ -221,12 +221,13 @@ function WeatherReporterForm() {
               placeholder="Enter city name, address, or coordinates..."
               style={{
                 width: '100%',
-                padding: '16px 20px',
+                padding: 'clamp(12px, 3vw, 16px) clamp(16px, 4vw, 20px)',
                 border: '2px solid #e5e7eb',
-                borderRadius: '12px',
-                fontSize: '16px',
-                marginBottom: '16px',
-                transition: 'border-color 0.2s ease'
+                borderRadius: 'clamp(8px, 2vw, 12px)',
+                fontSize: 'clamp(14px, 3.5vw, 16px)',
+                marginBottom: 'clamp(12px, 3vw, 16px)',
+                transition: 'border-color 0.2s ease',
+                minHeight: '48px'
               }}
               onKeyPress={(e) => {
                 if (e.key === 'Enter') {
@@ -237,7 +238,7 @@ function WeatherReporterForm() {
               onBlur={(e) => (e.target as HTMLElement).style.borderColor = '#e5e7eb'}
             />
 
-            <div style={{ fontSize: '14px', color: '#6b7280' }}>
+            <div style={{ fontSize: 'clamp(12px, 3vw, 14px)', color: '#6b7280' }}>
               Examples: "New York", "London, UK", "Tokyo, Japan", "37.7749,-122.4194"
             </div>
           </div>
@@ -245,26 +246,26 @@ function WeatherReporterForm() {
           {/* Report Type Selection */}
           <div style={{
             background: 'rgba(255, 255, 255, 0.9)',
-            borderRadius: '16px',
-            padding: '24px',
+            borderRadius: 'clamp(12px, 3vw, 16px)',
+            padding: 'clamp(16px, 4vw, 24px)',
             border: '1px solid rgba(255, 255, 255, 0.3)',
             backdropFilter: 'blur(20px)',
             boxShadow: '0 8px 25px rgba(0, 0, 0, 0.1)',
-            marginBottom: '24px'
+            marginBottom: 'clamp(16px, 4vw, 24px)'
           }}>
             <h3 style={{
-              fontSize: '18px',
+              fontSize: 'clamp(16px, 4vw, 18px)',
               fontWeight: '600',
               color: '#1f2937',
-              marginBottom: '16px'
+              marginBottom: 'clamp(12px, 3vw, 16px)'
             }}>
               📊 Report Type
             </h3>
             
             <div style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-              gap: '12px'
+              gridTemplateColumns: 'repeat(auto-fit, minmax(min(180px, 100%), 1fr))',
+              gap: 'clamp(8px, 2vw, 12px)'
             }}>
               {[
                 { id: 'current', label: 'Current Weather', desc: 'Real-time conditions', icon: '🌡️' },
@@ -276,13 +277,14 @@ function WeatherReporterForm() {
                   style={{
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '12px',
-                    padding: '16px',
+                    gap: 'clamp(8px, 2vw, 12px)',
+                    padding: 'clamp(12px, 3vw, 16px)',
                     border: `2px solid ${reportType === option.id ? '#3b82f6' : '#e5e7eb'}`,
-                    borderRadius: '12px',
+                    borderRadius: 'clamp(8px, 2vw, 12px)',
                     cursor: 'pointer',
                     background: reportType === option.id ? '#eff6ff' : 'white',
-                    transition: 'all 0.2s ease'
+                    transition: 'all 0.2s ease',
+                    minHeight: '44px'
                   }}
                 >
                   <input
@@ -293,12 +295,12 @@ function WeatherReporterForm() {
                     onChange={(e) => setReportType(e.target.value)}
                     style={{ margin: 0 }}
                   />
-                  <div style={{ fontSize: '20px' }}>{option.icon}</div>
+                  <div style={{ fontSize: 'clamp(16px, 4vw, 20px)' }}>{option.icon}</div>
                   <div>
-                    <div style={{ fontWeight: '600', marginBottom: '4px' }}>
+                    <div style={{ fontWeight: '600', marginBottom: 'clamp(2px, 1vw, 4px)', fontSize: 'clamp(14px, 3.5vw, 16px)' }}>
                       {option.label}
                     </div>
-                    <div style={{ fontSize: '14px', color: '#6b7280' }}>
+                    <div style={{ fontSize: 'clamp(12px, 3vw, 14px)', color: '#6b7280' }}>
                       {option.desc}
                     </div>
                   </div>

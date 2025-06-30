@@ -235,40 +235,43 @@ function HomePageContent() {
       {/* Old navigation removed - now using shared Header component */}
 
       {/* Hero Section */}
-      <section style={{ position: 'relative', padding: 'clamp(24px, 6vw, 32px) clamp(16px, 4vw, 24px) clamp(48px, 12vw, 64px)', overflow: 'hidden' }}>
-        <div style={{ maxWidth: '1280px', margin: '0 auto', textAlign: 'center', position: 'relative' }}>
-          {/* Floating Elements */}
+      <section style={{ position: 'relative', padding: 'clamp(40px, 10vw, 80px) clamp(16px, 4vw, 24px) clamp(60px, 15vw, 100px)', overflow: 'hidden' }}>
+        <div style={{ maxWidth: '1280px', margin: '0 auto', textAlign: 'center', position: 'relative', padding: '0 clamp(8px, 2vw, 16px)' }}>
+          {/* Floating Elements - Responsive */}
           <div style={{
             position: 'absolute',
-            top: '40px',
-            left: '80px',
-            width: '80px',
-            height: '80px',
+            top: 'clamp(20px, 5vw, 40px)',
+            left: 'clamp(5%, 10%, 15%)',
+            width: 'clamp(40px, 10vw, 80px)',
+            height: 'clamp(40px, 10vw, 80px)',
             background: 'rgba(147, 51, 234, 0.3)',
             borderRadius: '50%',
-            animation: 'float 6s ease-in-out infinite'
+            animation: 'float 6s ease-in-out infinite',
+            display: window.innerWidth > 480 ? 'block' : 'none'
           }}></div>
           <div style={{
             position: 'absolute',
-            top: '80px',
-            right: '128px',
-            width: '64px',
-            height: '64px',
+            top: 'clamp(40px, 8vw, 80px)',
+            right: 'clamp(5%, 15%, 20%)',
+            width: 'clamp(32px, 8vw, 64px)',
+            height: 'clamp(32px, 8vw, 64px)',
             background: 'rgba(59, 130, 246, 0.3)',
             borderRadius: '50%',
             animation: 'float 6s ease-in-out infinite',
-            animationDelay: '2s'
+            animationDelay: '2s',
+            display: window.innerWidth > 480 ? 'block' : 'none'
           }}></div>
           <div style={{
             position: 'absolute',
-            bottom: '80px',
-            left: '33%',
-            width: '48px',
-            height: '48px',
+            bottom: 'clamp(40px, 10vw, 80px)',
+            left: 'clamp(20%, 30%, 40%)',
+            width: 'clamp(24px, 6vw, 48px)',
+            height: 'clamp(24px, 6vw, 48px)',
             background: 'rgba(236, 72, 153, 0.3)',
             borderRadius: '50%',
             animation: 'float 6s ease-in-out infinite',
-            animationDelay: '4s'
+            animationDelay: '4s',
+            display: window.innerWidth > 480 ? 'block' : 'none'
           }}></div>
 
           <h1 style={{
@@ -289,7 +292,7 @@ function HomePageContent() {
           </h1>
 
           {/* Search */}
-          <div style={{ maxWidth: '512px', margin: '0 auto clamp(48px, 12vw, 64px) auto', padding: '0 clamp(8px, 2vw, 16px)' }}>
+          <div style={{ maxWidth: '512px', margin: '0 auto clamp(32px, 8vw, 64px) auto', padding: '0 clamp(8px, 2vw, 16px)' }}>
             <div style={{ position: 'relative' }}>
               <input
                 type="text"
@@ -298,24 +301,25 @@ function HomePageContent() {
                 onChange={(e) => setSearchTerm(e.target.value)}
                 style={{
                   width: '100%',
-                  padding: 'clamp(16px, 4vw, 20px) clamp(24px, 6vw, 32px)',
-                  borderRadius: '24px',
-                  fontSize: 'clamp(16px, 4vw, 18px)',
+                  padding: 'clamp(14px, 4vw, 20px) clamp(20px, 5vw, 32px)',
+                  borderRadius: 'clamp(16px, 4vw, 24px)',
+                  fontSize: 'clamp(14px, 3.5vw, 18px)',
                   border: 'none',
                   outline: 'none',
                   backdropFilter: 'blur(20px)',
                   background: 'rgba(255, 255, 255, 0.8)',
                   boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1)',
-                  color: '#000000'
+                  color: '#000000',
+                  minHeight: '48px'
                 }}
               />
               <svg style={{
                 position: 'absolute',
-                right: '24px',
+                right: 'clamp(16px, 4vw, 24px)',
                 top: '50%',
                 transform: 'translateY(-50%)',
-                width: '24px',
-                height: '24px',
+                width: 'clamp(20px, 5vw, 24px)',
+                height: 'clamp(20px, 5vw, 24px)',
                 color: '#9ca3af'
               }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
@@ -328,16 +332,17 @@ function HomePageContent() {
             display: 'flex',
             flexWrap: 'wrap',
             justifyContent: 'center',
-            gap: '16px',
-            marginBottom: '64px'
+            gap: 'clamp(8px, 2vw, 16px)',
+            marginBottom: 'clamp(32px, 8vw, 64px)',
+            padding: '0 clamp(8px, 2vw, 16px)'
           }}>
             {CATEGORIES.map(category => (
               <button
                 key={category.id}
                 onClick={() => setSelectedCategory(category.id)}
                 style={{
-                  padding: '12px 24px',
-                  borderRadius: '16px',
+                  padding: 'clamp(10px, 3vw, 12px) clamp(16px, 4vw, 24px)',
+                  borderRadius: 'clamp(12px, 3vw, 16px)',
                   fontWeight: '600',
                   border: 'none',
                   cursor: 'pointer',
@@ -347,7 +352,12 @@ function HomePageContent() {
                   background: selectedCategory === category.id
                     ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
                     : 'rgba(255, 255, 255, 0.7)',
-                  color: selectedCategory === category.id ? 'white' : '#374151'
+                  color: selectedCategory === category.id ? 'white' : '#374151',
+                  fontSize: 'clamp(12px, 3vw, 14px)',
+                  minHeight: '44px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
                 }}
               >
                 <span style={{ marginRight: '8px' }}>{category.emoji}</span>
@@ -359,23 +369,23 @@ function HomePageContent() {
       </section>
 
       {/* Assistants Grid Section */}
-      <section style={{ padding: 'clamp(0px, 0vw, 0px) clamp(16px, 4vw, 24px) clamp(32px, 8vw, 48px)' }}>
+      <section style={{ padding: 'clamp(0px, 0vw, 0px) clamp(16px, 4vw, 24px) clamp(40px, 10vw, 80px)' }}>
         <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
 
           {/* Assistants Grid */}
           {isLoading ? (
             <div style={{
               textAlign: 'center',
-              padding: '60px 20px',
+              padding: 'clamp(40px, 10vw, 60px) clamp(16px, 4vw, 20px)',
               color: '#6b7280'
             }}>
               <div style={{
-                fontSize: '48px',
-                marginBottom: '16px'
+                fontSize: 'clamp(32px, 8vw, 48px)',
+                marginBottom: 'clamp(12px, 3vw, 16px)'
               }}>
                 ⏳
               </div>
-              <p>Loading AI assistants...</p>
+              <p style={{ fontSize: 'clamp(14px, 3.5vw, 16px)' }}>Loading AI assistants...</p>
             </div>
           ) : (
             <div style={{
@@ -390,7 +400,7 @@ function HomePageContent() {
                   title=""
                   style={{
                     borderRadius: 'clamp(16px, 3vw, 24px)',
-                    padding: 'clamp(20px, 5vw, 32px)',
+                    padding: 'clamp(16px, 4vw, 32px)',
                     backdropFilter: 'blur(30px)',
                     background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7))',
                     border: '1px solid rgba(255, 255, 255, 0.3)',
@@ -399,7 +409,7 @@ function HomePageContent() {
                     cursor: 'pointer',
                     display: 'flex',
                     flexDirection: 'column',
-                    minHeight: '300px'
+                    minHeight: 'clamp(280px, 60vw, 320px)'
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.transform = 'translateY(-16px) scale(1.02)'
@@ -414,8 +424,8 @@ function HomePageContent() {
                   <div style={{
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '16px',
-                    marginBottom: '20px'
+                    gap: 'clamp(12px, 3vw, 16px)',
+                    marginBottom: 'clamp(16px, 4vw, 20px)'
                   }}>
                     <div 
                       title=""
@@ -437,7 +447,7 @@ function HomePageContent() {
                       <h3 
                         title=""
                         style={{
-                          fontSize: 'clamp(16px, 4vw, 18px)',
+                          fontSize: 'clamp(14px, 3.5vw, 18px)',
                           fontWeight: 'bold',
                           color: '#1f2937',
                           marginBottom: '4px',
@@ -453,10 +463,10 @@ function HomePageContent() {
                       <div style={{
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '8px'
+                        gap: 'clamp(6px, 1.5vw, 8px)'
                       }}>
-                        <span title="" style={{ color: '#fbbf24' }}>⭐</span>
-                        <span title="" style={{ color: '#6b7280', fontSize: 'clamp(12px, 3vw, 14px)' }}>
+                        <span title="" style={{ color: '#fbbf24', fontSize: 'clamp(12px, 3vw, 14px)' }}>⭐</span>
+                        <span title="" style={{ color: '#6b7280', fontSize: 'clamp(10px, 2.5vw, 14px)' }}>
                           {agent.rating} ({agent.reviews.toLocaleString()} reviews)
                         </span>
                       </div>
@@ -469,8 +479,8 @@ function HomePageContent() {
                     style={{
                       color: '#6b7280',
                       lineHeight: '1.5',
-                      marginBottom: 'clamp(16px, 4vw, 24px)',
-                      fontSize: 'clamp(13px, 3.5vw, 14px)',
+                      marginBottom: 'clamp(12px, 3vw, 24px)',
+                      fontSize: 'clamp(12px, 3vw, 14px)',
                       flex: 1,
                       wordWrap: 'break-word',
                       overflow: 'hidden',
@@ -486,15 +496,17 @@ function HomePageContent() {
                   <div style={{
                     display: 'flex',
                     alignItems: 'center',
-                    justifyContent: 'space-between'
+                    justifyContent: 'space-between',
+                    gap: 'clamp(8px, 2vw, 12px)',
+                    flexWrap: 'wrap'
                   }}>
                     <div style={{
                       display: 'flex',
                       alignItems: 'center',
-                      gap: '8px'
+                      gap: 'clamp(6px, 1.5vw, 8px)'
                     }}>
-                      <span title="" style={{ color: '#10b981', fontWeight: 'bold' }}>✨</span>
-                      <span title="" style={{ color: '#1f2937', fontWeight: '600', fontSize: 'clamp(13px, 3.5vw, 14px)' }}>
+                      <span title="" style={{ color: '#10b981', fontWeight: 'bold', fontSize: 'clamp(12px, 3vw, 14px)' }}>✨</span>
+                      <span title="" style={{ color: '#1f2937', fontWeight: '600', fontSize: 'clamp(12px, 3vw, 14px)' }}>
                         {agent.cost} credits
                       </span>
                     </div>
@@ -506,15 +518,18 @@ function HomePageContent() {
                           ? '#9ca3af'
                           : 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)',
                         color: 'white',
-                        padding: 'clamp(10px, 3vw, 12px) clamp(16px, 4vw, 24px)',
+                        padding: 'clamp(10px, 3vw, 12px) clamp(14px, 3.5vw, 24px)',
                         borderRadius: 'clamp(8px, 2vw, 12px)',
                         border: 'none',
                         fontWeight: '600',
-                        fontSize: 'clamp(13px, 3.5vw, 14px)',
+                        fontSize: 'clamp(11px, 3vw, 14px)',
                         minHeight: '44px',
+                        minWidth: 'clamp(80px, 20vw, 100px)',
                         cursor: isProcessing === agent.id ? 'not-allowed' : 'pointer',
                         transition: 'all 0.2s ease',
-                        opacity: isProcessing === agent.id ? 0.7 : 1
+                        opacity: isProcessing === agent.id ? 0.7 : 1,
+                        textAlign: 'center' as const,
+                        whiteSpace: 'nowrap' as const
                       }}
                       onMouseEnter={(e) => {
                         if (isProcessing !== agent.id) {
@@ -538,16 +553,16 @@ function HomePageContent() {
           {!isLoading && filteredAgents.length === 0 && (
             <div style={{
               textAlign: 'center',
-              padding: '60px 20px',
+              padding: 'clamp(40px, 10vw, 60px) clamp(16px, 4vw, 20px)',
               color: '#6b7280'
             }}>
               <div style={{
-                fontSize: '48px',
-                marginBottom: '16px'
+                fontSize: 'clamp(32px, 8vw, 48px)',
+                marginBottom: 'clamp(12px, 3vw, 16px)'
               }}>
                 🔍
               </div>
-              <p>No assistants found matching your criteria.</p>
+              <p style={{ fontSize: 'clamp(14px, 3.5vw, 16px)' }}>No assistants found matching your criteria.</p>
             </div>
           )}
         </div>
@@ -798,6 +813,36 @@ function HomePageContent() {
           50% { 
             opacity: 0.8;
             transform: scale(1.02);
+          }
+        }
+        
+        /* Mobile-specific optimizations */
+        @media (max-width: 768px) {
+          /* Hide floating elements on mobile */
+          div[style*="animation: float"] {
+            display: none !important;
+          }
+          
+          /* Ensure buttons have proper touch targets */
+          button, a {
+            min-height: 44px !important;
+          }
+          
+          /* Improve text readability */
+          p, span {
+            word-break: break-word;
+          }
+          
+          /* Single column for all grids */
+          div[style*="grid-template-columns: repeat(auto-fit"] {
+            grid-template-columns: 1fr !important;
+          }
+        }
+        
+        @media (max-width: 480px) {
+          /* Extra small screens - hide more decorative elements */
+          div[style*="position: absolute"][style*="background: rgba"] {
+            display: none !important;
           }
         }
       `}</style>

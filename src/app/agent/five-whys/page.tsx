@@ -332,20 +332,21 @@ function FiveWhysChat() {
     <AgentLayout title={agentInfo.title} description={agentInfo.description} icon={agentInfo.icon} cost={cost}>
       <Toaster position="top-right" />
       
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 400px', gap: '24px', height: '70vh' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(350px, 100%), 1fr))', gap: 'clamp(16px, 4vw, 24px)', minHeight: 'clamp(60vh, 70vh, 80vh)' }}>
         {/* Chat Interface */}
         <div style={{
           display: 'flex',
           flexDirection: 'column',
           background: 'white',
-          borderRadius: '16px',
+          borderRadius: 'clamp(12px, 3vw, 16px)',
           border: '1px solid #e5e7eb',
           overflow: 'hidden',
-          boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+          boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+          minHeight: 'clamp(50vh, 60vh, 70vh)'
         }}>
           {/* Chat Header */}
           <div style={{
-            padding: '16px 20px',
+            padding: 'clamp(12px, 3vw, 16px) clamp(16px, 4vw, 20px)',
             borderBottom: '1px solid #e5e7eb',
             background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
             color: 'white'
@@ -381,10 +382,10 @@ function FiveWhysChat() {
                 {message.isHTML ? (
                   <div
                     style={{
-                      maxWidth: '75%',
-                      padding: '12px 16px',
-                      borderRadius: '12px',
-                      fontSize: '14px',
+                      maxWidth: 'clamp(85%, 75%, 70%)',
+                      padding: 'clamp(10px, 3vw, 12px) clamp(12px, 3vw, 16px)',
+                      borderRadius: 'clamp(8px, 2vw, 12px)',
+                      fontSize: 'clamp(12px, 3vw, 14px)',
                       lineHeight: '1.5',
                       ...(message.sender === 'user' 
                         ? {
@@ -403,10 +404,10 @@ function FiveWhysChat() {
                 ) : (
                   <div
                     style={{
-                      maxWidth: '75%',
-                      padding: '12px 16px',
-                      borderRadius: '12px',
-                      fontSize: '14px',
+                      maxWidth: 'clamp(85%, 75%, 70%)',
+                      padding: 'clamp(10px, 3vw, 12px) clamp(12px, 3vw, 16px)',
+                      borderRadius: 'clamp(8px, 2vw, 12px)',
+                      fontSize: 'clamp(12px, 3vw, 14px)',
                       lineHeight: '1.5',
                       ...(message.sender === 'user' 
                         ? {
@@ -430,12 +431,12 @@ function FiveWhysChat() {
             {isLoading && (
               <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
                 <div style={{
-                  padding: '12px 16px',
-                  borderRadius: '12px',
+                  padding: 'clamp(10px, 3vw, 12px) clamp(12px, 3vw, 16px)',
+                  borderRadius: 'clamp(8px, 2vw, 12px)',
                   background: '#f3f4f6',
                   color: '#374151',
                   border: '1px solid #e5e7eb',
-                  fontSize: '14px'
+                  fontSize: 'clamp(12px, 3vw, 14px)'
                 }}>
                   <span style={{ animation: 'pulse 1.5s infinite' }}>🤔 Thinking...</span>
                 </div>
@@ -445,11 +446,11 @@ function FiveWhysChat() {
 
           {/* Input Area */}
           <div style={{
-            padding: '16px 20px',
+            padding: 'clamp(12px, 3vw, 16px) clamp(16px, 4vw, 20px)',
             borderTop: '1px solid #e5e7eb',
             background: '#f9fafb'
           }}>
-            <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+            <div style={{ display: 'flex', gap: 'clamp(8px, 2vw, 12px)', alignItems: 'center' }}>
               <input
                 ref={inputRef}
                 type="text"
@@ -460,12 +461,13 @@ function FiveWhysChat() {
                 disabled={isLoading}
                 style={{
                   flex: 1,
-                  padding: '12px 16px',
-                  borderRadius: '8px',
+                  padding: 'clamp(10px, 3vw, 12px) clamp(12px, 3vw, 16px)',
+                  borderRadius: 'clamp(6px, 2vw, 8px)',
                   border: '1px solid #d1d5db',
-                  fontSize: '14px',
+                  fontSize: 'clamp(12px, 3vw, 14px)',
                   outline: 'none',
-                  transition: 'border-color 0.2s ease'
+                  transition: 'border-color 0.2s ease',
+                  minHeight: '44px'
                 }}
                 onFocus={(e) => e.target.style.borderColor = '#3b82f6'}
                 onBlur={(e) => e.target.style.borderColor = '#d1d5db'}
@@ -474,7 +476,7 @@ function FiveWhysChat() {
                 onClick={sendMessage}
                 disabled={isInputDisabled}
                 style={{
-                  padding: '12px 20px',
+                  padding: 'clamp(10px, 3vw, 12px) clamp(16px, 4vw, 20px)',
                   background: isInputDisabled ? '#9ca3af' : 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
                   color: 'white',
                   border: 'none',
@@ -848,6 +850,48 @@ function FiveWhysChat() {
           </div>
         </div>
       )}
+      {/* Mobile-specific styles for five-whys page */}
+      <style jsx global>{`
+        @media (max-width: 768px) {
+          /* Chat interface mobile optimizations */
+          div[style*="minHeight: 'clamp(50vh, 60vh, 70vh)"] {
+            min-height: 60vh !important;
+          }
+          
+          /* Better message wrapping on mobile */
+          div[style*="maxWidth: 'clamp(85%, 75%, 70%)"] {
+            max-width: 90% !important;
+          }
+          
+          /* Stack action buttons vertically on small screens */
+          div[style*="flexWrap: 'wrap'"] {
+            flex-direction: column;
+          }
+          
+          /* Ensure proper touch targets for mobile */
+          button {
+            min-height: 44px !important;
+          }
+          
+          /* Better text readability on mobile */
+          h1, h2, h3, h4, p {
+            word-break: break-word;
+          }
+        }
+        
+        @media (max-width: 480px) {
+          /* Very small screens */
+          div[style*="padding: 'clamp"] {
+            padding: 12px !important;
+          }
+          
+          /* Single column layout on very small screens */
+          div[style*="display: 'flex'"][style*="flexWrap: 'wrap'"] {
+            flex-direction: column !important;
+            gap: 8px !important;
+          }
+        }
+      `}</style>
     </AgentLayout>
   )
 }

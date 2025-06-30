@@ -226,12 +226,13 @@ export default function ProfileModal({ isOpen, onClose, userId, position }: Prof
           }),
           background: isDropdown ? 'rgba(255, 255, 255, 0.95)' : 'white',
           backdropFilter: isDropdown ? 'blur(20px)' : 'none',
-          borderRadius: '12px',
+          borderRadius: 'clamp(8px, 3vw, 12px)',
           boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)',
           border: isDropdown ? '1px solid rgba(255, 255, 255, 0.3)' : 'none',
-          padding: '24px',
-          width: isDropdown ? '320px' : '100%',
-          maxWidth: isDropdown ? '320px' : '400px'
+          padding: 'clamp(16px, 5vw, 24px)',
+          width: isDropdown ? 'clamp(280px, 90vw, 320px)' : '100%',
+          maxWidth: isDropdown ? 'clamp(280px, 90vw, 320px)' : '400px',
+          margin: isDropdown ? '0' : 'clamp(16px, 4vw, 0px)'
         }}>
         <button
           style={{
@@ -250,9 +251,9 @@ export default function ProfileModal({ isOpen, onClose, userId, position }: Prof
           ×
         </button>
         <h2 style={{
-          fontSize: '20px',
+          fontSize: 'clamp(16px, 5vw, 20px)',
           fontWeight: 'bold',
-          marginBottom: '16px',
+          marginBottom: 'clamp(12px, 3vw, 16px)',
           color: '#1f2937'
         }}>
           Edit Profile
@@ -272,9 +273,10 @@ export default function ProfileModal({ isOpen, onClose, userId, position }: Prof
             style={{
               width: '100%',
               border: '1px solid #d1d5db',
-              borderRadius: '6px',
-              padding: '8px 12px',
-              fontSize: '14px'
+              borderRadius: 'clamp(4px, 1.5vw, 6px)',
+              padding: 'clamp(6px, 2vw, 8px) clamp(8px, 3vw, 12px)',
+              fontSize: 'clamp(12px, 3.5vw, 14px)',
+              minHeight: '40px'
             }}
             value={name}
             onChange={e => setName(e.target.value)}
@@ -296,9 +298,10 @@ export default function ProfileModal({ isOpen, onClose, userId, position }: Prof
             style={{
               width: '100%',
               border: '1px solid #d1d5db',
-              borderRadius: '6px',
-              padding: '8px 12px',
-              fontSize: '14px'
+              borderRadius: 'clamp(4px, 1.5vw, 6px)',
+              padding: 'clamp(6px, 2vw, 8px) clamp(8px, 3vw, 12px)',
+              fontSize: 'clamp(12px, 3.5vw, 14px)',
+              minHeight: '40px'
             }}
             value={email}
             onChange={e => {
@@ -334,14 +337,15 @@ export default function ProfileModal({ isOpen, onClose, userId, position }: Prof
         }}>
           <button
             style={{
-              padding: '8px 16px',
-              borderRadius: '6px',
+              padding: 'clamp(6px, 2vw, 8px) clamp(12px, 3vw, 16px)',
+              borderRadius: 'clamp(4px, 1.5vw, 6px)',
               background: '#ef4444',
               color: 'white',
               border: 'none',
               cursor: 'pointer',
-              fontSize: '14px',
-              transition: 'background 0.2s ease'
+              fontSize: 'clamp(12px, 3vw, 14px)',
+              transition: 'background 0.2s ease',
+              minHeight: '40px'
             }}
             onClick={handleLogout}
             disabled={loading}
@@ -354,12 +358,13 @@ export default function ProfileModal({ isOpen, onClose, userId, position }: Prof
           <div style={{ display: 'flex', gap: '8px' }}>
             <button
               style={{
-                padding: '8px 16px',
-                borderRadius: '6px',
+                padding: 'clamp(6px, 2vw, 8px) clamp(12px, 3vw, 16px)',
+                borderRadius: 'clamp(4px, 1.5vw, 6px)',
                 background: '#f3f4f6',
                 border: 'none',
                 cursor: 'pointer',
-                fontSize: '14px'
+                fontSize: 'clamp(12px, 3vw, 14px)',
+                minHeight: '40px'
               }}
               onClick={onClose}
               disabled={loading}
@@ -368,13 +373,14 @@ export default function ProfileModal({ isOpen, onClose, userId, position }: Prof
             </button>
             <button
               style={{
-                padding: '8px 16px',
-                borderRadius: '6px',
+                padding: 'clamp(6px, 2vw, 8px) clamp(12px, 3vw, 16px)',
+                borderRadius: 'clamp(4px, 1.5vw, 6px)',
                 background: '#3b82f6',
                 color: 'white',
                 border: 'none',
                 cursor: 'pointer',
-                fontSize: '14px'
+                fontSize: 'clamp(12px, 3vw, 14px)',
+                minHeight: '40px'
               }}
               onClick={handleSave}
               disabled={loading}
