@@ -32,7 +32,7 @@ const Footer: React.FC<FooterProps> = ({ onPrivacyModalOpen }) => {
                 src="/logo.png" 
                 alt="Netcop Consultancy Logo"
                 style={{
-                  height: '80px',
+                  height: '60px',
                   width: 'auto',
                   filter: 'brightness(0) invert(1)',
                   marginBottom: '16px'

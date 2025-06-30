@@ -13,7 +13,7 @@ import Header from '@/components/shared/Header'
 import Footer from '@/components/shared/Footer'
 import Link from 'next/link'
 
-// Working agents arranged first, with 5 Whys as #1
+// Working assistants arranged first, with 5 Whys as #1
 const AGENTS = [
   {
     id: 1,
@@ -106,7 +106,7 @@ const AGENTS = [
 ]
 
 const CATEGORIES = [
-  { id: 'all', name: 'All Agents', emoji: '🤖' },
+  { id: 'all', name: 'All Assistants', emoji: '🤖' },
   { id: 'customer-service', name: 'Customer Service', emoji: '💬' },
   { id: 'analytics', name: 'Analytics', emoji: '📊' },
   { id: 'content', name: 'Content', emoji: '📝' },
@@ -282,7 +282,7 @@ function HomePageContent() {
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent'
             }}>
-              AI Agents
+              AI Assistants
             </span>
             <br />
             <span style={{ color: '#1f2937' }}>Ready to Use</span>
@@ -293,7 +293,7 @@ function HomePageContent() {
             <div style={{ position: 'relative' }}>
               <input
                 type="text"
-                placeholder="Search AI agents..."
+                placeholder="Search AI assistants..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 style={{
@@ -358,11 +358,11 @@ function HomePageContent() {
         </div>
       </section>
 
-      {/* Agents Grid Section */}
+      {/* Assistants Grid Section */}
       <section style={{ padding: '0 24px 48px' }}>
         <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
 
-          {/* Agents Grid */}
+          {/* Assistants Grid */}
           {isLoading ? (
             <div style={{
               textAlign: 'center',
@@ -375,7 +375,7 @@ function HomePageContent() {
               }}>
                 ⏳
               </div>
-              <p>Loading AI agents...</p>
+              <p>Loading AI assistants...</p>
             </div>
           ) : (
             <div style={{
@@ -544,7 +544,7 @@ function HomePageContent() {
               }}>
                 🔍
               </div>
-              <p>No agents found matching your criteria.</p>
+              <p>No assistants found matching your criteria.</p>
             </div>
           )}
         </div>
@@ -694,7 +694,7 @@ function HomePageContent() {
                 </div>
               </div>
               <p style={{ color: '#9ca3af' }}>
-                The future of AI automation is here. Build, deploy, and scale AI agents for your business.
+                The future of AI automation is here. Build, deploy, and scale AI assistants for your business.
               </p>
             </div>
             

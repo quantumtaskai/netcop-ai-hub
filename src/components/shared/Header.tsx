@@ -60,7 +60,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage = 'home' }) => {
           position: 'sticky',
           top: 0,
           zIndex: 50,
-          padding: '20px 24px',
+          padding: '12px 24px',
           backdropFilter: 'blur(30px)',
           background: 'rgba(255, 255, 255, 0.95)',
           borderBottom: '1px solid rgba(255, 255, 255, 0.2)',
@@ -89,7 +89,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage = 'home' }) => {
                 src="/logo.png" 
                 alt="Netcop Consultancy Logo"
                 style={{
-                  height: '80px',
+                  height: '60px',
                   width: 'auto'
                 }}
               />
