@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { toast, Toaster } from 'react-hot-toast'
 import { useUserStore } from '@/store/userStore'
 import Header from '@/components/shared/Header'
+import AuthModal from '@/components/AuthModal'
 
 // Credit packages matching Stripe Payment Links configuration
 const CREDIT_PACKAGES = [
@@ -49,9 +50,11 @@ const CREDIT_PACKAGES = [
 function PricingForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const { user, refreshUser, purchaseCredits, updateCredits, initializeSession } = useUserStore()
+  const { user, refreshUser, purchaseCredits, initializeSession } = useUserStore()
   const [selectedPackage, setSelectedPackage] = useState<number | null>(null)
   const [isProcessing, setIsProcessing] = useState(false)
+  const [showAuthModal, setShowAuthModal] = useState(false)
+  const [authMode, setAuthMode] = useState<'login' | 'register' | 'reset'>('login')
 
   // Initialize session on component mount
   useEffect(() => {
@@ -84,16 +87,17 @@ function PricingForm() {
     }
   }, [searchParams, refreshUser, router])
 
-  // Redirect to login if not authenticated
-  useEffect(() => {
-    if (!user) {
-      router.push('/')
-    }
-  }, [user, router])
-
-  if (!user) return null
+  // Allow public access to pricing page - no redirect needed
 
   const handlePurchase = (packageData: any) => {
+    // Check if user is logged in before allowing purchase
+    if (!user) {
+      toast.error('Please sign in to purchase credits')
+      setShowAuthModal(true)
+      setAuthMode('login')
+      return
+    }
+
     setSelectedPackage(packageData.id)
     setIsProcessing(true)
 
@@ -114,82 +118,31 @@ function PricingForm() {
     }
   }
 
-  const handleTestCredits = async (credits: number) => {
-    try {
-      await updateCredits(credits)
-      toast.success(`${credits} test credits added!`)
-      refreshUser()
-    } catch (error) {
-      toast.error('Failed to add test credits')
-    }
-  }
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      background: 'linear-gradient(135deg, #f6f8ff 0%, #e8f0fe 50%, #f0f7ff 100%)'
-    }}>
-      <Toaster position="top-right" />
+    <>
+      <style jsx global>{`
+        body {
+          margin: 0;
+          padding: 0;
+        }
+      `}</style>
+      <div style={{
+        minHeight: '100vh',
+        margin: 0,
+        padding: 0,
+        background: 'linear-gradient(135deg, #f6f8ff 0%, #e8f0fe 50%, #f0f7ff 100%)'
+      }}>
+        <Toaster position="top-right" />
       
       {/* Shared Header */}
       <Header currentPage="pricing" />
-      
-      {/* Old header replaced */}
-      <div style={{ display: 'none' }} old-header={{
-        background: 'rgba(255, 255, 255, 0.9)',
-        backdropFilter: 'blur(10px)',
-        borderBottom: '1px solid rgba(0, 0, 0, 0.1)',
-        padding: '16px 0'
-      }}>
-        <div style={{
-          maxWidth: '1200px',
-          margin: '0 auto',
-          padding: '0 24px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between'
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-            <button
-              onClick={() => router.push('/')}
-              style={{
-                background: 'none',
-                border: 'none',
-                fontSize: '24px',
-                cursor: 'pointer',
-                color: '#6b7280'
-              }}
-            >
-              ←
-            </button>
-            <h1 style={{
-              fontSize: '24px',
-              fontWeight: 'bold',
-              color: '#1f2937',
-              margin: 0
-            }}>
-              Choose Your Credits
-            </h1>
-          </div>
-          
-          <div style={{
-            background: 'rgba(59, 130, 246, 0.1)',
-            border: '1px solid rgba(59, 130, 246, 0.2)',
-            borderRadius: '12px',
-            padding: '12px 20px',
-            color: '#3b82f6',
-            fontWeight: '600'
-          }}>
-            Current Balance: {user.credits} credits
-          </div>
-        </div>
-      </div>
 
       {/* Main Content */}
       <div style={{
         maxWidth: '1200px',
         margin: '0 auto',
-        padding: '48px 24px'
+        padding: '32px 24px 48px'
       }}>
         
         {/* Hero Section */}
@@ -361,62 +314,6 @@ function PricingForm() {
           ))}
         </div>
 
-        {/* Test Credits Section (Development Only) */}
-        {process.env.NODE_ENV === 'development' && (
-          <div style={{
-            marginTop: '60px',
-            padding: '32px',
-            background: 'rgba(255, 248, 220, 0.8)',
-            borderRadius: '16px',
-            border: '2px dashed #f59e0b',
-            maxWidth: '600px',
-            margin: '60px auto 0'
-          }}>
-            <h3 style={{
-              fontSize: '24px',
-              fontWeight: 'bold',
-              color: '#92400e',
-              marginBottom: '16px',
-              textAlign: 'center'
-            }}>
-              🚧 Development Mode - Test Credits
-            </h3>
-            <p style={{
-              color: '#92400e',
-              marginBottom: '24px',
-              textAlign: 'center'
-            }}>
-              Skip payments and add credits directly for testing
-            </p>
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(4, 1fr)',
-              gap: '12px'
-            }}>
-              {[10, 50, 100, 500].map(credits => (
-                <button
-                  key={credits}
-                  onClick={() => handleTestCredits(credits)}
-                  style={{
-                    background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
-                    color: 'white',
-                    padding: '12px',
-                    borderRadius: '8px',
-                    border: 'none',
-                    fontSize: '14px',
-                    fontWeight: '600',
-                    cursor: 'pointer',
-                    transition: 'transform 0.2s ease'
-                  }}
-                  onMouseEnter={(e) => (e.target as HTMLElement).style.transform = 'scale(1.05)'}
-                  onMouseLeave={(e) => (e.target as HTMLElement).style.transform = 'scale(1)'}
-                >
-                  +{credits}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
 
         {/* FAQ Section */}
         <div style={{
@@ -510,7 +407,18 @@ function PricingForm() {
           </div>
         </div>
       </div>
+
+      {/* Auth Modal for login before purchase */}
+      {showAuthModal && (
+        <AuthModal
+          isOpen={showAuthModal}
+          onClose={() => setShowAuthModal(false)}
+          mode={authMode}
+          setAuthMode={setAuthMode}
+        />
+      )}
     </div>
+    </>
   )
 }
 

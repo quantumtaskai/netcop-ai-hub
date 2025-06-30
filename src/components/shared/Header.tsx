@@ -12,6 +12,18 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ currentPage = 'home' }) => {
+  // Add CSS for pulse animation
+  React.useEffect(() => {
+    const style = document.createElement('style')
+    style.textContent = `
+      @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.7; }
+      }
+    `
+    document.head.appendChild(style)
+    return () => document.head.removeChild(style)
+  }, [])
   const router = useRouter()
   const { user, signOut } = useUserStore()
   const [showAuthModal, setShowAuthModal] = useState(false)
@@ -44,7 +56,6 @@ const Header: React.FC<HeaderProps> = ({ currentPage = 'home' }) => {
   return (
     <>
       <header 
-        className="header"
         style={{
           position: 'sticky',
           top: 0,
@@ -90,7 +101,9 @@ const Header: React.FC<HeaderProps> = ({ currentPage = 'home' }) => {
                 style={{ 
                   color: currentPage === 'home' ? '#6366f1' : '#9ca3af', 
                   fontWeight: currentPage === 'home' ? '600' : '500', 
-                  textDecoration: 'none' 
+                  textDecoration: 'none',
+                  minWidth: '50px',
+                  textAlign: 'center'
                 }}
               >
                 Home
@@ -100,7 +113,9 @@ const Header: React.FC<HeaderProps> = ({ currentPage = 'home' }) => {
                 style={{ 
                   color: currentPage === 'marketplace' ? '#6366f1' : '#9ca3af', 
                   fontWeight: currentPage === 'marketplace' ? '600' : '500', 
-                  textDecoration: 'none' 
+                  textDecoration: 'none',
+                  minWidth: '120px',
+                  textAlign: 'center'
                 }}
               >
                 AI Marketplace
@@ -110,7 +125,9 @@ const Header: React.FC<HeaderProps> = ({ currentPage = 'home' }) => {
                 style={{ 
                   color: currentPage === 'pricing' ? '#6366f1' : '#9ca3af', 
                   fontWeight: currentPage === 'pricing' ? '600' : '500', 
-                  textDecoration: 'none' 
+                  textDecoration: 'none',
+                  minWidth: '60px',
+                  textAlign: 'center'
                 }}
               >
                 Pricing
@@ -141,10 +158,36 @@ const Header: React.FC<HeaderProps> = ({ currentPage = 'home' }) => {
                       : user.credits <= 500
                       ? '0 4px 15px rgba(245, 158, 11, 0.3)'
                       : '0 4px 15px rgba(16, 185, 129, 0.3)',
-                    minWidth: '140px',
+                    width: '160px',
+                    height: '34px',
+                    boxSizing: 'border-box',
                     textAlign: 'center',
                     fontWeight: '600',
-                    fontSize: '14px'
+                    fontSize: '14px',
+                    lineHeight: '14px',
+                    animation: user.credits <= 100 ? 'pulse 2s infinite' : 'none',
+                    overflow: 'hidden',
+                    whiteSpace: 'nowrap',
+                    textOverflow: 'ellipsis',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}
+                  onMouseEnter={(e) => {
+                    (e.target as HTMLElement).style.transform = 'translateY(-1px) scale(1.02)';
+                    (e.target as HTMLElement).style.boxShadow = user.credits <= 100 
+                      ? '0 6px 20px rgba(239, 68, 68, 0.4)'
+                      : user.credits <= 500
+                      ? '0 6px 20px rgba(245, 158, 11, 0.4)'
+                      : '0 6px 20px rgba(16, 185, 129, 0.4)';
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.target as HTMLElement).style.transform = 'none';
+                    (e.target as HTMLElement).style.boxShadow = user.credits <= 100 
+                      ? '0 4px 15px rgba(239, 68, 68, 0.3)'
+                      : user.credits <= 500
+                      ? '0 4px 15px rgba(245, 158, 11, 0.3)'
+                      : '0 4px 15px rgba(16, 185, 129, 0.3)';
                   }}
                 >
                   💎 {user.credits} Credits
@@ -201,17 +244,16 @@ const Header: React.FC<HeaderProps> = ({ currentPage = 'home' }) => {
           isOpen={showAuthModal}
           onClose={() => setShowAuthModal(false)}
           mode={authMode}
-          onModeChange={setAuthMode}
+          setAuthMode={setAuthMode}
         />
       )}
 
       {/* Profile Modal */}
       {showProfileModal && user && (
         <ProfileModal
-          user={user}
+          userId={user.id}
           isOpen={showProfileModal}
           onClose={() => setShowProfileModal(false)}
-          onLogout={handleLogout}
           position={dropdownPosition}
         />
       )}

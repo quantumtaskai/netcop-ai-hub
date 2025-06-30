@@ -15,7 +15,6 @@ interface AgentLayoutProps {
 
 export default function AgentLayout({ children, title, description, icon, cost }: AgentLayoutProps) {
   const router = useRouter()
-  const { user } = useUserStore()
 
   return (
     <div style={{
@@ -67,25 +66,7 @@ export default function AgentLayout({ children, title, description, icon, cost }
             ← Back to Agents
           </button>
 
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '16px'
-          }}>
-            {user && (
-              <div style={{
-                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                color: 'white',
-                padding: '12px 24px',
-                borderRadius: '16px',
-                fontWeight: 'bold',
-                fontSize: '16px',
-                boxShadow: '0 4px 12px rgba(102, 126, 234, 0.3)'
-              }}>
-                ✨ {user.credits.toLocaleString()} Credits
-              </div>
-            )}
-          </div>
+          {/* Credit display removed - now handled by shared Header component */}
         </div>
 
         {/* Agent Header */}
