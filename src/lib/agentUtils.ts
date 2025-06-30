@@ -7,7 +7,8 @@ export const getAgentSlug = (agentName: string): string => {
     'Email Automation Agent': 'email-automation',
     'Sales Assistant Agent': 'sales-assistant',
     'Task Automation Agent': 'task-automation',
-    'Weather Reporter Agent': 'weather-reporter'
+    'Weather Reporter Agent': 'weather-reporter',
+    '5 Whys Analysis Agent': 'five-whys'
   }
   
   return slugMap[agentName] || 'default-agent'
@@ -22,7 +23,8 @@ export const getAgentNameFromSlug = (slug: string): string => {
     'email-automation': 'Email Automation Agent',
     'sales-assistant': 'Sales Assistant Agent',
     'task-automation': 'Task Automation Agent',
-    'weather-reporter': 'Weather Reporter Agent'
+    'weather-reporter': 'Weather Reporter Agent',
+    'five-whys': '5 Whys Analysis Agent'
   }
   
   return nameMap[slug] || 'Unknown Agent'
@@ -65,6 +67,11 @@ export const getAgentInfo = (slug: string) => {
       title: 'Weather Reporter',
       description: 'Get detailed weather reports for any location worldwide',
       icon: '🌤️'
+    },
+    'five-whys': {
+      title: '5 Whys Root Cause Analyzer',
+      description: 'Systematic root cause analysis using the proven 5 Whys methodology',
+      icon: '🔍'
     }
   }
   

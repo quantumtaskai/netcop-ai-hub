@@ -13,18 +13,18 @@ import Header from '@/components/shared/Header'
 import Footer from '@/components/shared/Footer'
 import Link from 'next/link'
 
-// Complete agent data matching your original design
+// Working agents arranged first, with 5 Whys as #1
 const AGENTS = [
   {
     id: 1,
-    name: 'Smart Customer Support Agent',
-    description: 'Automates customer inquiries with intelligent responses, reducing response time by 80% while maintaining high satisfaction rates.',
-    category: 'customer-service',
-    cost: 25,
-    rating: 4.9,
-    reviews: 2300,
-    initials: 'CS',
-    gradient: 'from-blue-500 to-blue-600'
+    name: '5 Whys Analysis Agent',
+    description: 'Systematic root cause analysis using the proven 5 Whys methodology to identify and solve business problems effectively.',
+    category: 'analytics',
+    cost: 30,
+    rating: 4.8,
+    reviews: 850,
+    initials: '5W',
+    gradient: 'from-indigo-500 to-purple-600'
   },
   {
     id: 2,
@@ -39,6 +39,28 @@ const AGENTS = [
   },
   {
     id: 3,
+    name: 'Weather Reporter Agent',
+    description: 'Get detailed weather reports for any location worldwide with current conditions, forecasts, and weather alerts.',
+    category: 'utilities',
+    cost: 15,
+    rating: 4.9,
+    reviews: 1650,
+    initials: 'WR',
+    gradient: 'from-sky-400 to-blue-500'
+  },
+  {
+    id: 4,
+    name: 'Smart Customer Support Agent',
+    description: 'Automates customer inquiries with intelligent responses, reducing response time by 80% while maintaining high satisfaction rates.',
+    category: 'customer-service',
+    cost: 25,
+    rating: 4.9,
+    reviews: 2300,
+    initials: 'CS',
+    gradient: 'from-blue-500 to-blue-600'
+  },
+  {
+    id: 5,
     name: 'Content Writing Agent',
     description: 'Creates high-quality, engaging content across multiple formats while maintaining brand voice and SEO optimization.',
     category: 'content',
@@ -49,7 +71,7 @@ const AGENTS = [
     gradient: 'from-orange-500 to-red-600'
   },
   {
-    id: 4,
+    id: 6,
     name: 'Email Automation Agent',
     description: 'Manages email campaigns with personalized content, smart scheduling, and performance tracking for maximum engagement.',
     category: 'email',
@@ -60,7 +82,7 @@ const AGENTS = [
     gradient: 'from-violet-500 to-purple-600'
   },
   {
-    id: 5,
+    id: 7,
     name: 'Sales Assistant Agent',
     description: 'Qualifies leads, schedules meetings, and provides sales insights to accelerate your sales pipeline and close deals faster.',
     category: 'sales',
@@ -71,7 +93,7 @@ const AGENTS = [
     gradient: 'from-rose-500 to-pink-600'
   },
   {
-    id: 6,
+    id: 8,
     name: 'Task Automation Agent',
     description: 'Streamlines repetitive workflows across multiple platforms, saving hours of manual work with intelligent automation.',
     category: 'utilities',
@@ -80,17 +102,6 @@ const AGENTS = [
     reviews: 4200,
     initials: 'TA',
     gradient: 'from-teal-500 to-cyan-600'
-  },
-  {
-    id: 7,
-    name: 'Weather Reporter Agent',
-    description: 'Get detailed weather reports for any location worldwide with current conditions, forecasts, and weather alerts.',
-    category: 'utilities',
-    cost: 15,
-    rating: 4.9,
-    reviews: 1650,
-    initials: 'WR',
-    gradient: 'from-sky-400 to-blue-500'
   }
 ]
 

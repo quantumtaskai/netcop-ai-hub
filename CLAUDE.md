@@ -63,7 +63,28 @@ NetCop AI agent marketplace where users can use various AI agents by spending cr
 - Credit deduction (15 credits per report)
 - Custom result formatting in ResultsDisplay component
 
-#### 5. **Stripe Payment System**
+#### 5. **5 Whys Analysis Agent** ✅ (COMPLETE)
+- **Interactive Chat Interface** at `/agent/five-whys` with real-time conversation
+- **Smart Credit System**: Free chat, credits only deducted for final report (30 credits)
+- **AI-Powered Analysis**: N8N webhook integration for conversation-based root cause analysis
+- **Professional Report Generation**: Local processing with structured sections:
+  - 📋 Executive Summary (date, methodology, analyst info)
+  - 🎯 Problem Statement (highlighted blockquote format)
+  - 🔍 Analysis Deep Dive (numbered Why questions from conversation)
+  - 💡 Key Findings (methodology insights and patterns)
+  - 🎯 Strategic Recommendations (immediate + long-term actions)
+  - 🗺️ Implementation Roadmap (3-phase timeline)
+  - 📚 Methodology explanation (Toyota 5 Whys background)
+- **Enhanced Visual Design**: Rich HTML formatting with professional styling
+- **Multiple Export Options**:
+  - 📋 Copy to clipboard with click animations
+  - 💾 Download as Markdown (.md) file
+  - 📄 Save as PDF via print dialog
+- **UX Enhancements**: Auto-focus input, session management, start new analysis
+- **Technical Features**: Custom markdown-to-HTML conversion, glassmorphism design
+- **Responsive Interface**: Mobile-friendly with proper button feedback
+
+#### 6. **Stripe Payment System**
 - Complete payment integration with Stripe Payment Links
 - 4 credit packages: 10, 50, 100, 500 credits
 - AED currency pricing: 9.99, 49.99, 99.99, 499.99 AED
@@ -94,6 +115,9 @@ NEXT_PUBLIC_N8N_WEBHOOK_DATA_ANALYZER=https://your-n8n-instance.com/webhook/data
 # OpenWeatherMap API (for Weather Reporter)
 NEXT_PUBLIC_OPENWEATHER_API_KEY=your_openweather_api_key
 
+# N8N Webhook (for 5 Whys Analysis Agent)
+NEXT_PUBLIC_N8N_WEBHOOK_FIVE_WHYS=https://quantumtaskai.app.n8n.cloud/webhook/5-whys-web
+
 # Stripe Payment System (Optional - Payment Links are hardcoded)
 # STRIPE_SECRET_KEY=sk_test_... (for webhook processing)
 # STRIPE_WEBHOOK_SECRET=whsec_... (for webhook verification)
@@ -107,6 +131,7 @@ NEXT_PUBLIC_OPENWEATHER_API_KEY=your_openweather_api_key
 - Sales Assistant Agent → `sales-assistant`
 - Task Automation Agent → `task-automation`
 - Weather Reporter Agent → `weather-reporter` ✅ (implemented)
+- 5 Whys Analysis Agent → `five-whys` ✅ (implemented)
 
 ### ✅ Current Status: Data Analyzer & Payment System Complete
 
@@ -369,6 +394,191 @@ if (user.credits < agent.cost) {
 - Stripe webhook processing (for real-time credit updates)
 - Payment history and receipts
 - Corporate billing and team accounts
+
+---
+
+# 📊 5 Whys Analysis Agent - Complete Implementation
+
+## 🎯 Overview
+The 5 Whys Analysis Agent represents the most advanced agent implementation in the marketplace, featuring an interactive chat interface, smart credit system, and professional report generation capabilities.
+
+## ✅ Complete Feature Set
+
+### 🗨️ **Interactive Chat System**
+- **Real-time conversation** with AI-powered 5 Whys methodology
+- **Message bubble interface**: User (blue gradient) vs Bot (gray)
+- **Auto-scroll functionality** to latest messages
+- **Auto-focus input** maintained after each bot response
+- **Session management** with unique session IDs per analysis
+- **Welcome message** with clear usage instructions
+- **"Start New Analysis"** functionality for multiple analyses
+
+### 💰 **Smart Credit System**
+- **Free unlimited chat** - no charges for conversation
+- **Generate Report button** appears after meaningful conversation (2+ user messages, 2+ bot responses)
+- **Credits only deducted** when final report is generated (30 credits)
+- **Clear cost indication** in all buttons and sidebar
+- **Credit validation** prevents generation without sufficient credits
+- **CreditCounter integration** with dynamic states
+
+### 📋 **Professional Report Generation**
+#### **Local Processing Architecture**
+- **No N8N dependency** for report generation - processes chat history locally
+- **Structured report sections**:
+  - 📋 **Executive Summary**: Date, methodology, AI analyst attribution
+  - 🎯 **Problem Statement**: User's initial problem in highlighted blockquote
+  - 🔍 **Analysis Deep Dive**: Numbered "Why #1, Why #2..." from conversation
+  - 💡 **Key Findings**: Root cause chain, pattern recognition, actionable insights
+  - 🎯 **Strategic Recommendations**: Immediate actions + long-term prevention
+  - 🗺️ **Implementation Roadmap**: 3-phase timeline (1-2 weeks, 1-3 months, 3-6 months)
+  - 📚 **Methodology Education**: Toyota 5 Whys background and techniques
+
+#### **Enhanced Visual Design**
+- **Rich HTML conversion** from markdown with professional inline CSS:
+  - Styled headers with borders and blue gradients
+  - Color-coded sections for visual hierarchy
+  - Professional blockquotes with blue left borders
+  - Proper typography with optimized spacing
+- **Custom report display** (bypasses generic ResultsDisplay component)
+- **Glassmorphism card design** with backdrop blur effects
+
+### 📤 **Multiple Export Options**
+- **📋 Copy to Clipboard**: Markdown text with toast notification and click animation
+- **💾 Download Markdown**: .md file download with proper filename
+- **📄 Save as PDF**: Professional print dialog with optimized CSS for PDF generation
+- **Button animations**: Scale effects, hover lifts, color feedback
+- **Toast notifications** with relevant emojis for each action
+
+### 🎨 **User Experience Enhancements**
+- **Auto-focus input field** after each bot response using useRef
+- **Single clean bullets** in sidebar (fixed double bullet issue)
+- **Orange theme consistency** (#f59e0b, #d97706) throughout interface
+- **Responsive layout** with proper mobile support
+- **Error handling** with specific user-friendly messages
+- **Loading states** with "Thinking..." animations
+
+## 🛠️ Technical Implementation
+
+### **File Structure**
+```
+/src/app/agent/five-whys/page.tsx          # Main chat interface (840+ lines)
+/src/lib/agentUtils.ts                     # Agent metadata and routing
+/src/app/marketplace/page.tsx              # Agent listing (ID: 8)
+```
+
+### **Key Functions & Logic**
+```typescript
+// Core chat functionality
+const sendMessage = async () => {
+  // N8N webhook integration for conversation
+  // Auto-refocus input after response
+  // Error handling with user feedback
+}
+
+const generateReport = async () => {
+  // Local report generation from chat history
+  // Credit deduction only on success
+  // Professional formatting and display
+}
+
+// Enhanced formatting
+const markdownToHTML = (text: string) => {
+  // Rich HTML conversion with inline CSS
+  // Professional typography and styling
+  // Proper blockquote and list handling
+}
+
+const generateReportFromChat = (): string => {
+  // Extracts conversation into structured report
+  // Professional business document format
+  // Multiple sections with implementation roadmap
+}
+```
+
+### **State Management**
+```typescript
+// Complete state architecture
+const [messages, setMessages] = useState<Message[]>([])
+const [inputText, setInputText] = useState('')
+const [isLoading, setIsLoading] = useState(false)
+const [reportCompleted, setReportCompleted] = useState(false)
+const [sessionId, setSessionId] = useState('')
+const [generatedReport, setGeneratedReport] = useState<any>(null)
+const [showReport, setShowReport] = useState(false)
+
+// Refs for UX enhancements
+const chatContainerRef = useRef<HTMLDivElement>(null)
+const inputRef = useRef<HTMLInputElement>(null)
+```
+
+### **Integration Points**
+- **N8N Webhook**: `https://quantumtaskai.app.n8n.cloud/webhook/5-whys-web`
+- **Credit System**: Zustand store integration with updateCredits()
+- **Toast System**: react-hot-toast for user feedback
+- **Agent Utils**: Slug mapping and metadata management
+
+### **Agent Configuration**
+```javascript
+// Marketplace listing (ID: 8)
+{
+  id: 8,
+  name: '5 Whys Analysis Agent',
+  description: 'Systematic root cause analysis using the proven 5 Whys methodology to identify and solve business problems effectively.',
+  category: 'analytics',
+  cost: 30,
+  rating: 4.8,
+  reviews: 850,
+  initials: '5W',
+  gradient: 'from-indigo-500 to-purple-600'
+}
+
+// Agent slug mapping
+'5 Whys Analysis Agent': 'five-whys'
+```
+
+## 🐛 Issues Resolved During Development
+
+1. ✅ **React dangerouslySetInnerHTML error**: Fixed conditional rendering of HTML vs text content
+2. ✅ **Double bullets issue**: Custom CSS positioning for single bullets in lists
+3. ✅ **Input focus loss**: useRef and setTimeout for auto-refocus after responses  
+4. ✅ **Session ID in reports**: Removed from final report data structure
+5. ✅ **Markdown formatting**: Enhanced HTML conversion with professional inline CSS
+6. ✅ **Button click feedback**: Added scale animations and hover effects
+7. ✅ **PDF generation**: Browser print dialog with optimized CSS
+8. ✅ **Credit deduction timing**: Only charges when report generated, not during chat
+
+## 📊 Performance & Metrics
+
+### **User Experience Metrics**
+- **Free unlimited chat** - encourages user engagement
+- **30-credit final report** - fair pricing for comprehensive analysis
+- **Professional PDF output** - business-ready documentation
+- **Mobile responsive** - works on all devices
+- **Fast local processing** - no external dependencies for report generation
+
+### **Technical Performance**
+- **Lightweight chat interface** - minimal re-renders
+- **Efficient state management** - optimized React hooks
+- **Client-side report generation** - reduces server load
+- **Clean component architecture** - maintainable codebase
+
+## 🎯 Success Factors
+
+1. **Clear Value Proposition**: Free chat + paid professional report
+2. **Professional Output**: Business-ready documentation with multiple export formats
+3. **Intuitive Interface**: Chat-based interaction familiar to all users
+4. **Fair Pricing**: Only charge for final deliverable, not exploration
+5. **Technical Excellence**: Smooth animations, auto-focus, error handling
+6. **Comprehensive Documentation**: Structured reports with implementation guidance
+
+## 🔮 Future Enhancement Opportunities
+
+1. **Export Formats**: Word document, PowerPoint presentation
+2. **Collaboration**: Share reports, team analysis sessions
+3. **Templates**: Industry-specific 5 Whys templates
+4. **Analytics**: Track analysis effectiveness, follow-up recommendations
+5. **Integration**: Connect with project management tools
+6. **AI Improvements**: Better root cause suggestions, pattern recognition
 
 ---
 
