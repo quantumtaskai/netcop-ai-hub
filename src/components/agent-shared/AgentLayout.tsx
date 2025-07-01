@@ -36,26 +36,48 @@ export default function AgentLayout({ children, title, description, icon, cost }
         marginBottom: spacing.xl
       }}>
         <div style={{
-          ...stylePatterns.flexBetween,
-          marginBottom: spacing.lg,
-          flexWrap: 'wrap',
-          gap: spacing.sm
+          marginBottom: spacing.md,
+          padding: `0 ${spacing.xs}`
         }}>
-          <button
-            onClick={() => router.push('/marketplace')}
-            style={{
-              ...styleHelpers.getButtonStyle('secondary'),
-              fontSize: typography.fontSize.base
-            }}
-            {...styleHelpers.createHoverHandler(
-              { borderColor: colors.gray[200], color: colors.gray[700] },
-              { borderColor: colors.primary[500], color: colors.primary[500] }
-            )}
-          >
-            ← Back to Agents
-          </button>
-
-          {/* Credit display removed - now handled by shared Header component */}
+          <nav style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: spacing.xs,
+            fontSize: typography.fontSize.sm,
+            color: colors.gray[500]
+          }}>
+            <button
+              onClick={() => router.push('/marketplace')}
+              style={{
+                background: 'none',
+                border: 'none',
+                color: colors.gray[500],
+                cursor: 'pointer',
+                padding: spacing.xs,
+                borderRadius: borderRadius.md,
+                fontSize: typography.fontSize.sm,
+                transition: transitions.colors,
+                textDecoration: 'none'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.color = colors.primary[500]
+                e.currentTarget.style.background = 'rgba(59, 130, 246, 0.05)'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.color = colors.gray[500]
+                e.currentTarget.style.background = 'none'
+              }}
+            >
+              Marketplace
+            </button>
+            <span style={{ color: colors.gray[300] }}>›</span>
+            <span style={{ 
+              color: colors.gray[700],
+              fontWeight: typography.fontWeight.medium
+            }}>
+              {title}
+            </span>
+          </nav>
         </div>
 
         {/* Agent Header */}

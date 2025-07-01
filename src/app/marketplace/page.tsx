@@ -235,7 +235,7 @@ function HomePageContent() {
       {/* Old navigation removed - now using shared Header component */}
 
       {/* Hero Section */}
-      <section style={{ position: 'relative', padding: 'clamp(40px, 10vw, 80px) clamp(16px, 4vw, 24px) clamp(60px, 15vw, 100px)', overflow: 'hidden' }}>
+      <section style={{ position: 'relative', padding: 'clamp(20px, 5vw, 40px) clamp(16px, 4vw, 24px) clamp(30px, 8vw, 50px)', overflow: 'hidden' }}>
         <div style={{ maxWidth: '1280px', margin: '0 auto', textAlign: 'center', position: 'relative', padding: '0 clamp(8px, 2vw, 16px)' }}>
           {/* Floating Elements - Responsive */}
           <div style={{
@@ -292,7 +292,7 @@ function HomePageContent() {
           </h1>
 
           {/* Search */}
-          <div style={{ maxWidth: '512px', margin: '0 auto clamp(32px, 8vw, 64px) auto', padding: '0 clamp(8px, 2vw, 16px)' }}>
+          <div style={{ maxWidth: '512px', margin: '0 auto clamp(20px, 5vw, 40px) auto', padding: '0 clamp(8px, 2vw, 16px)' }}>
             <div style={{ position: 'relative' }}>
               <input
                 type="text"
@@ -333,7 +333,7 @@ function HomePageContent() {
             flexWrap: 'wrap',
             justifyContent: 'center',
             gap: 'clamp(8px, 2vw, 16px)',
-            marginBottom: 'clamp(32px, 8vw, 64px)',
+            marginBottom: 'clamp(16px, 4vw, 32px)',
             padding: '0 clamp(8px, 2vw, 16px)'
           }}>
             {CATEGORIES.map(category => (
@@ -369,7 +369,7 @@ function HomePageContent() {
       </section>
 
       {/* Assistants Grid Section */}
-      <section style={{ padding: 'clamp(0px, 0vw, 0px) clamp(16px, 4vw, 24px) clamp(40px, 10vw, 80px)' }}>
+      <section style={{ padding: '0 clamp(16px, 4vw, 24px) clamp(40px, 10vw, 80px)' }}>
         <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
 
           {/* Assistants Grid */}
