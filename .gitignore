@@ -43,3 +43,6 @@ logs
 
 # Cache
 .cache/home.html
+
+# Ignore
+test.html
