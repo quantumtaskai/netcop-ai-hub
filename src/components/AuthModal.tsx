@@ -3,6 +3,8 @@
 import { useState } from 'react'
 import { useUserStore } from '@/store/userStore'
 import { toast } from 'react-hot-toast'
+import { colors, spacing, zIndex } from '@/lib/designSystem'
+import { styleHelpers, cardStyles, textStyles, animationUtils } from '@/lib/styleUtils'
 
 interface AuthModalProps {
   isOpen: boolean
@@ -62,18 +64,16 @@ export default function AuthModal({ isOpen, onClose, mode, setAuthMode }: AuthMo
       right: 0,
       bottom: 0,
       background: 'rgba(0, 0, 0, 0.5)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      zIndex: 1000
+      ...styleHelpers.flexCenter,
+      zIndex: zIndex.modal
     }}>
       <div style={{
-        background: 'white',
-        borderRadius: 'clamp(12px, 4vw, 20px)',
-        padding: 'clamp(20px, 6vw, 40px)',
+        background: colors.white,
+        borderRadius: spacing.xl,
+        padding: spacing['2xl'],
         width: '100%',
         maxWidth: '400px',
-        margin: 'clamp(16px, 4vw, 0px)',
+        margin: spacing.md,
         boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)',
         position: 'relative'
       }}>
@@ -81,28 +81,32 @@ export default function AuthModal({ isOpen, onClose, mode, setAuthMode }: AuthMo
           onClick={onClose}
           style={{
             position: 'absolute',
-            top: '16px',
-            right: '16px',
+            top: spacing.md,
+            right: spacing.md,
             background: 'none',
             border: 'none',
             fontSize: '24px',
             cursor: 'pointer',
-            color: '#6b7280'
+            color: colors.gray[400],
+            transition: 'color 0.2s ease'
           }}
+          onMouseEnter={(e) => e.currentTarget.style.color = colors.gray[600]}
+          onMouseLeave={(e) => e.currentTarget.style.color = colors.gray[400]}
         >
           ×
         </button>
 
-        <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+        <div style={{ textAlign: 'center', marginBottom: spacing['2xl'] }}>
           <h2 style={{
-            fontSize: 'clamp(20px, 6vw, 28px)',
-            fontWeight: 'bold',
-            color: '#1f2937',
-            marginBottom: '8px'
+            ...textStyles.h2,
+            marginBottom: spacing.xs
           }}>
             {mode === 'register' ? 'Create Account' : mode === 'reset' ? 'Reset Password' : 'Welcome Back'}
           </h2>
-          <p style={{ color: '#6b7280', fontSize: 'clamp(14px, 3.5vw, 16px)' }}>
+          <p style={{ 
+            ...textStyles.body,
+            color: colors.gray[500] 
+          }}>
             {mode === 'register' 
               ? 'Join AgentHub and get 1,000 free credits!' 
               : mode === 'reset'

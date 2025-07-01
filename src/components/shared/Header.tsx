@@ -6,6 +6,8 @@ import { useRouter } from 'next/navigation'
 import { useUserStore } from '@/store/userStore'
 import AuthModal from '@/components/AuthModal'
 import ProfileModal from '@/components/ProfileModal'
+import { colors, gradients, spacing, zIndex, transitions, typography } from '@/lib/designSystem'
+import { styleHelpers, buttonStyles, textStyles, animationUtils } from '@/lib/styleUtils'
 
 interface HeaderProps {
   currentPage?: 'home' | 'marketplace' | 'pricing' | 'agent'
@@ -97,12 +99,12 @@ const Header: React.FC<HeaderProps> = ({ currentPage = 'home' }) => {
         style={{
           position: 'sticky',
           top: 0,
-          zIndex: 50,
-          padding: isMobile ? '8px 16px' : '12px 24px',
+          zIndex: zIndex.sticky,
+          padding: isMobile ? `${spacing.xs} ${spacing.md}` : `${spacing.md} ${spacing.lg}`,
           backdropFilter: 'blur(30px)',
           background: 'rgba(255, 255, 255, 0.95)',
-          borderBottom: '1px solid rgba(255, 255, 255, 0.2)',
-          transition: 'all 0.3s ease'
+          borderBottom: `1px solid ${colors.gray[200]}`,
+          transition: transitions.slow
         }}
       >
         <div style={{
@@ -113,15 +115,19 @@ const Header: React.FC<HeaderProps> = ({ currentPage = 'home' }) => {
           justifyContent: 'space-between'
         }}>
           {/* Logo and Navigation */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? '16px' : '40px', flex: 1 }}>
+          <div style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            gap: isMobile ? spacing.md : spacing['2xl']
+          }}>
             <Link href="/" style={{ 
               display: 'flex', 
               alignItems: 'center', 
-              gap: '12px',
+              gap: spacing.sm,
               textDecoration: 'none',
-              transition: 'transform 0.2s ease',
-              padding: '8px',
-              borderRadius: '12px'
+              transition: transitions.normal,
+              padding: spacing.xs,
+              borderRadius: spacing.lg
             }}>
               <img 
                 src="/logo.png" 
@@ -133,15 +139,16 @@ const Header: React.FC<HeaderProps> = ({ currentPage = 'home' }) => {
               />
             </Link>
             
-            <div className="desktop-nav" style={{ display: 'flex', gap: '32px' }}>
+            <div className="desktop-nav" style={{ display: 'flex', gap: spacing.xl }}>
               <Link 
                 href="/" 
                 style={{ 
-                  color: currentPage === 'home' ? '#6366f1' : '#9ca3af', 
-                  fontWeight: currentPage === 'home' ? '600' : '500', 
+                  color: currentPage === 'home' ? colors.primary[500] : colors.gray[400], 
+                  fontWeight: currentPage === 'home' ? textStyles.h4.fontWeight : textStyles.body.fontWeight, 
                   textDecoration: 'none',
                   minWidth: '50px',
-                  textAlign: 'center'
+                  textAlign: 'center',
+                  transition: transitions.colors
                 }}
               >
                 Home
@@ -149,11 +156,12 @@ const Header: React.FC<HeaderProps> = ({ currentPage = 'home' }) => {
               <Link 
                 href="/marketplace" 
                 style={{ 
-                  color: currentPage === 'marketplace' ? '#6366f1' : '#9ca3af', 
-                  fontWeight: currentPage === 'marketplace' ? '600' : '500', 
+                  color: currentPage === 'marketplace' ? colors.primary[500] : colors.gray[400], 
+                  fontWeight: currentPage === 'marketplace' ? textStyles.h4.fontWeight : textStyles.body.fontWeight, 
                   textDecoration: 'none',
                   minWidth: '120px',
-                  textAlign: 'center'
+                  textAlign: 'center',
+                  transition: transitions.colors
                 }}
               >
                 AI Marketplace
@@ -161,11 +169,12 @@ const Header: React.FC<HeaderProps> = ({ currentPage = 'home' }) => {
               <Link 
                 href="/pricing" 
                 style={{ 
-                  color: currentPage === 'pricing' ? '#6366f1' : '#9ca3af', 
-                  fontWeight: currentPage === 'pricing' ? '600' : '500', 
+                  color: currentPage === 'pricing' ? colors.primary[500] : colors.gray[400], 
+                  fontWeight: currentPage === 'pricing' ? textStyles.h4.fontWeight : textStyles.body.fontWeight, 
                   textDecoration: 'none',
                   minWidth: '60px',
-                  textAlign: 'center'
+                  textAlign: 'center',
+                  transition: transitions.colors
                 }}
               >
                 Pricing
@@ -177,13 +186,12 @@ const Header: React.FC<HeaderProps> = ({ currentPage = 'home' }) => {
               className="mobile-menu-button"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               style={{
-                display: 'none',
                 background: 'transparent',
                 border: 'none',
                 cursor: 'pointer',
-                padding: '12px',
-                borderRadius: '8px',
-                transition: 'background 0.2s ease',
+                padding: spacing.sm,
+                borderRadius: spacing.md,
+                transition: transitions.colors,
                 minWidth: '44px',
                 minHeight: '44px',
                 display: 'flex',
@@ -194,13 +202,13 @@ const Header: React.FC<HeaderProps> = ({ currentPage = 'home' }) => {
               onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
             >
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M3 12H21M3 6H21M3 18H21" stroke="#374151" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M3 12H21M3 6H21M3 18H21" stroke={colors.gray[700]} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </button>
           </div>
           
           {/* User Actions */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? '8px' : '24px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? spacing.xs : spacing.lg }}>
             {user ? (
               <>
                 {/* Credits Display - Hidden on mobile */}
@@ -209,15 +217,15 @@ const Header: React.FC<HeaderProps> = ({ currentPage = 'home' }) => {
                   onClick={() => router.push('/pricing')}
                   style={{
                     background: user.credits <= 100 
-                      ? 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)'
+                      ? gradients.danger
                       : user.credits <= 500
-                      ? 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)'
-                      : 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
-                    color: 'white',
-                    padding: isMobile ? '8px 12px' : '10px 16px',
-                    borderRadius: '12px',
+                      ? gradients.warning
+                      : gradients.success,
+                    color: colors.white,
+                    padding: isMobile ? `${spacing.xs} ${spacing.sm}` : `${spacing.sm} ${spacing.md}`,
+                    borderRadius: spacing.lg,
                     cursor: 'pointer',
-                    transition: 'all 0.3s ease',
+                    transition: transitions.slow,
                     boxShadow: user.credits <= 100 
                       ? '0 4px 15px rgba(239, 68, 68, 0.3)'
                       : user.credits <= 500
@@ -285,17 +293,11 @@ const Header: React.FC<HeaderProps> = ({ currentPage = 'home' }) => {
               <button
                 onClick={handleLogin}
                 style={{
-                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                  color: 'white',
-                  border: 'none',
-                  padding: isMobile ? '10px 16px' : '12px 24px',
-                  borderRadius: '12px',
-                  cursor: 'pointer',
-                  fontWeight: '600',
-                  fontSize: isMobile ? '12px' : '14px',
-                  transition: 'all 0.3s ease',
-                  boxShadow: '0 4px 15px rgba(102, 126, 234, 0.3)'
+                  ...styleHelpers.getButtonStyle('primary'),
+                  padding: isMobile ? `${spacing.sm} ${spacing.md}` : `${spacing.sm} ${spacing.lg}`,
+                  fontSize: isMobile ? typography.fontSize.sm : typography.fontSize.base
                 }}
+                {...animationUtils.scaleOnClick}
               >
                 Sign In
               </button>

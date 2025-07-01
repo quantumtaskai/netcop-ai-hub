@@ -10,6 +10,8 @@ import FileUpload from '@/components/agent-shared/FileUpload'
 import ProcessingStatus from '@/components/agent-shared/ProcessingStatus'
 import ResultsDisplay from '@/components/agent-shared/ResultsDisplay'
 import CreditCounter from '@/components/agent-shared/CreditCounter'
+import { colors, gradients, spacing, typography, borderRadius, transitions } from '@/lib/designSystem'
+import { stylePatterns, cardStyles, textStyles } from '@/lib/styleUtils'
 
 function DataAnalyzerForm() {
   const router = useRouter()
@@ -128,28 +130,19 @@ function DataAnalyzerForm() {
       <Toaster position="top-right" />
       
       <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(min(350px, 100%), 1fr))',
-        gap: 'clamp(16px, 4vw, 24px)',
+        ...stylePatterns.responsiveGrid,
         alignItems: 'start'
       }}>
         {/* Main Content */}
         <div>
           {/* File Upload Section */}
           <div style={{
-            background: 'rgba(255, 255, 255, 0.9)',
-            borderRadius: 'clamp(12px, 3vw, 16px)',
-            padding: 'clamp(16px, 4vw, 24px)',
-            border: '1px solid rgba(255, 255, 255, 0.3)',
-            backdropFilter: 'blur(20px)',
-            boxShadow: '0 8px 25px rgba(0, 0, 0, 0.1)',
-            marginBottom: 'clamp(16px, 4vw, 24px)'
+            ...cardStyles.base,
+            marginBottom: spacing.lg
           }}>
             <h3 style={{
-              fontSize: 'clamp(16px, 4vw, 18px)',
-              fontWeight: '600',
-              color: '#1f2937',
-              marginBottom: 'clamp(12px, 3vw, 16px)'
+              ...textStyles.h4,
+              marginBottom: spacing.md
             }}>
               Upload Data File
             </h3>
@@ -166,19 +159,12 @@ function DataAnalyzerForm() {
           {/* Analysis Options */}
           {selectedFile && (
             <div style={{
-              background: 'rgba(255, 255, 255, 0.9)',
-              borderRadius: 'clamp(12px, 3vw, 16px)',
-              padding: 'clamp(16px, 4vw, 24px)',
-              border: '1px solid rgba(255, 255, 255, 0.3)',
-              backdropFilter: 'blur(20px)',
-              boxShadow: '0 8px 25px rgba(0, 0, 0, 0.1)',
-              marginBottom: 'clamp(16px, 4vw, 24px)'
+              ...cardStyles.base,
+              marginBottom: spacing.lg
             }}>
               <h3 style={{
-                fontSize: '18px',
-                fontWeight: '600',
-                color: '#1f2937',
-                marginBottom: '16px'
+                ...textStyles.h4,
+                marginBottom: spacing.md
               }}>
                 Analysis Type
               </h3>
@@ -186,7 +172,7 @@ function DataAnalyzerForm() {
               <div style={{
                 display: 'grid',
                 gridTemplateColumns: 'repeat(auto-fit, minmax(min(180px, 100%), 1fr))',
-                gap: 'clamp(8px, 2vw, 12px)'
+                gap: spacing.sm
               }}>
                 {[
                   { id: 'summary', label: 'Data Summary', desc: 'Basic statistics and overview' },
@@ -199,13 +185,13 @@ function DataAnalyzerForm() {
                     style={{
                       display: 'flex',
                       alignItems: 'center',
-                      gap: '12px',
-                      padding: '16px',
-                      border: `2px solid ${analysisType === option.id ? '#3b82f6' : '#e5e7eb'}`,
-                      borderRadius: '12px',
+                      gap: spacing.sm,
+                      padding: spacing.md,
+                      border: `2px solid ${analysisType === option.id ? colors.primary[500] : colors.gray[200]}`,
+                      borderRadius: borderRadius.lg,
                       cursor: 'pointer',
-                      background: analysisType === option.id ? '#eff6ff' : 'white',
-                      transition: 'all 0.2s ease'
+                      background: analysisType === option.id ? colors.primary[50] : colors.white,
+                      transition: transitions.normal
                     }}
                   >
                     <input
@@ -217,10 +203,17 @@ function DataAnalyzerForm() {
                       style={{ margin: 0 }}
                     />
                     <div>
-                      <div style={{ fontWeight: '600', marginBottom: 'clamp(2px, 1vw, 4px)', fontSize: 'clamp(14px, 3.5vw, 16px)' }}>
+                      <div style={{ 
+                        fontWeight: typography.fontWeight.semibold, 
+                        marginBottom: spacing.xs, 
+                        fontSize: typography.fontSize.base 
+                      }}>
                         {option.label}
                       </div>
-                      <div style={{ fontSize: 'clamp(12px, 3vw, 14px)', color: '#6b7280' }}>
+                      <div style={{ 
+                        fontSize: typography.fontSize.sm, 
+                        color: colors.gray[500] 
+                      }}>
                         {option.desc}
                       </div>
                     </div>
@@ -265,12 +258,13 @@ export default function DataAnalyzerPage() {
     <Suspense fallback={
       <div style={{
         minHeight: '100vh',
-        background: 'linear-gradient(135deg, #f6f8ff 0%, #e8f0fe 50%, #f0f7ff 100%)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center'
+        background: gradients.bgPrimary,
+        ...stylePatterns.flexCenter
       }}>
-        <div style={{ color: '#3b82f6', fontSize: '18px' }}>Loading...</div>
+        <div style={{ 
+          color: colors.primary[500], 
+          fontSize: typography.fontSize.lg 
+        }}>Loading...</div>
       </div>
     }>
       <DataAnalyzerForm />

@@ -1,6 +1,8 @@
 'use client'
 
 import { useUserStore } from '@/store/userStore'
+import { colors, gradients, spacing } from '@/lib/designSystem'
+import { styleHelpers, cardStyles, textStyles, animationUtils } from '@/lib/styleUtils'
 
 interface CreditCounterProps {
   cost: number
@@ -19,32 +21,22 @@ export default function CreditCounter({ cost, onProcess, disabled = false, proce
 
   return (
     <div style={{
-      background: 'rgba(255, 255, 255, 0.9)',
-      borderRadius: '16px',
-      padding: 'clamp(16px, 4vw, 24px)',
-      border: '1px solid rgba(255, 255, 255, 0.3)',
-      backdropFilter: 'blur(20px)',
-      boxShadow: '0 8px 25px rgba(0, 0, 0, 0.1)',
-      marginBottom: 'clamp(16px, 4vw, 24px)'
+      ...cardStyles.base,
+      marginBottom: spacing.lg
     }}>
       <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        marginBottom: 'clamp(12px, 3vw, 16px)'
+        ...styleHelpers.flexBetween,
+        marginBottom: spacing.md
       }}>
         <div>
           <h3 style={{
-            fontSize: 'clamp(16px, 4vw, 18px)',
-            fontWeight: '600',
-            color: '#1f2937',
-            marginBottom: 'clamp(2px, 1vw, 4px)'
+            ...textStyles.h4,
+            marginBottom: spacing.xs
           }}>
             Credit Cost
           </h3>
           <p style={{
-            color: '#6b7280',
-            fontSize: 'clamp(12px, 3vw, 14px)'
+            ...textStyles.small
           }}>
             This operation will cost {cost} credits
           </p>
@@ -54,23 +46,21 @@ export default function CreditCounter({ cost, onProcess, disabled = false, proce
           textAlign: 'right'
         }}>
           <div style={{
-            background: hasEnoughCredits 
-              ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)'
-              : 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
-            color: 'white',
-            padding: '8px 16px',
-            borderRadius: '12px',
-            fontSize: '16px',
-            fontWeight: '600',
-            marginBottom: '8px'
+            background: hasEnoughCredits ? gradients.success : gradients.danger,
+            color: colors.white,
+            padding: `${spacing.xs} ${spacing.md}`,
+            borderRadius: spacing.lg,
+            fontSize: textStyles.body.fontSize,
+            fontWeight: textStyles.h4.fontWeight,
+            marginBottom: spacing.xs
           }}>
             {user.credits.toLocaleString()} Credits Available
           </div>
           {!hasEnoughCredits && (
             <p style={{
-              color: '#ef4444',
-              fontSize: '12px',
-              fontWeight: '500'
+              color: colors.danger[500],
+              fontSize: textStyles.small.fontSize,
+              fontWeight: textStyles.small.fontWeight
             }}>
               Insufficient credits
             </p>
@@ -79,43 +69,37 @@ export default function CreditCounter({ cost, onProcess, disabled = false, proce
       </div>
 
       <div style={{
-        background: '#f3f4f6',
-        borderRadius: '8px',
-        padding: 'clamp(10px, 3vw, 12px)',
-        marginBottom: 'clamp(12px, 3vw, 16px)'
+        background: colors.gray[100],
+        borderRadius: spacing.md,
+        padding: spacing.sm,
+        marginBottom: spacing.md
       }}>
         <div style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          fontSize: 'clamp(12px, 3vw, 14px)'
+          ...styleHelpers.flexBetween,
+          fontSize: textStyles.small.fontSize
         }}>
-          <span style={{ color: '#6b7280' }}>Current Balance:</span>
-          <span style={{ fontWeight: '600' }}>{user.credits.toLocaleString()} credits</span>
+          <span style={{ color: colors.gray[500] }}>Current Balance:</span>
+          <span style={{ fontWeight: textStyles.h4.fontWeight }}>{user.credits.toLocaleString()} credits</span>
         </div>
         <div style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          fontSize: 'clamp(12px, 3vw, 14px)',
-          marginTop: 'clamp(2px, 1vw, 4px)'
+          ...styleHelpers.flexBetween,
+          fontSize: textStyles.small.fontSize,
+          marginTop: spacing.xs
         }}>
-          <span style={{ color: '#6b7280' }}>Cost:</span>
-          <span style={{ color: '#ef4444', fontWeight: '600' }}>-{cost} credits</span>
+          <span style={{ color: colors.gray[500] }}>Cost:</span>
+          <span style={{ color: colors.danger[500], fontWeight: textStyles.h4.fontWeight }}>-{cost} credits</span>
         </div>
         <div style={{
-          borderTop: '1px solid #d1d5db',
-          marginTop: 'clamp(6px, 2vw, 8px)',
-          paddingTop: 'clamp(6px, 2vw, 8px)',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          fontSize: 'clamp(12px, 3vw, 14px)'
+          borderTop: `1px solid ${colors.gray[300]}`,
+          marginTop: spacing.xs,
+          paddingTop: spacing.xs,
+          ...styleHelpers.flexBetween,
+          fontSize: textStyles.small.fontSize
         }}>
-          <span style={{ fontWeight: '600' }}>After Processing:</span>
+          <span style={{ fontWeight: textStyles.h4.fontWeight }}>After Processing:</span>
           <span style={{ 
-            fontWeight: '600',
-            color: hasEnoughCredits ? '#059669' : '#ef4444'
+            fontWeight: textStyles.h4.fontWeight,
+            color: hasEnoughCredits ? colors.success[600] : colors.danger[500]
           }}>
             {(user.credits - cost).toLocaleString()} credits
           </span>
@@ -127,19 +111,13 @@ export default function CreditCounter({ cost, onProcess, disabled = false, proce
         disabled={buttonDisabled}
         style={{
           width: '100%',
-          background: buttonDisabled 
-            ? '#9ca3af' 
-            : 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)',
-          color: 'white',
-          border: 'none',
-          padding: 'clamp(14px, 4vw, 16px) clamp(20px, 5vw, 24px)',
-          borderRadius: 'clamp(8px, 2vw, 12px)',
-          fontSize: 'clamp(14px, 3.5vw, 16px)',
-          minHeight: '48px',
-          fontWeight: '600',
-          cursor: buttonDisabled ? 'not-allowed' : 'pointer',
-          transition: 'all 0.2s ease'
+          ...styleHelpers.getButtonStyle(
+            buttonDisabled ? 'disabled' : 'primary',
+            buttonDisabled,
+            processing
+          )
         }}
+        {...(!buttonDisabled ? animationUtils.scaleOnClick : {})}
       >
         {processing ? 'Processing...' : 
          !hasEnoughCredits ? 'Insufficient Credits' :
@@ -149,11 +127,10 @@ export default function CreditCounter({ cost, onProcess, disabled = false, proce
       {!hasEnoughCredits && (
         <p style={{
           textAlign: 'center',
-          marginTop: '12px',
-          fontSize: 'clamp(12px, 3vw, 14px)',
-          color: '#6b7280'
+          marginTop: spacing.sm,
+          ...textStyles.small
         }}>
-          <a href="/" style={{ color: '#3b82f6', textDecoration: 'underline' }}>
+          <a href="/" style={{ color: colors.primary[500], textDecoration: 'underline' }}>
             Purchase more credits
           </a> to use this agent
         </p>

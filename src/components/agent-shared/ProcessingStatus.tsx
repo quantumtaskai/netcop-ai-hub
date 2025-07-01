@@ -1,6 +1,8 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { colors, gradients, spacing, transitions } from '@/lib/designSystem'
+import { cardStyles, textStyles } from '@/lib/styleUtils'
 
 interface ProcessingStatusProps {
   isProcessing: boolean
@@ -28,40 +30,32 @@ export default function ProcessingStatus({ isProcessing, status, progress }: Pro
 
   return (
     <div style={{
-      background: 'rgba(255, 255, 255, 0.9)',
-      borderRadius: '16px',
-      padding: '24px',
-      border: '1px solid rgba(255, 255, 255, 0.3)',
-      backdropFilter: 'blur(20px)',
-      boxShadow: '0 8px 25px rgba(0, 0, 0, 0.1)',
-      marginBottom: '24px'
+      ...cardStyles.base,
+      marginBottom: spacing.lg
     }}>
       <div style={{
         display: 'flex',
         alignItems: 'center',
-        gap: '16px',
-        marginBottom: '16px'
+        gap: spacing.md,
+        marginBottom: spacing.md
       }}>
         <div style={{
           width: '48px',
           height: '48px',
           borderRadius: '50%',
-          border: '4px solid #e5e7eb',
-          borderTopColor: '#3b82f6',
+          border: `4px solid ${colors.gray[200]}`,
+          borderTopColor: colors.primary[500],
           animation: 'spin 1s linear infinite'
         }}></div>
         <div>
           <h3 style={{
-            fontSize: '18px',
-            fontWeight: '600',
-            color: '#1f2937',
-            marginBottom: '4px'
+            ...textStyles.h4,
+            marginBottom: spacing.xs
           }}>
             Processing{dots}
           </h3>
           <p style={{
-            color: '#6b7280',
-            fontSize: '14px'
+            ...textStyles.small
           }}>
             {status}
           </p>
@@ -70,16 +64,16 @@ export default function ProcessingStatus({ isProcessing, status, progress }: Pro
 
       {progress !== undefined && (
         <div style={{
-          background: '#f3f4f6',
-          borderRadius: '8px',
+          background: colors.gray[100],
+          borderRadius: spacing.md,
           height: '8px',
           overflow: 'hidden'
         }}>
           <div style={{
-            background: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)',
+            background: gradients.primary,
             height: '100%',
             width: `${progress}%`,
-            transition: 'width 0.3s ease'
+            transition: transitions.slow
           }}></div>
         </div>
       )}
