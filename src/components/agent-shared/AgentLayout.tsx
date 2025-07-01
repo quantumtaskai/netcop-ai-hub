@@ -42,7 +42,7 @@ export default function AgentLayout({ children, title, description, icon, cost }
           gap: spacing.sm
         }}>
           <button
-            onClick={() => router.push('/')}
+            onClick={() => router.push('/marketplace')}
             style={{
               ...styleHelpers.getButtonStyle('secondary'),
               fontSize: typography.fontSize.base
