@@ -10,7 +10,8 @@ export const getAgentSlug = (agentName: string): string => {
     'Weather Reporter Agent': 'weather-reporter',
     '5 Whys Analysis Agent': 'five-whys',
     'Job Posting Generator Agent': 'job-posting-generator',
-    'Social Ads Generator Agent': 'social-ads-generator'
+    'Social Ads Generator Agent': 'social-ads-generator',
+    'FAQ Generator Agent': 'faq-generator'
   }
   
   return slugMap[agentName] || 'default-agent'
@@ -28,7 +29,8 @@ export const getAgentNameFromSlug = (slug: string): string => {
     'weather-reporter': 'Weather Reporter Agent',
     'five-whys': '5 Whys Analysis Agent',
     'job-posting-generator': 'Job Posting Generator Agent',
-    'social-ads-generator': 'Social Ads Generator Agent'
+    'social-ads-generator': 'Social Ads Generator Agent',
+    'faq-generator': 'FAQ Generator Agent'
   }
   
   return nameMap[slug] || 'Unknown Agent'
@@ -86,6 +88,11 @@ export const getAgentInfo = (slug: string) => {
       title: 'Social Ads Studio',
       description: 'Create engaging social media advertisements with AI-powered content generation',
       icon: '📱'
+    },
+    'faq-generator': {
+      title: 'FAQ Generator',
+      description: 'Generate comprehensive FAQs from files or URLs with AI-powered content analysis',
+      icon: '❓'
     }
   }
   

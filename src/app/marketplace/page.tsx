@@ -70,6 +70,17 @@ const AGENTS = [
     initials: 'SA',
     gradient: 'from-pink-500 to-rose-600'
   },
+  {
+    id: 11,
+    name: 'FAQ Generator Agent',
+    description: 'Generate comprehensive FAQs from uploaded files or website URLs. Automatically extracts key information and creates professional question-answer pairs.',
+    category: 'content',
+    cost: 30,
+    rating: 4.7,
+    reviews: 750,
+    initials: 'FQ',
+    gradient: 'from-purple-500 to-indigo-600'
+  },
   
   // 🚧 COMING SOON - Not yet implemented (no working pages)
   {
