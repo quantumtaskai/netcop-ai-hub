@@ -30,6 +30,93 @@ export default function ResultsDisplay({ results, title = "Results", isVisible }
     return jobKeywords.some(keyword => content.includes(keyword))
   }
 
+  // Smart content extraction function
+  const extractContent = (results: any): { content: string, filename: string, isClean: boolean } => {
+    const timestamp = Date.now()
+    
+    // Handle simple string results
+    if (typeof results === 'string') {
+      return {
+        content: results,
+        filename: `agent-results-${timestamp}.txt`,
+        isClean: true
+      }
+    }
+
+    // Handle weather reports
+    if (results.location && results.current) {
+      const weatherSummary = `Weather Report for ${results.location}
+Generated: ${results.generated_at ? new Date(results.generated_at).toLocaleString() : new Date().toLocaleString()}
+
+Current Weather:
+Temperature: ${results.current.temperature}°C (feels like ${results.current.feels_like}°C)
+Condition: ${results.current.weather_description}
+Humidity: ${results.current.humidity}%
+Wind Speed: ${results.current.wind_speed} km/h
+Pressure: ${results.current.pressure} hPa
+Visibility: ${results.current.visibility} km
+
+${results.forecast && results.forecast.length > 0 ? `
+5-Day Forecast:
+${results.forecast.slice(0, 5).map((day: any, index: number) => 
+  `${new Date(day.dt * 1000).toLocaleDateString('en-US', { weekday: 'long' })}: ${Math.round(day.main.temp)}°C - ${day.weather[0].description}`
+).join('\n')}` : ''}`
+
+      const locationName = results.location.replace(/[^a-zA-Z0-9]/g, '-')
+      return {
+        content: weatherSummary,
+        filename: `weather-report-${locationName}-${timestamp}.txt`,
+        isClean: true
+      }
+    }
+
+    // Handle agent results with analysis field (Social Ads, Job Posting, Data Analysis)
+    if (results.analysis) {
+      let filename = `agent-results-${timestamp}.txt`
+      let content = results.analysis
+
+      // Detect content type for better filename
+      if (content.includes('Job Title:') || content.includes('Position:') || content.includes('About Us:')) {
+        filename = `job-posting-${timestamp}.txt`
+      } else if (content.includes('Ad Copy:') || results.platform) {
+        const platform = results.platform ? results.platform.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase() : 'social-media'
+        filename = `social-ad-${platform}-${timestamp}.txt`
+      } else if (content.includes('Analysis') || content.includes('Summary') || content.includes('Data')) {
+        filename = `data-analysis-${timestamp}.txt`
+      }
+
+      return {
+        content: content,
+        filename: filename,
+        isClean: true
+      }
+    }
+
+    // Handle other content fields
+    if (results.content) {
+      return {
+        content: results.content,
+        filename: `content-${timestamp}.txt`,
+        isClean: true
+      }
+    }
+
+    if (results.jobPosting) {
+      return {
+        content: results.jobPosting,
+        filename: `job-posting-${timestamp}.txt`,
+        isClean: true
+      }
+    }
+
+    // Fallback to JSON for complex objects
+    return {
+      content: JSON.stringify(results, null, 2),
+      filename: `agent-results-${timestamp}.json`,
+      isClean: false
+    }
+  }
+
   const renderResults = () => {
     if (typeof results === 'string') {
       return (
@@ -394,8 +481,9 @@ export default function ResultsDisplay({ results, title = "Results", isVisible }
       }}>
         <button
           onClick={() => {
-            const text = typeof results === 'string' ? results : JSON.stringify(results, null, 2)
-            navigator.clipboard.writeText(text)
+            const extracted = extractContent(results)
+            navigator.clipboard.writeText(extracted.content)
+            // You could add a toast notification here for better UX
           }}
           style={{
             background: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)',
@@ -408,17 +496,19 @@ export default function ResultsDisplay({ results, title = "Results", isVisible }
             fontWeight: '500'
           }}
         >
-          📋 Copy Results
+          📋 Copy Content
         </button>
         
         <button
           onClick={() => {
-            const text = typeof results === 'string' ? results : JSON.stringify(results, null, 2)
-            const blob = new Blob([text], { type: 'text/plain' })
+            const extracted = extractContent(results)
+            const blob = new Blob([extracted.content], { 
+              type: extracted.filename.endsWith('.json') ? 'application/json' : 'text/plain' 
+            })
             const url = URL.createObjectURL(blob)
             const a = document.createElement('a')
             a.href = url
-            a.download = `agent-results-${Date.now()}.txt`
+            a.download = extracted.filename
             a.click()
             URL.revokeObjectURL(url)
           }}
@@ -433,8 +523,36 @@ export default function ResultsDisplay({ results, title = "Results", isVisible }
             fontWeight: '500'
           }}
         >
-          💾 Download
+          💾 Download Content
         </button>
+
+        {/* Optional JSON download for technical users */}
+        {typeof results === 'object' && !extractContent(results).isClean && (
+          <button
+            onClick={() => {
+              const jsonContent = JSON.stringify(results, null, 2)
+              const blob = new Blob([jsonContent], { type: 'application/json' })
+              const url = URL.createObjectURL(blob)
+              const a = document.createElement('a')
+              a.href = url
+              a.download = `agent-full-data-${Date.now()}.json`
+              a.click()
+              URL.revokeObjectURL(url)
+            }}
+            style={{
+              background: '#f3f4f6',
+              color: '#6b7280',
+              border: '1px solid #d1d5db',
+              padding: '6px 12px',
+              borderRadius: '6px',
+              fontSize: '12px',
+              cursor: 'pointer',
+              fontWeight: '400'
+            }}
+          >
+            📄 Raw JSON
+          </button>
+        )}
       </div>
     </div>
   )

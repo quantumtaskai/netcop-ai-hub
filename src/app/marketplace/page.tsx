@@ -13,7 +13,7 @@ import Header from '@/components/shared/Header'
 import Footer from '@/components/shared/Footer'
 import Link from 'next/link'
 
-// Working assistants arranged first, with 5 Whys as #1
+// ✅ WORKING AGENTS FIRST - Fully implemented with working pages
 const AGENTS = [
   {
     id: 1,
@@ -48,6 +48,30 @@ const AGENTS = [
     initials: 'WR',
     gradient: 'from-sky-400 to-blue-500'
   },
+  {
+    id: 9,
+    name: 'Job Posting Generator Agent',
+    description: 'Create compelling, professional job postings with AI-powered content generation. Generate structured job descriptions, requirements, and application instructions.',
+    category: 'content',
+    cost: 25,
+    rating: 4.7,
+    reviews: 1200,
+    initials: 'JP',
+    gradient: 'from-amber-500 to-orange-600'
+  },
+  {
+    id: 10,
+    name: 'Social Ads Generator Agent',
+    description: 'Create engaging social media advertisements optimized for different platforms. Generate compelling ad copy with platform-specific formatting and emoji support.',
+    category: 'marketing',
+    cost: 25,
+    rating: 4.8,
+    reviews: 950,
+    initials: 'SA',
+    gradient: 'from-pink-500 to-rose-600'
+  },
+  
+  // 🚧 COMING SOON - Not yet implemented (no working pages)
   {
     id: 4,
     name: 'Smart Customer Support Agent',
@@ -102,17 +126,6 @@ const AGENTS = [
     reviews: 4200,
     initials: 'TA',
     gradient: 'from-teal-500 to-cyan-600'
-  },
-  {
-    id: 9,
-    name: 'Job Posting Generator Agent',
-    description: 'Create compelling, professional job postings with AI-powered content generation. Generate structured job descriptions, requirements, and application instructions.',
-    category: 'content',
-    cost: 25,
-    rating: 4.7,
-    reviews: 1200,
-    initials: 'JP',
-    gradient: 'from-amber-500 to-orange-600'
   }
 ]
 
