@@ -8,7 +8,8 @@ export const getAgentSlug = (agentName: string): string => {
     'Sales Assistant Agent': 'sales-assistant',
     'Task Automation Agent': 'task-automation',
     'Weather Reporter Agent': 'weather-reporter',
-    '5 Whys Analysis Agent': 'five-whys'
+    '5 Whys Analysis Agent': 'five-whys',
+    'Job Posting Generator Agent': 'job-posting-generator'
   }
   
   return slugMap[agentName] || 'default-agent'
@@ -24,7 +25,8 @@ export const getAgentNameFromSlug = (slug: string): string => {
     'sales-assistant': 'Sales Assistant Agent',
     'task-automation': 'Task Automation Agent',
     'weather-reporter': 'Weather Reporter Agent',
-    'five-whys': '5 Whys Analysis Agent'
+    'five-whys': '5 Whys Analysis Agent',
+    'job-posting-generator': 'Job Posting Generator Agent'
   }
   
   return nameMap[slug] || 'Unknown Agent'
@@ -72,6 +74,11 @@ export const getAgentInfo = (slug: string) => {
       title: '5 Whys Root Cause Analyzer',
       description: 'Systematic root cause analysis using the proven 5 Whys methodology',
       icon: '🔍'
+    },
+    'job-posting-generator': {
+      title: 'Job Posting Generator',
+      description: 'Create professional job postings with AI-powered content generation',
+      icon: '📝'
     }
   }
   

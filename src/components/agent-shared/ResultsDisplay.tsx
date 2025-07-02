@@ -9,6 +9,27 @@ interface ResultsDisplayProps {
 export default function ResultsDisplay({ results, title = "Results", isVisible }: ResultsDisplayProps) {
   if (!isVisible || !results) return null
 
+  // Function to format job posting markdown to HTML (from test.html)
+  const formatJobPosting = (text: string) => {
+    return text
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // Bold text
+      .replace(/\*(.*?)\*/g, '<em>$1</em>') // Italic text
+      .replace(/\n\n/g, '</p><p>') // Paragraph breaks
+      .replace(/\n/g, '<br>') // Line breaks
+      .replace(/^/, '<div>') // Start wrapper
+      .replace(/$/, '</div>') // End wrapper
+      .replace(/- (.*?)(<br>|$)/g, '<li>$1</li>') // Convert bullet points
+      .replace(/(<li>.*<\/li>)/g, '<ul>$1</ul>') // Wrap lists
+      .replace(/<\/ul><ul>/g, '') // Merge consecutive lists
+      .replace(/\[([^\]]*)\]\(([^)]*)\)/g, '<a href="$2" target="_blank">$1</a>') // Convert links
+  }
+
+  // Check if content appears to be a job posting (contains job-related keywords)
+  const isJobPosting = (content: string) => {
+    const jobKeywords = ['Job Title:', 'About Us:', 'Responsibilities:', 'Requirements:', 'Qualifications:', 'How to Apply:', 'Why ', 'Location:', 'Company:']
+    return jobKeywords.some(keyword => content.includes(keyword))
+  }
+
   const renderResults = () => {
     if (typeof results === 'string') {
       return (
@@ -258,16 +279,27 @@ export default function ResultsDisplay({ results, title = "Results", isVisible }
                 color: '#1f2937',
                 marginBottom: '16px'
               }}>
-                📊 Analysis Results
+                {isJobPosting(results.analysis) ? '📝 Generated Job Posting' : '📊 Analysis Results'}
               </h4>
-              <div style={{
-                whiteSpace: 'pre-line',
-                lineHeight: '1.7',
-                color: '#374151',
-                fontSize: '15px'
-              }}>
-                {results.analysis}
-              </div>
+              {isJobPosting(results.analysis) ? (
+                <div 
+                  style={{
+                    lineHeight: '1.7',
+                    color: '#374151',
+                    fontSize: '15px'
+                  }}
+                  dangerouslySetInnerHTML={{ __html: formatJobPosting(results.analysis) }}
+                />
+              ) : (
+                <div style={{
+                  whiteSpace: 'pre-line',
+                  lineHeight: '1.7',
+                  color: '#374151',
+                  fontSize: '15px'
+                }}>
+                  {results.analysis}
+                </div>
+              )}
             </div>
 
             {/* Additional fields if present */}

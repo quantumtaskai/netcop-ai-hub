@@ -93,7 +93,7 @@ NetCop AI agent marketplace where users can use various AI agents by spending cr
 - Test credit system for development environment
 - User ID tracking via `client_reference_id` parameter
 
-#### 6. **N8N Integration**
+#### 7. **N8N Integration**
 - Direct webhook integration (simplified - no Google Sheets on frontend)
 - FormData payload sent to n8n includes:
   ```

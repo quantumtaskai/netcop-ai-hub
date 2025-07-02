@@ -102,6 +102,17 @@ const AGENTS = [
     reviews: 4200,
     initials: 'TA',
     gradient: 'from-teal-500 to-cyan-600'
+  },
+  {
+    id: 9,
+    name: 'Job Posting Generator Agent',
+    description: 'Create compelling, professional job postings with AI-powered content generation. Generate structured job descriptions, requirements, and application instructions.',
+    category: 'content',
+    cost: 25,
+    rating: 4.7,
+    reviews: 1200,
+    initials: 'JP',
+    gradient: 'from-amber-500 to-orange-600'
   }
 ]
 
