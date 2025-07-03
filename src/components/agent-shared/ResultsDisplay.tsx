@@ -1,5 +1,7 @@
 'use client'
 
+import { toast } from 'react-hot-toast'
+
 interface ResultsDisplayProps {
   results: any
   title?: string
@@ -480,27 +482,51 @@ ${results.forecast.slice(0, 5).map((day: any, index: number) =>
         gap: '12px'
       }}>
         <button
-          onClick={() => {
+          onClick={(e) => {
             const extracted = extractContent(results)
             navigator.clipboard.writeText(extracted.content)
-            // You could add a toast notification here for better UX
+            toast.success('Content copied to clipboard!', {
+              duration: 2000,
+              position: 'top-right'
+            })
+            
+            // Click animation
+            const button = e.currentTarget
+            button.style.transform = 'scale(0.95)'
+            setTimeout(() => {
+              button.style.transform = 'scale(1)'
+            }, 150)
           }}
           style={{
             background: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)',
             color: 'white',
             border: 'none',
-            padding: '8px 16px',
-            borderRadius: '8px',
+            padding: '12px 20px',
+            borderRadius: '12px',
             fontSize: '14px',
             cursor: 'pointer',
-            fontWeight: '500'
+            fontWeight: '600',
+            transition: 'all 0.2s ease',
+            boxShadow: '0 4px 15px rgba(59, 130, 246, 0.3)',
+            minHeight: '44px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = 'translateY(-2px)'
+            e.currentTarget.style.boxShadow = '0 8px 25px rgba(59, 130, 246, 0.4)'
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = 'translateY(0px)'
+            e.currentTarget.style.boxShadow = '0 4px 15px rgba(59, 130, 246, 0.3)'
           }}
         >
           📋 Copy Content
         </button>
         
         <button
-          onClick={() => {
+          onClick={(e) => {
             const extracted = extractContent(results)
             const blob = new Blob([extracted.content], { 
               type: extracted.filename.endsWith('.json') ? 'application/json' : 'text/plain' 
@@ -511,16 +537,44 @@ ${results.forecast.slice(0, 5).map((day: any, index: number) =>
             a.download = extracted.filename
             a.click()
             URL.revokeObjectURL(url)
+            
+            toast.success('File downloaded successfully!', {
+              duration: 2000,
+              position: 'top-right'
+            })
+            
+            // Click animation
+            const button = e.currentTarget
+            button.style.transform = 'scale(0.95)'
+            setTimeout(() => {
+              button.style.transform = 'scale(1)'
+            }, 150)
           }}
           style={{
             background: 'white',
             color: '#374151',
             border: '2px solid #e5e7eb',
-            padding: '8px 16px',
-            borderRadius: '8px',
+            padding: '12px 20px',
+            borderRadius: '12px',
             fontSize: '14px',
             cursor: 'pointer',
-            fontWeight: '500'
+            fontWeight: '600',
+            transition: 'all 0.2s ease',
+            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+            minHeight: '44px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = 'translateY(-2px)'
+            e.currentTarget.style.borderColor = '#d1d5db'
+            e.currentTarget.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.15)'
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = 'translateY(0px)'
+            e.currentTarget.style.borderColor = '#e5e7eb'
+            e.currentTarget.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.1)'
           }}
         >
           💾 Download Content
