@@ -9,6 +9,15 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 
 export async function POST(request: NextRequest) {
   try {
+    // Check if Stripe secret key is available
+    if (!process.env.STRIPE_SECRET_KEY) {
+      console.error('STRIPE_SECRET_KEY environment variable is not set')
+      return NextResponse.json(
+        { error: 'Payment system not configured' },
+        { status: 500 }
+      )
+    }
+
     const { sessionId, packageId } = await request.json()
 
     if (!sessionId || !packageId) {
@@ -21,7 +30,16 @@ export async function POST(request: NextRequest) {
     console.log('Verifying wallet payment:', { sessionId, packageId })
 
     // Retrieve the checkout session from Stripe
-    const session = await stripe.checkout.sessions.retrieve(sessionId)
+    let session
+    try {
+      session = await stripe.checkout.sessions.retrieve(sessionId)
+    } catch (stripeError: any) {
+      console.error('Stripe API error:', stripeError)
+      return NextResponse.json(
+        { error: 'Invalid session ID or Stripe error', details: stripeError.message },
+        { status: 400 }
+      )
+    }
     
     if (!session) {
       return NextResponse.json(

@@ -216,7 +216,7 @@ export const useUserStore = create<UserState>()(
           console.log('✅ User data refreshed:', { 
             id: userData.id, 
             email: userData.email, 
-            credits: userData.credits 
+            wallet_balance: userData.wallet_balance 
           })
           set({ user: userData, error: null })
         } catch (error: any) {
@@ -273,7 +273,7 @@ export const useUserStore = create<UserState>()(
               .single()
             
             if (!error && userData) {
-              console.log('✅ Session restored:', { id: userData.id, email: userData.email, credits: userData.credits })
+              console.log('✅ Session restored:', { id: userData.id, email: userData.email, wallet_balance: userData.wallet_balance })
               set({ user: userData, error: null })
             } else {
               console.log('❌ User data not found for session')
