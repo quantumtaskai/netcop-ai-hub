@@ -87,23 +87,66 @@ export const useUserStore = create<UserState>()(
           console.log('Auth signin result:', { data, error })
           if (error) {
             console.error('Auth signin error:', error)
-            throw error
+            throw new Error(error.message || 'Authentication failed')
           }
           if (data.user) {
-            // Just fetch the user profile (should always exist now)
+            console.log('Auth successful, fetching user profile...')
+            // Fetch the user profile from users table
             const { data: userData, error: profileError } = await supabase
               .from('users')
               .select('*')
               .eq('id', data.user.id)
               .single()
-            if (profileError) throw profileError
-            set({ user: userData, isLoading: false })
-            console.log('Signin completed successfully:', userData)
+            
+            if (profileError) {
+              console.error('Profile fetch error:', profileError)
+              
+              // Check if it's a missing profile (common after database migration)
+              if (profileError.code === 'PGRST116' || profileError.message?.includes('No rows')) {
+                console.log('Profile not found, creating new profile...')
+                // Create missing profile for existing auth user
+                const { error: insertError } = await supabase
+                  .from('users')
+                  .insert([{
+                    id: data.user.id,
+                    email: data.user.email!,
+                    name: data.user.user_metadata?.name || data.user.email!.split('@')[0],
+                    wallet_balance: 0.00
+                  }])
+                
+                if (insertError) {
+                  console.error('Failed to create profile:', insertError)
+                  throw new Error('Failed to create user profile. Please contact support.')
+                }
+                
+                // Fetch the newly created profile
+                const { data: newUserData, error: refetchError } = await supabase
+                  .from('users')
+                  .select('*')
+                  .eq('id', data.user.id)
+                  .single()
+                
+                if (refetchError || !newUserData) {
+                  throw new Error('Failed to retrieve user profile after creation')
+                }
+                
+                set({ user: newUserData, isLoading: false })
+                console.log('Profile created and signin completed:', newUserData)
+              } else {
+                throw new Error(`Database error: ${profileError.message}`)
+              }
+            } else {
+              set({ user: userData, isLoading: false })
+              console.log('Signin completed successfully:', userData)
+            }
+          } else {
+            throw new Error('No user data returned from authentication')
           }
         } catch (error: any) {
           console.error('Signin failed:', error)
-          set({ error: error.message, isLoading: false })
-          throw error
+          const errorMessage = error.message || 'Login failed. Please try again.'
+          set({ error: errorMessage, isLoading: false })
+          throw new Error(errorMessage)
         }
       },
 
@@ -276,7 +319,42 @@ export const useUserStore = create<UserState>()(
               console.log('✅ Session restored:', { id: userData.id, email: userData.email, wallet_balance: userData.wallet_balance })
               set({ user: userData, error: null })
             } else {
-              console.log('❌ User data not found for session')
+              console.log('❌ User data not found for session, checking if profile needs creation...')
+              
+              // Check if it's missing profile (database might be fresh)
+              if (error?.code === 'PGRST116' || error?.message?.includes('No rows')) {
+                console.log('Creating missing profile for session user...')
+                try {
+                  const { error: insertError } = await supabase
+                    .from('users')
+                    .insert([{
+                      id: session.session.user.id,
+                      email: session.session.user.email!,
+                      name: session.session.user.user_metadata?.name || session.session.user.email!.split('@')[0],
+                      wallet_balance: 0.00
+                    }])
+                  
+                  if (!insertError) {
+                    // Fetch the newly created profile
+                    const { data: newUserData } = await supabase
+                      .from('users')
+                      .select('*')
+                      .eq('id', session.session.user.id)
+                      .single()
+                    
+                    if (newUserData) {
+                      console.log('✅ Profile created and session restored:', newUserData)
+                      set({ user: newUserData, error: null })
+                      return
+                    }
+                  }
+                } catch (profileError) {
+                  console.error('Failed to create profile during session init:', profileError)
+                }
+              }
+              
+              // If we get here, profile creation failed or other error
+              console.log('Clearing session due to profile issues')
               set({ user: null })
             }
           } else {
