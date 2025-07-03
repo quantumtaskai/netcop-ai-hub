@@ -4,14 +4,23 @@ import Stripe from 'stripe'
 import { supabase } from '@/lib/supabase'
 import { WALLET_PACKAGES, calculateTotalAmount } from '@/lib/walletUtils'
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2024-06-20',
-})
-
-const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET!
-
 export async function POST(request: NextRequest) {
   try {
+    // Check environment variables
+    if (!process.env.STRIPE_SECRET_KEY || !process.env.STRIPE_WEBHOOK_SECRET) {
+      console.error('Missing Stripe environment variables')
+      return NextResponse.json(
+        { error: 'Webhook not configured' },
+        { status: 500 }
+      )
+    }
+
+    // Initialize Stripe after environment check
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+      apiVersion: '2024-06-20',
+    })
+
+    const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET
     const body = await request.text()
     const headersList = headers()
     const sig = headersList.get('stripe-signature')!

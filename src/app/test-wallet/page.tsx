@@ -103,6 +103,7 @@ export default function TestWalletPage() {
     }
   }
 
+
   const testAgentUsage = async (agentSlug: string) => {
     const agentPrice = AGENT_PRICING[agentSlug]
     if (!agentPrice) {
