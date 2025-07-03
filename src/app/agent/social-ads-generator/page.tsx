@@ -5,17 +5,18 @@ import { useSearchParams, useRouter } from 'next/navigation'
 import { toast, Toaster } from 'react-hot-toast'
 import { useUserStore } from '@/store/userStore'
 import { getAgentInfo } from '@/lib/agentUtils'
+import { getAgentPrice } from '@/lib/agentPricing'
 import AgentLayout from '@/components/agent-shared/AgentLayout'
 import ProcessingStatus from '@/components/agent-shared/ProcessingStatus'
 import ResultsDisplay from '@/components/agent-shared/ResultsDisplay'
-import CreditCounter from '@/components/agent-shared/CreditCounter'
+import WalletBalance from '@/components/agent-shared/WalletBalance'
 import { colors, gradients, spacing, typography, borderRadius, transitions } from '@/lib/designSystem'
 import { stylePatterns, cardStyles, textStyles } from '@/lib/styleUtils'
 
 function SocialAdsGeneratorForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const { user, updateCredits } = useUserStore()
+  const { user, updateWallet } = useUserStore()
   
   // Get agent info from URL params
   const agentId = searchParams.get('agentId')
@@ -142,9 +143,12 @@ Please create an engaging, platform-optimized social media ad based on this info
       setResults(formattedResults)
       setShowResults(true)
 
-      // Deduct credits only on success
-      await updateCredits(-cost)
-      toast.success(`Social ad generated successfully! ${cost} credits used.`)
+      // Deduct wallet balance only on success
+      const agentPrice = getAgentPrice('social-ads-generator')
+      if (agentPrice) {
+        await updateWallet(-agentPrice.price)
+        toast.success(`Social ad generated successfully! ${agentPrice.priceDisplay} used.`)
+      }
 
     } catch (error: any) {
       console.error('Processing error:', error)
@@ -399,8 +403,8 @@ Please create an engaging, platform-optimized social media ad based on this info
         </div>
 
         <div>
-          <CreditCounter 
-            cost={cost} 
+          <WalletBalance 
+            agentSlug="social-ads-generator"
             onProcess={processAgent} 
             disabled={!isFormValid()} 
             processing={isProcessing}

@@ -23,11 +23,9 @@ export default function TestWalletPage() {
       return
     }
     
-    // Fetch database state on load (but don't let errors crash the page)
-    fetchDatabaseState().catch((error) => {
-      console.error('Failed to fetch database state on load:', error)
-      // Don't redirect on database errors - let user see the investigation tools
-    })
+    // Don't fetch database state on load - let user trigger investigation manually
+    // This prevents crashes when tables don't exist
+    console.log('Test wallet page loaded for user:', user.email)
   }, [user, router])
 
   const fetchDatabaseState = async () => {
@@ -46,8 +44,9 @@ export default function TestWalletPage() {
         // Set error data so we can still see what went wrong
         setDatabaseData({
           success: false,
-          error: data.error,
-          message: 'Tables may be missing - use schema investigation to check'
+          error: data.error || 'Unknown database error',
+          message: data.message || 'Tables may be missing - use schema investigation to check',
+          details: data
         })
       }
     } catch (error) {
@@ -245,6 +244,50 @@ export default function TestWalletPage() {
     }
   }
 
+  const directDatabaseCheck = async () => {
+    setIsLoading(true)
+    try {
+      const response = await fetch('/api/db/direct-check')
+      const data = await response.json()
+      
+      setTestResults(prev => [...prev, {
+        type: 'direct-database-check',
+        timestamp: new Date().toISOString(),
+        success: response.ok,
+        data: data
+      }])
+      
+      if (response.ok) {
+        toast.success('Direct database check completed')
+        console.log('Database structure:', data)
+        
+        // Show key findings in toast
+        const { summary } = data
+        if (summary.readyForWallet) {
+          toast.success('✅ Database ready for wallet system!')
+        } else if (summary.canMigrate) {
+          toast.warning('⚠️ Found credits column - can migrate to wallet_balance')
+        } else {
+          toast.error('❌ Missing wallet system tables/columns')
+        }
+      } else {
+        toast.error('Direct database check failed')
+      }
+    } catch (error: any) {
+      console.error('Direct check error:', error)
+      toast.error('Direct check failed')
+      
+      setTestResults(prev => [...prev, {
+        type: 'direct-check-error',
+        timestamp: new Date().toISOString(),
+        success: false,
+        error: error.message
+      }])
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   if (!user) {
     return (
       <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -297,6 +340,24 @@ export default function TestWalletPage() {
             justifyContent: 'center',
             flexWrap: 'wrap'
           }}>
+            <button
+              onClick={directDatabaseCheck}
+              disabled={isLoading}
+              style={{
+                padding: `${spacing.sm} ${spacing.lg}`,
+                background: gradients.primary,
+                color: colors.white,
+                border: 'none',
+                borderRadius: '8px',
+                cursor: isLoading ? 'not-allowed' : 'pointer',
+                opacity: isLoading ? 0.6 : 1,
+                fontSize: typography.fontSize.sm,
+                fontWeight: typography.fontWeight.bold
+              }}
+            >
+              🔍 Check Database Direct
+            </button>
+            
             <button
               onClick={refreshData}
               style={{

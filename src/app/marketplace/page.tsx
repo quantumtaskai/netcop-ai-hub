@@ -21,7 +21,6 @@ const AGENTS = [
     name: '5 Whys Analysis Agent',
     description: 'Systematic root cause analysis using the proven 5 Whys methodology to identify and solve business problems effectively.',
     category: 'analytics',
-    cost: 30,
     rating: 4.8,
     reviews: 850,
     initials: '5W',
@@ -32,7 +31,6 @@ const AGENTS = [
     name: 'Data Analysis Agent',
     description: 'Processes complex datasets and generates actionable insights with automated reporting and visualization capabilities.',
     category: 'analytics',
-    cost: 45,
     rating: 4.8,
     reviews: 1800,
     initials: 'DA',
@@ -43,7 +41,6 @@ const AGENTS = [
     name: 'Weather Reporter Agent',
     description: 'Get detailed weather reports for any location worldwide with current conditions, forecasts, and weather alerts.',
     category: 'utilities',
-    cost: 15,
     rating: 4.9,
     reviews: 1650,
     initials: 'WR',
@@ -54,7 +51,6 @@ const AGENTS = [
     name: 'Job Posting Generator Agent',
     description: 'Create compelling, professional job postings with AI-powered content generation. Generate structured job descriptions, requirements, and application instructions.',
     category: 'content',
-    cost: 25,
     rating: 4.7,
     reviews: 1200,
     initials: 'JP',
@@ -65,7 +61,6 @@ const AGENTS = [
     name: 'Social Ads Generator Agent',
     description: 'Create engaging social media advertisements optimized for different platforms. Generate compelling ad copy with platform-specific formatting and emoji support.',
     category: 'marketing',
-    cost: 25,
     rating: 4.8,
     reviews: 950,
     initials: 'SA',
@@ -76,7 +71,6 @@ const AGENTS = [
     name: 'FAQ Generator Agent',
     description: 'Generate comprehensive FAQs from uploaded files or website URLs. Automatically extracts key information and creates professional question-answer pairs.',
     category: 'content',
-    cost: 30,
     rating: 4.7,
     reviews: 750,
     initials: 'FQ',
@@ -89,7 +83,6 @@ const AGENTS = [
     name: 'Smart Customer Support Agent',
     description: 'Automates customer inquiries with intelligent responses, reducing response time by 80% while maintaining high satisfaction rates.',
     category: 'customer-service',
-    cost: 25,
     rating: 4.9,
     reviews: 2300,
     initials: 'CS',
@@ -100,7 +93,6 @@ const AGENTS = [
     name: 'Content Writing Agent',
     description: 'Creates high-quality, engaging content across multiple formats while maintaining brand voice and SEO optimization.',
     category: 'content',
-    cost: 35,
     rating: 4.7,
     reviews: 3100,
     initials: 'CW',
@@ -111,7 +103,6 @@ const AGENTS = [
     name: 'Email Automation Agent',
     description: 'Manages email campaigns with personalized content, smart scheduling, and performance tracking for maximum engagement.',
     category: 'email',
-    cost: 30,
     rating: 4.9,
     reviews: 2700,
     initials: 'EA',
@@ -122,7 +113,6 @@ const AGENTS = [
     name: 'Sales Assistant Agent',
     description: 'Qualifies leads, schedules meetings, and provides sales insights to accelerate your sales pipeline and close deals faster.',
     category: 'sales',
-    cost: 40,
     rating: 4.6,
     reviews: 1900,
     initials: 'SA',
@@ -133,7 +123,6 @@ const AGENTS = [
     name: 'Task Automation Agent',
     description: 'Streamlines repetitive workflows across multiple platforms, saving hours of manual work with intelligent automation.',
     category: 'utilities',
-    cost: 20,
     rating: 4.8,
     reviews: 4200,
     initials: 'TA',
@@ -271,7 +260,7 @@ function HomePageContent() {
         fontSize: '12px',
         zIndex: 9999
       }}>
-        User: {user ? `${user.name} (${user.credits} credits)` : 'Not logged in'}
+        User: {user ? `${user.name} (${(user.wallet_balance || 0).toFixed(2)} AED)` : 'Not logged in'}
       </div>
 
       {/* Shared Header */}
@@ -555,7 +544,7 @@ function HomePageContent() {
                         {(() => {
                           const agentSlug = getAgentSlug(agent.name);
                           const agentPrice = getAgentPrice(agentSlug);
-                          return agentPrice ? agentPrice.priceDisplay : `${agent.cost} credits`;
+                          return agentPrice ? agentPrice.priceDisplay : 'Price TBD';
                         })()}
                       </span>
                     </div>

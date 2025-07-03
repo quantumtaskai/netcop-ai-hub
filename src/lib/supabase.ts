@@ -46,7 +46,6 @@ export interface Agent {
   name: string
   description: string
   category: string
-  cost: number
   rating: number
   reviews: number
   initials: string

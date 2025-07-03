@@ -61,28 +61,56 @@ export async function GET(request: NextRequest) {
       usersError = { message: 'Users table access failed', code: 'TABLE_ACCESS_ERROR' }
     }
     
-    // Check for recent payments (last 24 hours)
-    const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
-    const { data: recentTransactions, error: recentError } = await supabase
-      .from('wallet_transactions')
-      .select('*')
-      .gte('created_at', twentyFourHoursAgo)
-      .order('created_at', { ascending: false })
+    // Check for recent payments (last 24 hours) - handle missing table
+    let recentTransactions = []
+    let recentError = null
     
-    if (recentError) {
-      console.error('Error fetching recent transactions:', recentError)
+    if (!transactionsError) {
+      try {
+        const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
+        const { data: recentData, error: recentErr } = await supabase
+          .from('wallet_transactions')
+          .select('*')
+          .gte('created_at', twentyFourHoursAgo)
+          .order('created_at', { ascending: false })
+        
+        if (recentErr) {
+          console.error('Error fetching recent transactions:', recentErr)
+          recentError = recentErr
+        } else {
+          recentTransactions = recentData || []
+        }
+      } catch (error: any) {
+        recentError = { message: 'Recent transactions query failed', code: 'QUERY_ERROR' }
+      }
+    } else {
+      recentError = { message: 'Skipped due to missing wallet_transactions table' }
     }
     
-    // Check for specific Stripe session from the screenshot
-    const { data: stripeTransaction, error: stripeError } = await supabase
-      .from('wallet_transactions')
-      .select('*')
-      .ilike('stripe_session_id', '%cs_%')
-      .order('created_at', { ascending: false })
-      .limit(5)
+    // Check for specific Stripe session - handle missing table
+    let stripeTransaction = []
+    let stripeError = null
     
-    if (stripeError) {
-      console.error('Error fetching Stripe transactions:', stripeError)
+    if (!transactionsError) {
+      try {
+        const { data: stripeData, error: stripeErr } = await supabase
+          .from('wallet_transactions')
+          .select('*')
+          .ilike('stripe_session_id', '%cs_%')
+          .order('created_at', { ascending: false })
+          .limit(5)
+        
+        if (stripeErr) {
+          console.error('Error fetching Stripe transactions:', stripeErr)
+          stripeError = stripeErr
+        } else {
+          stripeTransaction = stripeData || []
+        }
+      } catch (error: any) {
+        stripeError = { message: 'Stripe transactions query failed', code: 'QUERY_ERROR' }
+      }
+    } else {
+      stripeError = { message: 'Skipped due to missing wallet_transactions table' }
     }
     
     return NextResponse.json({
@@ -112,9 +140,15 @@ export async function GET(request: NextRequest) {
     
   } catch (error: any) {
     console.error('Database verification error:', error)
-    return NextResponse.json(
-      { error: 'Database verification failed', message: error.message },
-      { status: 500 }
-    )
+    return NextResponse.json({
+      success: false,
+      error: 'Database verification failed',
+      message: error?.message || 'Unknown error occurred during database verification',
+      details: {
+        errorType: typeof error,
+        errorMessage: error?.message,
+        errorStack: error?.stack?.split('\n')?.slice(0, 3) // First 3 lines of stack
+      }
+    }, { status: 500 })
   }
 }

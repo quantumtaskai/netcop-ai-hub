@@ -5,17 +5,18 @@ import { useSearchParams, useRouter } from 'next/navigation'
 import { toast, Toaster } from 'react-hot-toast'
 import { useUserStore } from '@/store/userStore'
 import { getAgentInfo } from '@/lib/agentUtils'
+import { getAgentPrice } from '@/lib/agentPricing'
 import AgentLayout from '@/components/agent-shared/AgentLayout'
 import ProcessingStatus from '@/components/agent-shared/ProcessingStatus'
 import ResultsDisplay from '@/components/agent-shared/ResultsDisplay'
-import CreditCounter from '@/components/agent-shared/CreditCounter'
+import WalletBalance from '@/components/agent-shared/WalletBalance'
 import { colors, gradients, spacing, typography, borderRadius, transitions } from '@/lib/designSystem'
 import { stylePatterns, cardStyles, textStyles } from '@/lib/styleUtils'
 
 function JobPostingGeneratorForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const { user, updateCredits } = useUserStore()
+  const { user, updateWallet } = useUserStore()
   
   // Get agent info from URL params
   const agentId = searchParams.get('agentId')
@@ -157,9 +158,12 @@ Please create a complete, engaging job posting based on this information.`
       setResults(formattedResults)
       setShowResults(true)
 
-      // Deduct credits only on successful completion
-      await updateCredits(-cost)
-      toast.success(`Job posting generated! ${cost} credits used.`)
+      // Deduct wallet balance only on successful completion
+      const agentPrice = getAgentPrice('job-posting-generator')
+      if (agentPrice) {
+        await updateWallet(-agentPrice.price)
+        toast.success(`Job posting generated! ${agentPrice.priceDisplay} used.`)
+      }
 
     } catch (error: any) {
       console.error('Job posting generation error:', error)
@@ -664,8 +668,8 @@ Please create a complete, engaging job posting based on this information.`
         </div>
 
         <div>
-          <CreditCounter 
-            cost={cost} 
+          <WalletBalance 
+            agentSlug="job-posting-generator"
             onProcess={generateJobPosting} 
             disabled={!isFormValid()} 
             processing={isProcessing}
