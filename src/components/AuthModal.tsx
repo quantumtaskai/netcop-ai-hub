@@ -30,7 +30,7 @@ export default function AuthModal({ isOpen, onClose, mode, setAuthMode }: AuthMo
     try {
       if (mode === 'register') {
         await signUp(email, password, name)
-        toast.success('Account created successfully! Welcome to AgentHub!')
+        toast.success('Account created successfully! Welcome to NetCop AI Hub!')
         onClose()
         setEmail('')
         setPassword('')
@@ -108,10 +108,10 @@ export default function AuthModal({ isOpen, onClose, mode, setAuthMode }: AuthMo
             color: colors.gray[500] 
           }}>
             {mode === 'register' 
-              ? 'Join AgentHub and get 1,000 free credits!' 
+              ? 'Join NetCop AI Hub and start using AI agents!' 
               : mode === 'reset'
               ? 'Enter your email to receive a password reset link'
-              : 'Sign in to your AgentHub account'
+              : 'Sign in to your NetCop AI Hub account'
             }
           </p>
         </div>

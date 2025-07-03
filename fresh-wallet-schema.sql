@@ -64,6 +64,7 @@ ALTER TABLE public.wallet_transactions ENABLE ROW LEVEL SECURITY;
 -- Drop existing policies if they exist
 DROP POLICY IF EXISTS "Users can view own profile" ON public.users;
 DROP POLICY IF EXISTS "Users can update own profile" ON public.users;
+DROP POLICY IF EXISTS "Users can insert own profile" ON public.users;
 DROP POLICY IF EXISTS "Users can view own wallet transactions" ON public.wallet_transactions;
 DROP POLICY IF EXISTS "Users can insert own wallet transactions" ON public.wallet_transactions;
 
@@ -73,6 +74,9 @@ CREATE POLICY "Users can view own profile" ON public.users
 
 CREATE POLICY "Users can update own profile" ON public.users
     FOR UPDATE USING (auth.uid() = id);
+
+CREATE POLICY "Users can insert own profile" ON public.users
+    FOR INSERT WITH CHECK (auth.uid() = id);
 
 -- Create RLS policies for wallet_transactions table
 CREATE POLICY "Users can view own wallet transactions" ON public.wallet_transactions
