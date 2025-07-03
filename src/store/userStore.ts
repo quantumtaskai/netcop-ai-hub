@@ -12,8 +12,8 @@ interface UserState {
   signIn: (email: string, password: string) => Promise<void>
   signOut: () => Promise<void>
   resetPassword: (email: string) => Promise<void>
-  updateCredits: (amount: number) => Promise<void>
-  purchaseCredits: (credits: number) => void
+  updateWallet: (amount: number) => Promise<void>
+  topUpWallet: (packageId: string) => void
   refreshUser: () => Promise<void>
   initializeSession: () => Promise<void>
   setUser: (user: User | null) => void
@@ -57,7 +57,7 @@ export const useUserStore = create<UserState>()(
               id: user.id,
               email: user.email,
               name: user.user_metadata?.name || user.email.split('@')[0],
-              credits: 0
+              wallet_balance: 0.00
             }]);
           if (profileError) throw profileError;
 
@@ -149,31 +149,33 @@ export const useUserStore = create<UserState>()(
         }
       },
 
-      updateCredits: async (amount: number) => {
+      updateWallet: async (amount: number) => {
         const { user } = get()
         if (!user) return
 
         try {
-          console.log('Updating credits:', { userId: user.id, currentCredits: user.credits, amount })
+          console.log('Updating wallet:', { userId: user.id, currentBalance: user.wallet_balance, amount })
+          
+          const newBalance = user.wallet_balance + amount
           
           const { data, error } = await supabase
             .from('users')
-            .update({ credits: user.credits + amount })
+            .update({ wallet_balance: newBalance })
             .eq('id', user.id)
             .select()
             .single()
 
-          console.log('Credit update result:', { data, error })
+          console.log('Wallet update result:', { data, error })
 
           if (error) {
-            console.error('Credit update error:', error)
+            console.error('Wallet update error:', error)
             throw error
           }
 
           set({ user: data })
-          console.log('Credits updated successfully:', data.credits)
+          console.log('Wallet updated successfully:', data.wallet_balance, 'AED')
         } catch (error: any) {
-          console.error('Credit update failed:', error)
+          console.error('Wallet update failed:', error)
           set({ error: error.message })
           throw error
         }
@@ -224,38 +226,30 @@ export const useUserStore = create<UserState>()(
         }
       },
 
-      purchaseCredits: (credits: number) => {
+      topUpWallet: (packageId: string) => {
         const { user } = get()
         if (!user) {
-          console.error('❌ Cannot purchase credits: No user found')
+          console.error('❌ Cannot top up wallet: No user found')
           return
         }
 
-        // Payment Links for each credit package (created via Stripe CLI)
-        const paymentLinks = {
-          10: 'https://buy.stripe.com/test_28EbJ16AA7ly3ic7vh2VG0a',     // Basic Package - 9.99 AED
-          50: 'https://buy.stripe.com/test_4gM00jbUUgW83ic3f12VG0b',     // Popular Package - 49.99 AED  
-          100: 'https://buy.stripe.com/test_aFadR99MM35ibOI6rd2VG0c',    // Premium Package - 99.99 AED
-          500: 'https://buy.stripe.com/test_14AbJ12kk7lyf0U16T2VG0d'     // Enterprise Package - 499.99 AED
-        }
-
-        const paymentLink = paymentLinks[credits as keyof typeof paymentLinks]
-        if (!paymentLink) {
-          console.error('❌ Invalid credit package:', credits)
-          return
-        }
-
-        // Add user ID to payment link for webhook processing
-        const url = `${paymentLink}?client_reference_id=${user.id}&prefilled_email=${encodeURIComponent(user.email)}`
+        console.log('💰 Starting wallet top-up:', { packageId, userId: user.id })
         
-        console.log('🔗 Redirecting to payment:', { 
-          credits, 
-          url,
+        // Create checkout session URL for wallet top-up
+        const baseUrl = typeof window !== 'undefined' ? window.location.origin : process.env.NEXT_PUBLIC_APP_URL
+        const successUrl = `${baseUrl}/wallet?session_id={CHECKOUT_SESSION_ID}&payment=success&package=${packageId}`
+        const cancelUrl = `${baseUrl}/wallet?payment=cancelled`
+        
+        const checkoutUrl = `/api/wallet/create-checkout?package=${packageId}&user=${user.id}&success=${encodeURIComponent(successUrl)}&cancel=${encodeURIComponent(cancelUrl)}`
+        
+        console.log('🔗 Redirecting to wallet checkout:', { 
+          packageId, 
+          checkoutUrl,
           userId: user.id 
         })
         
-        // Open payment link in new tab
-        window.open(url, '_blank')
+        // Redirect to checkout
+        window.location.href = checkoutUrl
       },
 
       setUser: (user: User | null) => set({ user }),

@@ -3,7 +3,7 @@ CREATE TABLE public.users (
     id UUID REFERENCES auth.users(id) ON DELETE CASCADE PRIMARY KEY,
     email TEXT UNIQUE NOT NULL,
     name TEXT NOT NULL,
-    credits INTEGER DEFAULT 1000 NOT NULL,
+    wallet_balance DECIMAL(10,2) DEFAULT 0.00 NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -35,13 +35,15 @@ CREATE TABLE public.usage_history (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- Create credit_transactions table
-CREATE TABLE public.credit_transactions (
+-- Create wallet_transactions table
+CREATE TABLE public.wallet_transactions (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     user_id UUID REFERENCES public.users(id) ON DELETE CASCADE NOT NULL,
-    amount INTEGER NOT NULL,
-    type TEXT NOT NULL CHECK (type IN ('purchase', 'usage', 'refund')),
-    stripe_payment_intent_id TEXT,
+    amount DECIMAL(10,2) NOT NULL,
+    type TEXT NOT NULL CHECK (type IN ('top_up', 'agent_usage', 'refund')),
+    description TEXT,
+    agent_slug TEXT,
+    stripe_session_id TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
@@ -49,7 +51,7 @@ CREATE TABLE public.credit_transactions (
 CREATE INDEX idx_users_email ON public.users(email);
 CREATE INDEX idx_usage_history_user_id ON public.usage_history(user_id);
 CREATE INDEX idx_usage_history_created_at ON public.usage_history(created_at);
-CREATE INDEX idx_credit_transactions_user_id ON public.credit_transactions(user_id);
+CREATE INDEX idx_wallet_transactions_user_id ON public.wallet_transactions(user_id);
 CREATE INDEX idx_agents_category ON public.agents(category);
 CREATE INDEX idx_agents_is_active ON public.agents(is_active);
 
@@ -57,7 +59,7 @@ CREATE INDEX idx_agents_is_active ON public.agents(is_active);
 ALTER TABLE public.users ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.agents ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.usage_history ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.credit_transactions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.wallet_transactions ENABLE ROW LEVEL SECURITY;
 
 -- RLS Policies for users table
 CREATE POLICY "Users can view own profile" ON public.users
@@ -80,11 +82,11 @@ CREATE POLICY "Users can view own usage history" ON public.usage_history
 CREATE POLICY "Users can insert own usage history" ON public.usage_history
     FOR INSERT WITH CHECK (auth.uid() = user_id);
 
--- RLS Policies for credit_transactions table
-CREATE POLICY "Users can view own credit transactions" ON public.credit_transactions
+-- RLS Policies for wallet_transactions table
+CREATE POLICY "Users can view own wallet transactions" ON public.wallet_transactions
     FOR SELECT USING (auth.uid() = user_id);
 
-CREATE POLICY "Users can insert own credit transactions" ON public.credit_transactions
+CREATE POLICY "Users can insert own wallet transactions" ON public.wallet_transactions
     FOR INSERT WITH CHECK (auth.uid() = user_id);
 
 -- Insert sample agents data

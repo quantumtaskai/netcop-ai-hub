@@ -36,7 +36,7 @@ export interface User {
   id: string
   email: string
   name: string
-  credits: number
+  wallet_balance: number
   created_at: string
   updated_at: string
 }
@@ -67,11 +67,13 @@ export interface UsageHistory {
   created_at: string
 }
 
-export interface CreditTransaction {
+export interface WalletTransaction {
   id: string
   user_id: string
   amount: number
-  type: 'purchase' | 'usage' | 'refund'
-  stripe_payment_intent_id?: string
+  type: 'top_up' | 'agent_usage' | 'refund'
+  description: string
+  agent_slug?: string
+  stripe_session_id?: string
   created_at: string
 } 
