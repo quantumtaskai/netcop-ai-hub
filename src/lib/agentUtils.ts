@@ -1,3 +1,5 @@
+import { getAgentPrice, AgentPrice } from './agentPricing'
+
 // Agent slug mapping utility
 export const getAgentSlug = (agentName: string): string => {
   const slugMap: { [key: string]: string } = {
@@ -101,4 +103,27 @@ export const getAgentInfo = (slug: string) => {
     description: 'AI-powered automation tool',
     icon: '🤖'
   }
+}
+
+// Get complete agent information including pricing
+export const getAgentWithPricing = (slug: string) => {
+  const agentInfo = getAgentInfo(slug)
+  const agentPrice = getAgentPrice(slug)
+  
+  return {
+    ...agentInfo,
+    pricing: agentPrice,
+    hasPayPerUse: !!agentPrice
+  }
+}
+
+// Check if agent supports pay-per-use pricing
+export const supportsPayPerUse = (slug: string): boolean => {
+  return !!getAgentPrice(slug)
+}
+
+// Get formatted price display for agent
+export const getAgentPriceDisplay = (slug: string): string => {
+  const pricing = getAgentPrice(slug)
+  return pricing ? pricing.priceDisplay : 'Pricing not available'
 }
