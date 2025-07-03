@@ -1,49 +1,189 @@
 # NetCop AI Hub - Development Progress
 
 ## Project Overview
-NetCop AI agent marketplace where users can use various AI agents by spending credits. Each agent redirects to its own page with custom functionality connected to n8n workflows.
+NetCop AI agent marketplace where users can use various AI agents using a wallet balance system (AED currency). Each agent redirects to its own page with custom functionality connected to n8n workflows.
 
 ## 🏗️ Technical Architecture
 
 ### Frontend Stack
 - **Next.js 14** - React framework with App Router
 - **TypeScript** - Type safety and better development experience
-- **Zustand** - State management for user sessions and credits
+- **Zustand** - State management for user sessions and wallet balance
 - **React Hot Toast** - Toast notifications for user feedback
 - **Inline CSS** - Component-specific styling with gradients and animations
 
 ### Backend & Infrastructure
 - **Supabase** - Authentication, database, and real-time subscriptions
-- **Stripe Payment Links** - Payment processing with AED currency
+- **Stripe Checkout** - Wallet top-up processing with AED currency
 - **N8N** - Workflow automation for agent processing
 - **OpenWeatherMap API** - External API integration example
 
 ### Data Flow
 1. **Authentication**: Supabase Auth → User session → Zustand store
-2. **Credit Purchase**: Stripe Payment Links → Manual credit update → User refresh
-3. **Agent Usage**: Credit validation → Agent processing → Credit deduction
+2. **Wallet Top-Up**: Stripe Checkout → Payment verification → Wallet balance update
+3. **Agent Usage**: Wallet validation → Agent processing → AED deduction → Transaction recording
 4. **Results**: N8N/API response → Formatted display → Copy/download options
+
+## 🎯 Fresh Wallet System Implementation (2025-01-03)
+
+### **Major System Transformation: Credits → Wallet Balance**
+
+#### **✅ COMPLETED: Complete Wallet System Migration**
+- **Duration**: Single session comprehensive transformation
+- **Approach**: Clean slate implementation (no legacy data migration)
+- **Result**: Production-ready wallet system with AED pricing
+
+#### **🔄 What Was Transformed:**
+
+##### **1. Database Architecture**
+- **Before**: Users had `credits` field (abstract points)
+- **After**: Users have `wallet_balance` field (DECIMAL for AED currency)
+- **New Tables**: `wallet_transactions` for complete transaction history
+- **Schema**: Fresh wallet-only database schema (`fresh-wallet-schema.sql`)
+
+##### **2. Pricing System**
+- **Before**: Abstract credit costs (15-45 credits per agent)
+- **After**: Direct AED pricing (2.00-8.00 AED per agent)
+- **Implementation**: Centralized `agentPricing.ts` configuration
+- **Transparency**: Users see exact AED amounts throughout
+
+##### **3. Component Architecture**
+- **Before**: `CreditCounter` component with credit validation
+- **After**: `WalletBalance` component with AED calculations
+- **Integration**: All agent pages updated to use wallet system
+- **UI**: Clean wallet balance display in header and components
+
+##### **4. User Experience**
+- **Before**: "Purchase credits" → Agent usage → Credit deduction
+- **After**: "Top up wallet" → Agent usage → AED deduction
+- **Flow**: Simplified transparent pricing without conversion rates
+- **Feedback**: Clear AED amounts in all transactions
+
+#### **🏗️ Technical Implementation Details:**
+
+##### **Database Schema (Fresh)**
+```sql
+-- Clean users table (no legacy credits)
+CREATE TABLE public.users (
+    id UUID PRIMARY KEY,
+    email TEXT NOT NULL,
+    name TEXT NOT NULL,
+    wallet_balance DECIMAL(10,2) DEFAULT 0.00 NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Transaction history table
+CREATE TABLE public.wallet_transactions (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    user_id UUID REFERENCES public.users(id) ON DELETE CASCADE,
+    amount DECIMAL(10,2) NOT NULL,
+    type TEXT CHECK (type IN ('top_up', 'agent_usage', 'refund')),
+    description TEXT,
+    agent_slug TEXT,
+    stripe_session_id TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+```
+
+##### **Agent Pricing Configuration**
+```typescript
+export const AGENT_PRICING: Record<string, AgentPrice> = {
+  'weather-reporter': { price: 2.00, priceDisplay: '2.00 AED' },
+  'data-analyzer': { price: 5.00, priceDisplay: '5.00 AED' },
+  'five-whys': { price: 8.00, priceDisplay: '8.00 AED' },
+  // ... all agents with direct AED pricing
+}
+```
+
+##### **Wallet Balance Component**
+```typescript
+// Replaced CreditCounter with WalletBalance
+interface WalletBalanceProps {
+  agentSlug: string  // Uses pricing from agentPricing.ts
+  onProcess: () => void
+  disabled?: boolean
+  processing?: boolean
+}
+```
+
+#### **📊 Files Modified/Created:**
+
+##### **New Files:**
+- `fresh-wallet-schema.sql` - Clean database schema
+- `fix-rls-policies.sql` - Quick RLS policy fix
+- `src/components/agent-shared/WalletBalance.tsx` - Wallet component
+
+##### **Transformed Files:**
+- `src/store/userStore.ts` - Credit → Wallet functions
+- `src/app/marketplace/page.tsx` - Remove credit displays
+- `src/lib/supabase.ts` - Remove cost field from Agent interface
+- `src/components/AuthModal.tsx` - Remove "free credits" messaging
+
+##### **Agent Pages Updated:**
+- `src/app/agent/faq-generator/page.tsx`
+- `src/app/agent/social-ads-generator/page.tsx`  
+- `src/app/agent/job-posting-generator/page.tsx`
+
+#### **🔧 Critical Issues Resolved:**
+
+##### **1. Signin Error Fix**
+- **Issue**: Empty error object `{}` during signin
+- **Cause**: Missing user profiles in database after migration
+- **Solution**: Auto-create missing profiles with `wallet_balance: 0.00`
+
+##### **2. Registration RLS Policy**
+- **Issue**: "new row violates row-level security policy"
+- **Cause**: Missing INSERT policy for users table
+- **Solution**: Added `"Users can insert own profile"` RLS policy
+
+##### **3. Mixed Credit/Wallet Display**
+- **Issue**: Some UI still showed credits
+- **Solution**: Removed all credit references, fallbacks, and old components
+
+#### **💡 System Benefits Achieved:**
+
+##### **1. Transparency**
+- ✅ Users see exact AED costs (no conversion)
+- ✅ Direct pricing: 2-8 AED range per agent
+- ✅ Clear wallet balance display
+
+##### **2. Simplicity**
+- ✅ No abstract credit system
+- ✅ Familiar currency (AED)
+- ✅ Straightforward top-up process
+
+##### **3. Technical Cleanliness**
+- ✅ No legacy data or mixed systems
+- ✅ Clean database schema
+- ✅ Consistent component architecture
+
+##### **4. Scalability**
+- ✅ Easy to add new agents with AED pricing
+- ✅ Transaction history for analytics
+- ✅ Flexible wallet top-up packages
 
 ## Current Implementation Status
 
 ### ✅ Completed Features
 
 #### 1. **Authentication & User Management**
-- User registration/login with Supabase Auth
+- User registration/login with Supabase Auth with auto-profile creation
 - Password reset functionality with email confirmation
 - Profile management (name/email updates)
-- Credit system with purchase options
-- User state management with Zustand
+- **Wallet system** with AED balance and top-up options
+- User state management with Zustand (wallet-focused)
 
 #### 2. **Agent System Architecture**
 - Agent slug mapping utility (`/lib/agentUtils.ts`)
+- Centralized pricing system (`/lib/agentPricing.ts`)
 - Main page redirects to individual agent pages instead of modals
 - Shared components for all agent pages:
-  - `AgentLayout` - Common layout with back button and credit display
+  - `AgentLayout` - Common layout with back button and wallet display
   - `FileUpload` - Drag & drop file upload component
   - `ProcessingStatus` - Real-time status indicator
   - `ResultsDisplay` - Formatted results with copy/download
-  - `CreditCounter` - Credit validation and deduction UI
+  - `WalletBalance` - Wallet validation and AED deduction UI
 
 #### 3. **Data Analyzer Agent (Template)**
 - Complete agent page at `/agent/data-analyzer`
@@ -1506,4 +1646,14 @@ const NewComponent = () => (
 ---
 
 ## Current Focus
-**Complete marketplace foundation**: Two agents implemented (Data Analyzer with n8n integration, Weather Reporter with external API), full Stripe payment system with 4 credit packages, comprehensive user management, **unified UI consistency across all pages**, and now **complete CSS architecture optimization with centralized design system**. The application now has a robust, scalable, and maintainable styling foundation that will accelerate future development while ensuring professional consistency.
+**Fresh Wallet System Implementation Complete**: Revolutionary transformation from abstract credit system to transparent AED wallet balance system. **Complete marketplace foundation** with working agents (Data Analyzer, Weather Reporter, 5 Whys Analysis, FAQ Generator, Social Ads Generator, Job Posting Generator), **full Stripe wallet top-up system**, **unified UI consistency across all pages**, and **complete CSS architecture optimization**. 
+
+### **Wallet System Status: ✅ PRODUCTION READY**
+- **Database**: Fresh schema with wallet_balance and transaction history
+- **Pricing**: Direct AED pricing (2-8 AED per agent) 
+- **Components**: Complete WalletBalance system replacing credit logic
+- **User Experience**: Transparent pricing, easy top-ups, clear balance display
+- **Authentication**: Auto-profile creation, RLS policies fixed
+- **Future-Proof**: Scalable for new agents, payment methods, and features
+
+The application now has a **robust, transparent, and user-friendly wallet system** that eliminates the complexity of abstract credits in favor of direct AED pricing. All users start fresh with 0.00 AED balance and can easily understand exactly what they're paying for each AI agent.
