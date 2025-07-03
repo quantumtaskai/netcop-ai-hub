@@ -5,10 +5,11 @@ import { useSearchParams, useRouter } from 'next/navigation'
 import { toast, Toaster } from 'react-hot-toast'
 import { useUserStore } from '@/store/userStore'
 import { getAgentInfo } from '@/lib/agentUtils'
+import { getAgentPrice } from '@/lib/agentPricing'
 import AgentLayout from '@/components/agent-shared/AgentLayout'
 import ProcessingStatus from '@/components/agent-shared/ProcessingStatus'
 import ResultsDisplay from '@/components/agent-shared/ResultsDisplay'
-import CreditCounter from '@/components/agent-shared/CreditCounter'
+import WalletBalance from '@/components/agent-shared/WalletBalance'
 
 interface WeatherData {
   location: string
@@ -32,11 +33,11 @@ interface WeatherData {
 function WeatherReporterForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const { user, updateCredits } = useUserStore()
+  const { user, updateWallet } = useUserStore()
   
-  // Get agent info from URL params
-  const agentId = searchParams.get('agentId')
-  const cost = parseInt(searchParams.get('cost') || '15')
+  // Get agent pricing
+  const agentPrice = getAgentPrice('weather-reporter')
+  const agentSlug = 'weather-reporter'
   
   // Component state
   const [location, setLocation] = useState('')
@@ -152,9 +153,9 @@ function WeatherReporterForm() {
       setResults(formattedResults)
       setShowResults(true)
 
-      // Step 5: Deduct credits only after successful completion
-      await updateCredits(-cost)
-      toast.success(`Weather report generated! ${cost} credits used.`)
+      // Step 5: Deduct wallet balance only after successful completion
+      await updateWallet(-agentPrice!.price)
+      toast.success(`Weather report generated! ${agentPrice!.priceDisplay} used.`)
 
     } catch (error) {
       console.error('Weather API error:', error)
@@ -183,7 +184,7 @@ function WeatherReporterForm() {
       title={agentInfo.title}
       description={agentInfo.description}
       icon={agentInfo.icon}
-      cost={cost}
+      cost={agentPrice?.price || 0}
     >
       <Toaster position="top-right" />
       
@@ -327,9 +328,9 @@ function WeatherReporterForm() {
 
         {/* Sidebar */}
         <div>
-          <CreditCounter
-            cost={cost}
-            onProcess={getWeatherReport}
+          <WalletBalance
+            agentSlug={agentSlug}
+            onUseAgent={getWeatherReport}
             disabled={!location.trim()}
             processing={isProcessing}
           />

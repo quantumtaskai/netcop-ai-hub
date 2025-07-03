@@ -95,6 +95,71 @@ export const AGENT_PRICING: Record<string, AgentPrice> = {
     features: ['Interactive chat analysis', 'Root cause identification', 'Professional report generation', 'Implementation roadmap'],
     estimatedTime: '2-5 minutes',
     priceDisplay: '8.00 AED'
+  },
+
+  'customer-support': {
+    id: 'customer-support',
+    name: 'Smart Customer Support Agent',
+    price: 3.00,
+    currency: 'AED',
+    description: 'Automate customer inquiries with intelligent responses and high satisfaction rates',
+    category: 'customer-service',
+    slug: 'customer-support',
+    features: ['Automated responses', 'Multi-language support', 'Ticket management', 'Satisfaction tracking'],
+    estimatedTime: '20 seconds',
+    priceDisplay: '3.00 AED'
+  },
+
+  'content-writer': {
+    id: 'content-writer',
+    name: 'Content Writing Agent',
+    price: 5.00,
+    currency: 'AED',
+    description: 'Generate high-quality content for blogs, articles, and marketing materials',
+    category: 'content',
+    slug: 'content-writer',
+    features: ['Blog writing', 'SEO optimization', 'Multiple formats', 'Brand voice matching'],
+    estimatedTime: '45 seconds',
+    priceDisplay: '5.00 AED'
+  },
+
+  'email-automation': {
+    id: 'email-automation',
+    name: 'Email Automation Agent',
+    price: 4.00,
+    currency: 'AED',
+    description: 'Create and manage automated email campaigns with personalization',
+    category: 'marketing',
+    slug: 'email-automation',
+    features: ['Campaign creation', 'Personalization', 'A/B testing', 'Analytics tracking'],
+    estimatedTime: '30 seconds',
+    priceDisplay: '4.00 AED'
+  },
+
+  'sales-assistant': {
+    id: 'sales-assistant',
+    name: 'Sales Assistant Agent',
+    price: 6.00,
+    currency: 'AED',
+    description: 'Streamline sales processes with lead qualification and proposal generation',
+    category: 'sales',
+    slug: 'sales-assistant',
+    features: ['Lead qualification', 'Proposal generation', 'Follow-up automation', 'Pipeline management'],
+    estimatedTime: '40 seconds',
+    priceDisplay: '6.00 AED'
+  },
+
+  'task-automation': {
+    id: 'task-automation',
+    name: 'Task Automation Agent',
+    price: 7.00,
+    currency: 'AED',
+    description: 'Automate repetitive business tasks and workflow optimization',
+    category: 'utilities',
+    slug: 'task-automation',
+    features: ['Workflow automation', 'Task scheduling', 'Process optimization', 'Integration support'],
+    estimatedTime: '50 seconds',
+    priceDisplay: '7.00 AED'
   }
 }
 
@@ -157,11 +222,13 @@ export function getPriceTiers(): { low: AgentPrice[], medium: AgentPrice[], high
  */
 export const CREDIT_TO_PRICE_MAPPING = {
   15: 2.00,  // Weather Reporter: 15 credits → 2 AED
-  20: 4.00,  // Job Posting: 20 credits → 4 AED
+  20: 4.00,  // Email Automation: 20 credits → 4 AED
+  25: 3.00,  // Customer Support: 25 credits → 3 AED (updated)
+  30: 8.00,  // 5 Whys: 30 credits → 8 AED
+  35: 7.00,  // Task Automation: 35 credits → 7 AED
+  40: 6.00,  // Sales Assistant: 40 credits → 6 AED
   45: 5.00,  // Data Analyzer: 45 credits → 5 AED
-  25: 6.00,  // FAQ Generator: 25 credits → 6 AED
-  35: 7.00,  // Social Ads: 35 credits → 7 AED
-  30: 8.00   // 5 Whys: 30 credits → 8 AED
+  50: 5.00   // Content Writer: 50 credits → 5 AED
 } as const
 
 export type AgentSlug = keyof typeof AGENT_PRICING

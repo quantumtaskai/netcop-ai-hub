@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import { useUserStore } from '@/store/userStore'
 import AuthModal from '@/components/AuthModal'
 import ProfileModal from '@/components/ProfileModal'
+import { formatWalletBalance, getWalletStatus } from '@/lib/walletUtils'
 import { colors, gradients, spacing, zIndex, transitions, typography } from '@/lib/designSystem'
 import { styleHelpers, buttonStyles, textStyles, animationUtils } from '@/lib/styleUtils'
 
@@ -211,61 +212,49 @@ const Header: React.FC<HeaderProps> = ({ currentPage = 'home' }) => {
           <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? spacing.xs : spacing.lg }}>
             {user ? (
               <>
-                {/* Credits Display - Hidden on mobile */}
-                {!isMobile && (
-                  <div 
-                  onClick={() => router.push('/pricing')}
-                  style={{
-                    background: user.credits <= 100 
-                      ? gradients.danger
-                      : user.credits <= 500
-                      ? gradients.warning
-                      : gradients.success,
-                    color: colors.white,
-                    padding: isMobile ? `${spacing.xs} ${spacing.sm}` : `${spacing.sm} ${spacing.md}`,
-                    borderRadius: spacing.lg,
-                    cursor: 'pointer',
-                    transition: transitions.slow,
-                    boxShadow: user.credits <= 100 
-                      ? '0 4px 15px rgba(239, 68, 68, 0.3)'
-                      : user.credits <= 500
-                      ? '0 4px 15px rgba(245, 158, 11, 0.3)'
-                      : '0 4px 15px rgba(16, 185, 129, 0.3)',
-                    width: isMobile ? '140px' : '160px',
-                    height: isMobile ? '32px' : '34px',
-                    boxSizing: 'border-box',
-                    textAlign: 'center',
-                    fontWeight: '600',
-                    fontSize: isMobile ? '12px' : '14px',
-                    lineHeight: '14px',
-                    animation: user.credits <= 100 ? 'pulse 2s infinite' : 'none',
-                    overflow: 'hidden',
-                    whiteSpace: 'nowrap',
-                    textOverflow: 'ellipsis',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                  }}
-                  onMouseEnter={(e) => {
-                    (e.target as HTMLElement).style.transform = 'translateY(-1px) scale(1.02)';
-                    (e.target as HTMLElement).style.boxShadow = user.credits <= 100 
-                      ? '0 6px 20px rgba(239, 68, 68, 0.4)'
-                      : user.credits <= 500
-                      ? '0 6px 20px rgba(245, 158, 11, 0.4)'
-                      : '0 6px 20px rgba(16, 185, 129, 0.4)';
-                  }}
-                  onMouseLeave={(e) => {
-                    (e.target as HTMLElement).style.transform = 'none';
-                    (e.target as HTMLElement).style.boxShadow = user.credits <= 100 
-                      ? '0 4px 15px rgba(239, 68, 68, 0.3)'
-                      : user.credits <= 500
-                      ? '0 4px 15px rgba(245, 158, 11, 0.3)'
-                      : '0 4px 15px rgba(16, 185, 129, 0.3)';
-                  }}
-                >
-                    💎 {user.credits} Credits
-                  </div>
-                )}
+                {/* Wallet Balance Display - Hidden on mobile */}
+                {!isMobile && (() => {
+                  const balance = user.wallet_balance || 0;
+                  const walletStatus = getWalletStatus(balance);
+                  return (
+                    <div 
+                    onClick={() => router.push('/wallet')}
+                    style={{
+                      background: `linear-gradient(135deg, ${walletStatus.color} 0%, ${walletStatus.color}90 100%)`,
+                      color: colors.white,
+                      padding: isMobile ? `${spacing.xs} ${spacing.sm}` : `${spacing.sm} ${spacing.md}`,
+                      borderRadius: spacing.lg,
+                      cursor: 'pointer',
+                      transition: transitions.slow,
+                      boxShadow: `0 4px 15px ${walletStatus.color}30`,
+                      width: isMobile ? '140px' : '160px',
+                      height: isMobile ? '32px' : '34px',
+                      boxSizing: 'border-box',
+                      textAlign: 'center',
+                      fontWeight: '600',
+                      fontSize: isMobile ? '12px' : '14px',
+                      lineHeight: '14px',
+                      animation: walletStatus.status === 'low' ? 'pulse 2s infinite' : 'none',
+                      overflow: 'hidden',
+                      whiteSpace: 'nowrap',
+                      textOverflow: 'ellipsis',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                    }}
+                    onMouseEnter={(e) => {
+                      (e.target as HTMLElement).style.transform = 'translateY(-1px) scale(1.02)';
+                      (e.target as HTMLElement).style.boxShadow = `0 6px 20px ${walletStatus.color}40`;
+                    }}
+                    onMouseLeave={(e) => {
+                      (e.target as HTMLElement).style.transform = 'none';
+                      (e.target as HTMLElement).style.boxShadow = `0 4px 15px ${walletStatus.color}30`;
+                    }}
+                  >
+                      💰 {formatWalletBalance(balance)}
+                    </div>
+                  );
+                })()}
 
                 {/* User Profile */}
                 <div
@@ -388,29 +377,31 @@ const Header: React.FC<HeaderProps> = ({ currentPage = 'home' }) => {
                       </div>
                     </div>
                   </div>
-                  <div 
-                    onClick={() => {
-                      router.push('/pricing')
-                      setIsMobileMenuOpen(false)
-                    }}
-                    style={{
-                      background: user.credits <= 100 
-                        ? 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)'
-                        : user.credits <= 500
-                        ? 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)'
-                        : 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
-                      color: 'white',
-                      padding: '12px 16px',
-                      borderRadius: '8px',
-                      cursor: 'pointer',
-                      fontWeight: '600',
-                      fontSize: '14px',
-                      textAlign: 'center',
-                      transition: 'all 0.2s ease'
-                    }}
-                  >
-                    💎 {user.credits} Credits
-                  </div>
+                  {(() => {
+                    const balance = user.wallet_balance || 0;
+                    const walletStatus = getWalletStatus(balance);
+                    return (
+                      <div 
+                        onClick={() => {
+                          router.push('/wallet')
+                          setIsMobileMenuOpen(false)
+                        }}
+                        style={{
+                          background: `linear-gradient(135deg, ${walletStatus.color} 0%, ${walletStatus.color}90 100%)`,
+                          color: 'white',
+                          padding: '12px 16px',
+                          borderRadius: '8px',
+                          cursor: 'pointer',
+                          fontWeight: '600',
+                          fontSize: '14px',
+                          textAlign: 'center',
+                          transition: 'all 0.2s ease'
+                        }}
+                      >
+                        💰 {formatWalletBalance(balance)}
+                      </div>
+                    );
+                  })()}
                 </div>
                 <div style={{
                   height: '1px',

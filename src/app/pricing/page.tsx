@@ -6,51 +6,12 @@ import { toast, Toaster } from 'react-hot-toast'
 import { useUserStore } from '@/store/userStore'
 import Header from '@/components/shared/Header'
 import AuthModal from '@/components/AuthModal'
-
-// Credit packages matching Stripe Payment Links configuration
-const CREDIT_PACKAGES = [
-  {
-    id: 1,
-    credits: 10,
-    price: 9.99,
-    popular: false,
-    description: 'Perfect for trying out our AI agents',
-    features: ['10 AI agent uses', 'Basic support', 'Valid for 30 days'],
-    package: 'basic'
-  },
-  {
-    id: 2,
-    credits: 50,
-    price: 49.99,
-    popular: true,
-    description: 'Great for regular users',
-    features: ['50 AI agent uses', 'Priority support', 'Valid for 60 days', 'Best value!'],
-    package: 'popular'
-  },
-  {
-    id: 3,
-    credits: 100,
-    price: 99.99,
-    popular: false,
-    description: 'Ideal for power users',
-    features: ['100 AI agent uses', 'Premium support', 'Valid for 90 days', 'Advanced features'],
-    package: 'premium'
-  },
-  {
-    id: 4,
-    credits: 500,
-    price: 499.99,
-    popular: false,
-    description: 'Perfect for teams and businesses',
-    features: ['500 AI agent uses', '24/7 support', 'Valid for 6 months', 'Team collaboration'],
-    package: 'enterprise'
-  }
-]
+import { WALLET_PACKAGES, formatWalletBalance, calculateTotalAmount } from '@/lib/walletUtils'
 
 function PricingForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const { user, refreshUser, purchaseCredits, initializeSession } = useUserStore()
+  const { user, refreshUser, topUpWallet, initializeSession } = useUserStore()
   const [selectedPackage, setSelectedPackage] = useState<number | null>(null)
   const [isProcessing, setIsProcessing] = useState(false)
   const [showAuthModal, setShowAuthModal] = useState(false)
@@ -69,8 +30,8 @@ function PricingForm() {
     const sessionId = searchParams.get('session_id')
 
     if (success === 'true' || payment === 'success') {
-      toast.success('Payment successful! Credits have been added to your account.')
-      // Force refresh user data to show new credits (with delay to ensure webhook processed)
+      toast.success('Payment successful! Money has been added to your wallet.')
+      // Force refresh user data to show new wallet balance (with delay to ensure webhook processed)
       setTimeout(async () => {
         try {
           await refreshUser()
@@ -92,7 +53,7 @@ function PricingForm() {
   const handlePurchase = (packageData: any) => {
     // Check if user is logged in before allowing purchase
     if (!user) {
-      toast.error('Please sign in to purchase credits')
+      toast.error('Please sign in to add money to your wallet')
       setShowAuthModal(true)
       setAuthMode('login')
       return
@@ -104,8 +65,8 @@ function PricingForm() {
     try {
       toast.success('Redirecting to Stripe payment...')
       
-      // Use the purchaseCredits function from userStore
-      purchaseCredits(packageData.credits)
+      // Use the topUpWallet function from userStore
+      topUpWallet(packageData.id)
       
     } catch (error) {
       toast.error('Payment redirection failed. Please try again.')
@@ -188,7 +149,7 @@ function PricingForm() {
             WebkitTextFillColor: 'transparent',
             lineHeight: '1.2'
           }}>
-            Power Up Your AI Experience
+            💰 Wallet Top-up Packages
           </h2>
           <p style={{
             fontSize: 'clamp(16px, 4vw, 20px)',
@@ -198,7 +159,7 @@ function PricingForm() {
             lineHeight: '1.6',
             padding: '0 clamp(8px, 2vw, 16px)'
           }}>
-            Choose the perfect credit package for your needs. Use credits to access our powerful AI agents and unlock unlimited possibilities.
+            Add money to your wallet and use AI agents with simple AED pricing. No complex credit calculations needed.
           </p>
         </div>
 
@@ -211,7 +172,7 @@ function PricingForm() {
           margin: '0 auto',
           padding: '0 clamp(8px, 2vw, 16px)'
         }}>
-          {CREDIT_PACKAGES.map(pkg => (
+          {WALLET_PACKAGES.map(pkg => (
             <div
               key={pkg.id}
               style={{
@@ -254,15 +215,28 @@ function PricingForm() {
                   color: '#1f2937',
                   marginBottom: 'clamp(6px, 2vw, 8px)'
                 }}>
-                  {pkg.credits}
+                  {pkg.label}
                 </div>
                 <div style={{
                   fontSize: 'clamp(14px, 3.5vw, 16px)',
                   color: '#6b7280',
                   marginBottom: 'clamp(12px, 3vw, 16px)'
                 }}>
-                  Credits
+                  Wallet Balance
                 </div>
+                {pkg.bonus && (
+                  <div style={{
+                    fontSize: 'clamp(12px, 3vw, 14px)',
+                    color: '#10b981',
+                    fontWeight: '600',
+                    marginBottom: 'clamp(8px, 2vw, 12px)',
+                    background: 'rgba(16, 185, 129, 0.1)',
+                    padding: 'clamp(4px, 1vw, 6px) clamp(8px, 2vw, 12px)',
+                    borderRadius: 'clamp(4px, 1vw, 6px)'
+                  }}>
+                    🎁 +{pkg.bonus} AED Bonus!
+                  </div>
+                )}
                 <div style={{
                   fontSize: 'clamp(24px, 6vw, 32px)',
                   fontWeight: 'bold',
@@ -275,41 +249,23 @@ function PricingForm() {
                   fontSize: 'clamp(12px, 3vw, 14px)',
                   color: '#6b7280'
                 }}>
-                  {pkg.description}
+                  {pkg.bonus ? `Pay ${pkg.price} AED → Get ${calculateTotalAmount(pkg.id)} AED` : `Add ${pkg.amount} AED to your wallet`}
                 </div>
               </div>
 
               <div style={{ marginBottom: 'clamp(20px, 5vw, 32px)' }}>
-                {pkg.features.map((feature, index) => (
-                  <div
-                    key={index}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 'clamp(8px, 2vw, 12px)',
-                      marginBottom: 'clamp(8px, 2vw, 12px)',
-                      fontSize: 'clamp(12px, 3vw, 14px)',
-                      color: '#374151'
-                    }}
-                  >
-                    <div style={{
-                      width: 'clamp(16px, 4vw, 20px)',
-                      height: 'clamp(16px, 4vw, 20px)',
-                      borderRadius: '50%',
-                      background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      color: 'white',
-                      fontSize: 'clamp(10px, 2.5vw, 12px)',
-                      fontWeight: 'bold',
-                      flexShrink: 0
-                    }}>
-                      ✓
-                    </div>
-                    {feature}
-                  </div>
-                ))}
+                {/* Usage examples for wallet package */}
+                <div style={{
+                  fontSize: 'clamp(12px, 3vw, 14px)',
+                  color: '#6b7280',
+                  textAlign: 'center',
+                  fontStyle: 'italic'
+                }}>
+                  {pkg.amount <= 10 && 'Perfect for trying AI agents'}
+                  {pkg.amount > 10 && pkg.amount <= 50 && 'Great for regular AI usage'}
+                  {pkg.amount > 50 && pkg.amount <= 100 && 'Ideal for power users'}
+                  {pkg.amount > 100 && 'Perfect for teams & businesses'}
+                </div>
               </div>
 
               <button
@@ -344,7 +300,7 @@ function PricingForm() {
               >
                 {isProcessing && selectedPackage === pkg.id
                   ? 'Processing...'
-                  : `Purchase ${pkg.credits} Credits`
+                  : `Add ${pkg.label}`
                 }
               </button>
             </div>

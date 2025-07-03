@@ -7,6 +7,7 @@ import { useUserStore } from '@/store/userStore'
 import { AgentService } from '@/lib/agentService'
 import { Agent } from '@/lib/supabase'
 import { getAgentSlug } from '@/lib/agentUtils'
+import { getAgentPrice } from '@/lib/agentPricing'
 import AuthModal from '@/components/AuthModal'
 import ProfileModal from '@/components/ProfileModal'
 import Header from '@/components/shared/Header'
@@ -175,12 +176,12 @@ function HomePageContent() {
     const sessionId = searchParams.get('session_id')
 
     if (payment === 'success') {
-      toast.success('Payment successful! Credits have been added to your account.')
+      toast.success('Payment successful! Money has been added to your wallet.')
       if (user) {
         refreshUser()
       }
-      // Redirect to pricing page
-      router.replace('/pricing')
+      // Redirect to wallet page
+      router.replace('/wallet')
     }
   }, [searchParams, user, refreshUser, router])
 
@@ -227,15 +228,24 @@ function HomePageContent() {
       return
     }
 
-    if (user.credits < agent.cost) {
-      toast.error(`Insufficient credits! You need ${agent.cost} credits but only have ${user.credits}.`)
-      router.push('/pricing')
+    // Get agent pricing from our pricing system
+    const slug = getAgentSlug(agent.name)
+    const agentPrice = getAgentPrice(slug)
+    
+    if (!agentPrice) {
+      toast.error('Agent pricing not found')
       return
     }
 
-    // Get agent slug and redirect to agent page
-    const slug = getAgentSlug(agent.name)
-    router.push(`/agent/${slug}?agentId=${agent.id}&cost=${agent.cost}`)
+    const balance = user.wallet_balance || 0
+    if (balance < agentPrice.price) {
+      toast.error(`Insufficient balance! You need ${agentPrice.priceDisplay} but only have ${balance.toFixed(2)} AED.`)
+      router.push('/wallet')
+      return
+    }
+
+    // Redirect to agent page
+    router.push(`/agent/${slug}`)
   }
 
   return (
@@ -540,9 +550,13 @@ function HomePageContent() {
                       alignItems: 'center',
                       gap: 'clamp(6px, 1.5vw, 8px)'
                     }}>
-                      <span title="" style={{ color: '#10b981', fontWeight: 'bold', fontSize: 'clamp(12px, 3vw, 14px)' }}>✨</span>
+                      <span title="" style={{ color: '#10b981', fontWeight: 'bold', fontSize: 'clamp(12px, 3vw, 14px)' }}>💰</span>
                       <span title="" style={{ color: '#1f2937', fontWeight: '600', fontSize: 'clamp(12px, 3vw, 14px)' }}>
-                        {agent.cost} credits
+                        {(() => {
+                          const agentSlug = getAgentSlug(agent.name);
+                          const agentPrice = getAgentPrice(agentSlug);
+                          return agentPrice ? agentPrice.priceDisplay : `${agent.cost} credits`;
+                        })()}
                       </span>
                     </div>
                     <button

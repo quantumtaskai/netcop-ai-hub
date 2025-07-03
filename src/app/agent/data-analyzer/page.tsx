@@ -5,22 +5,23 @@ import { useSearchParams, useRouter } from 'next/navigation'
 import { toast, Toaster } from 'react-hot-toast'
 import { useUserStore } from '@/store/userStore'
 import { getAgentInfo } from '@/lib/agentUtils'
+import { getAgentPrice } from '@/lib/agentPricing'
 import AgentLayout from '@/components/agent-shared/AgentLayout'
 import FileUpload from '@/components/agent-shared/FileUpload'
 import ProcessingStatus from '@/components/agent-shared/ProcessingStatus'
 import ResultsDisplay from '@/components/agent-shared/ResultsDisplay'
-import CreditCounter from '@/components/agent-shared/CreditCounter'
+import WalletBalance from '@/components/agent-shared/WalletBalance'
 import { colors, gradients, spacing, typography, borderRadius, transitions } from '@/lib/designSystem'
 import { stylePatterns, cardStyles, textStyles } from '@/lib/styleUtils'
 
 function DataAnalyzerForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const { user, updateCredits } = useUserStore()
+  const { user, updateWallet } = useUserStore()
   
-  // Get agent info from URL params
-  const agentId = searchParams.get('agentId')
-  const cost = parseInt(searchParams.get('cost') || '45')
+  // Get agent pricing
+  const agentPrice = getAgentPrice('data-analyzer')
+  const agentSlug = 'data-analyzer'
   
   // Component state
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
@@ -64,7 +65,7 @@ function DataAnalyzerForm() {
       formData.append('file', selectedFile)
       formData.append('analysisType', analysisType)
       formData.append('userId', user.id)
-      formData.append('agentId', agentId || '')
+      formData.append('agentSlug', agentSlug)
       formData.append('fileName', selectedFile.name)
       formData.append('fileSize', selectedFile.size.toString())
 
@@ -95,9 +96,9 @@ function DataAnalyzerForm() {
       setResults(results)
       setShowResults(true)
 
-      // Step 4: Deduct credits only after successful completion
-      await updateCredits(-cost)
-      toast.success(`Analysis complete! ${cost} credits used.`)
+      // Step 4: Deduct wallet balance only after successful completion
+      await updateWallet(-agentPrice!.price)
+      toast.success(`Analysis complete! ${agentPrice!.priceDisplay} used.`)
 
     } catch (error) {
       console.error('Processing error:', error)
@@ -125,7 +126,7 @@ function DataAnalyzerForm() {
       title={agentInfo.title}
       description={agentInfo.description}
       icon={agentInfo.icon}
-      cost={cost}
+      cost={agentPrice?.price || 0}
     >
       <Toaster position="top-right" />
       
@@ -241,9 +242,9 @@ function DataAnalyzerForm() {
 
         {/* Sidebar */}
         <div>
-          <CreditCounter
-            cost={cost}
-            onProcess={processFile}
+          <WalletBalance
+            agentSlug={agentSlug}
+            onUseAgent={processFile}
             disabled={!selectedFile}
             processing={isProcessing}
           />

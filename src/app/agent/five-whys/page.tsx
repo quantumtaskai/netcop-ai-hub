@@ -5,8 +5,9 @@ import { useSearchParams, useRouter } from 'next/navigation'
 import { toast, Toaster } from 'react-hot-toast'
 import { useUserStore } from '@/store/userStore'
 import { getAgentInfo } from '@/lib/agentUtils'
+import { getAgentPrice } from '@/lib/agentPricing'
 import AgentLayout from '@/components/agent-shared/AgentLayout'
-import CreditCounter from '@/components/agent-shared/CreditCounter'
+import WalletBalance from '@/components/agent-shared/WalletBalance'
 
 interface Message {
   id: string
@@ -19,13 +20,13 @@ interface Message {
 function FiveWhysChat() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const { user, updateCredits } = useUserStore()
+  const { user, updateWallet } = useUserStore()
   const chatContainerRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   
-  // Get agent info from URL params
-  const agentId = searchParams.get('agentId')
-  const cost = parseInt(searchParams.get('cost') || '30')
+  // Get agent pricing
+  const agentPrice = getAgentPrice('five-whys')
+  const agentSlug = 'five-whys'
   
   // Chat state
   const [messages, setMessages] = useState<Message[]>([])
@@ -294,11 +295,11 @@ function FiveWhysChat() {
       // Add summary message to chat
       addMessage('bot', '✅ **Report Generated Successfully!** Your 5 Whys analysis report is now available below with copy and download options.', true)
       
-      // Deduct credits for report generation
-      await updateCredits(-cost)
+      // Deduct wallet balance for report generation
+      await updateWallet(-agentPrice!.price)
       setReportCompleted(true)
       
-      toast.success(`📊 5 Whys Report Generated! ${cost} credits used.`)
+      toast.success(`📊 5 Whys Report Generated! ${agentPrice!.priceDisplay} used.`)
       
     } catch (error) {
       console.error('Report generation error:', error)
@@ -329,7 +330,7 @@ function FiveWhysChat() {
   const isInputDisabled = isLoading || !inputText.trim()
 
   return (
-    <AgentLayout title={agentInfo.title} description={agentInfo.description} icon={agentInfo.icon} cost={cost}>
+    <AgentLayout title={agentInfo.title} description={agentInfo.description} icon={agentInfo.icon} cost={agentPrice?.price || 0}>
       <Toaster position="top-right" />
       
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(350px, 100%), 1fr))', gap: 'clamp(16px, 4vw, 24px)', minHeight: 'clamp(60vh, 70vh, 80vh)' }}>
@@ -537,11 +538,11 @@ function FiveWhysChat() {
           </div>
         </div>
 
-        {/* Credit Counter Sidebar */}
+        {/* Wallet Balance Sidebar */}
         <div>
-          <CreditCounter 
-            cost={cost} 
-            onProcess={() => {
+          <WalletBalance 
+            agentSlug={agentSlug}
+            onUseAgent={() => {
               if (canGenerateReport()) {
                 generateReport()
               } else {
@@ -550,7 +551,6 @@ function FiveWhysChat() {
             }} 
             disabled={!canGenerateReport() || reportCompleted} 
             processing={isLoading}
-            customText={canGenerateReport() ? "Generate Report" : "Chat First"}
           />
           
           <div style={{
