@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useUserStore } from '@/store/userStore'
 import { toast } from 'react-hot-toast'
 import { colors, spacing, zIndex } from '@/lib/designSystem'
-import { styleHelpers, cardStyles, textStyles, animationUtils } from '@/lib/styleUtils'
+import { styleHelpers, stylePatterns, cardStyles, textStyles, animationUtils } from '@/lib/styleUtils'
 
 interface AuthModalProps {
   isOpen: boolean
@@ -64,7 +64,7 @@ export default function AuthModal({ isOpen, onClose, mode, setAuthMode }: AuthMo
       right: 0,
       bottom: 0,
       background: 'rgba(0, 0, 0, 0.5)',
-      ...styleHelpers.flexCenter,
+      ...stylePatterns.flexCenter,
       zIndex: zIndex.modal
     }}>
       <div style={{
