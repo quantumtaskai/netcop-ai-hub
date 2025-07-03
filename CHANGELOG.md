@@ -5,7 +5,7 @@ All notable changes to the NetCop AI Hub project will be documented in this file
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [2.0.0] - 2025-01-03
+## [2.0.0] - 2025-07-03
 
 ### 🎯 MAJOR: Complete Wallet System Transformation
 
@@ -46,7 +46,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [1.5.0] - 2024-12-29
+## [1.5.0] - 2025-07-02
 
 ### Added
 - **CSS Architecture Optimization**: Centralized design system and style utilities
@@ -62,7 +62,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [1.4.0] - 2024-12-28
+## [1.4.0] - 2025-07-01
 
 ### Added
 - **Header/Footer Consistency**: Shared components across all pages
@@ -77,7 +77,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [1.3.0] - 2024-12-27
+## [1.3.0] - 2025-06-30
 
 ### Added
 - **5 Whys Analysis Agent**: Advanced interactive chat-based root cause analysis
@@ -91,7 +91,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [1.2.0] - 2024-12-26
+## [1.2.0] - 2025-06-29
 
 ### Added
 - **Stripe Payment System**: Complete integration with Payment Links
@@ -105,7 +105,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [1.1.0] - 2024-12-25
+## [1.1.0] - 2025-06-28
 
 ### Added
 - **Weather Reporter Agent**: OpenWeatherMap API integration
@@ -120,7 +120,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [1.0.0] - 2024-12-24
+## [1.0.0] - 2025-06-27
 
 ### Added
 - **Initial Release**: NetCop AI Hub marketplace foundation
