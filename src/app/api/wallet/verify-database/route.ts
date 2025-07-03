@@ -5,34 +5,60 @@ export async function GET(request: NextRequest) {
   try {
     console.log('Verifying database state...')
     
-    // Get recent wallet transactions
-    const { data: transactions, error: transactionsError } = await supabase
-      .from('wallet_transactions')
-      .select('*')
-      .order('created_at', { ascending: false })
-      .limit(10)
+    // Get recent wallet transactions (handle missing table gracefully)
+    let transactions = []
+    let transactionsError = null
     
-    if (transactionsError) {
-      console.error('Error fetching transactions:', transactionsError)
-      return NextResponse.json(
-        { error: 'Failed to fetch transactions', details: transactionsError },
-        { status: 500 }
-      )
+    try {
+      const { data: transactionsData, error: transErr } = await supabase
+        .from('wallet_transactions')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(10)
+      
+      if (transErr) {
+        console.error('Error fetching transactions:', transErr)
+        transactionsError = transErr
+        // Don't return error immediately - continue to check other tables
+      } else {
+        transactions = transactionsData || []
+      }
+    } catch (error: any) {
+      console.error('Exception fetching transactions:', error)
+      transactionsError = { message: 'Table likely does not exist', code: 'MISSING_TABLE' }
     }
     
-    // Get users with wallet balances
-    const { data: users, error: usersError } = await supabase
-      .from('users')
-      .select('id, email, name, wallet_balance, updated_at')
-      .order('updated_at', { ascending: false })
-      .limit(10)
+    // Get users with wallet balances (handle missing columns gracefully)
+    let users = []
+    let usersError = null
     
-    if (usersError) {
-      console.error('Error fetching users:', usersError)
-      return NextResponse.json(
-        { error: 'Failed to fetch users', details: usersError },
-        { status: 500 }
-      )
+    try {
+      const { data: usersData, error: userErr } = await supabase
+        .from('users')
+        .select('id, email, name, wallet_balance, credits, updated_at')
+        .order('updated_at', { ascending: false })
+        .limit(10)
+      
+      if (userErr) {
+        console.error('Error fetching users:', userErr)
+        usersError = userErr
+        // Try with just basic columns if wallet_balance doesn't exist
+        const { data: basicUsersData, error: basicErr } = await supabase
+          .from('users')
+          .select('id, email, name, credits, updated_at')
+          .order('updated_at', { ascending: false })
+          .limit(10)
+        
+        if (!basicErr) {
+          users = basicUsersData || []
+          usersError = { message: 'wallet_balance column missing, found credits instead' }
+        }
+      } else {
+        users = usersData || []
+      }
+    } catch (error: any) {
+      console.error('Exception fetching users:', error)
+      usersError = { message: 'Users table access failed', code: 'TABLE_ACCESS_ERROR' }
     }
     
     // Check for recent payments (last 24 hours)
@@ -60,7 +86,7 @@ export async function GET(request: NextRequest) {
     }
     
     return NextResponse.json({
-      success: true,
+      success: !transactionsError && !usersError, // Only success if no critical errors
       data: {
         allTransactions: transactions || [],
         users: users || [],
@@ -72,7 +98,16 @@ export async function GET(request: NextRequest) {
           recentTransactionsCount: recentTransactions?.length || 0,
           stripeTransactionsCount: stripeTransaction?.length || 0
         }
-      }
+      },
+      errors: {
+        transactionsError,
+        usersError,
+        recentError,
+        stripeError
+      },
+      message: transactionsError || usersError ? 
+        'Database schema issues detected - some tables/columns may be missing' : 
+        'Database verification completed successfully'
     })
     
   } catch (error: any) {

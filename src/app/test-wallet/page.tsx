@@ -23,8 +23,11 @@ export default function TestWalletPage() {
       return
     }
     
-    // Fetch database state on load
-    fetchDatabaseState()
+    // Fetch database state on load (but don't let errors crash the page)
+    fetchDatabaseState().catch((error) => {
+      console.error('Failed to fetch database state on load:', error)
+      // Don't redirect on database errors - let user see the investigation tools
+    })
   }, [user, router])
 
   const fetchDatabaseState = async () => {
@@ -38,11 +41,24 @@ export default function TestWalletPage() {
         toast.success('Database state loaded successfully')
       } else {
         console.error('Database verification failed:', data.error)
-        toast.error('Failed to load database state')
+        toast.error('Database verification failed - this is expected if tables are missing')
+        
+        // Set error data so we can still see what went wrong
+        setDatabaseData({
+          success: false,
+          error: data.error,
+          message: 'Tables may be missing - use schema investigation to check'
+        })
       }
     } catch (error) {
       console.error('Error fetching database state:', error)
-      toast.error('Error loading database state')
+      toast.error('Could not connect to database API')
+      
+      setDatabaseData({
+        success: false,
+        error: 'API connection failed',
+        message: 'Could not reach database verification endpoint'
+      })
     }
   }
 
@@ -155,6 +171,80 @@ export default function TestWalletPage() {
     toast.success('Data refreshed')
   }
 
+  const investigateSchema = async () => {
+    setIsLoading(true)
+    try {
+      const response = await fetch('/api/debug/schema')
+      const data = await response.json()
+      
+      setTestResults(prev => [...prev, {
+        type: 'schema-investigation',
+        timestamp: new Date().toISOString(),
+        success: response.ok,
+        data: data
+      }])
+      
+      if (response.ok) {
+        toast.success('Schema investigation completed')
+        console.log('Schema investigation results:', data)
+      } else {
+        toast.error('Schema investigation failed')
+      }
+    } catch (error: any) {
+      console.error('Schema investigation error:', error)
+      toast.error('Schema investigation failed')
+      
+      setTestResults(prev => [...prev, {
+        type: 'schema-investigation-error',
+        timestamp: new Date().toISOString(),
+        success: false,
+        error: error.message
+      }])
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const generateSchemaFix = async () => {
+    setIsLoading(true)
+    try {
+      const response = await fetch('/api/debug/fix-schema', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      })
+      
+      const data = await response.json()
+      
+      setTestResults(prev => [...prev, {
+        type: 'schema-fix-generation',
+        timestamp: new Date().toISOString(),
+        success: response.ok,
+        data: data
+      }])
+      
+      if (response.ok) {
+        toast.success('Schema fix scripts generated')
+        console.log('Schema fix scripts:', data)
+      } else {
+        toast.error('Schema fix generation failed')
+      }
+    } catch (error: any) {
+      console.error('Schema fix error:', error)
+      toast.error('Schema fix failed')
+      
+      setTestResults(prev => [...prev, {
+        type: 'schema-fix-error',
+        timestamp: new Date().toISOString(),
+        success: false,
+        error: error.message
+      }])
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   if (!user) {
     return (
       <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -237,6 +327,42 @@ export default function TestWalletPage() {
               }}
             >
               🗑️ Clear Results
+            </button>
+            
+            <button
+              onClick={investigateSchema}
+              disabled={isLoading}
+              style={{
+                padding: `${spacing.sm} ${spacing.lg}`,
+                background: gradients.primary,
+                color: colors.white,
+                border: 'none',
+                borderRadius: '8px',
+                cursor: isLoading ? 'not-allowed' : 'pointer',
+                opacity: isLoading ? 0.6 : 1,
+                fontSize: typography.fontSize.sm,
+                fontWeight: typography.fontWeight.medium
+              }}
+            >
+              🔍 Investigate Schema
+            </button>
+            
+            <button
+              onClick={generateSchemaFix}
+              disabled={isLoading}
+              style={{
+                padding: `${spacing.sm} ${spacing.lg}`,
+                background: gradients.danger,
+                color: colors.white,
+                border: 'none',
+                borderRadius: '8px',
+                cursor: isLoading ? 'not-allowed' : 'pointer',
+                opacity: isLoading ? 0.6 : 1,
+                fontSize: typography.fontSize.sm,
+                fontWeight: typography.fontWeight.medium
+              }}
+            >
+              🛠️ Generate Schema Fix
             </button>
           </div>
         </div>
