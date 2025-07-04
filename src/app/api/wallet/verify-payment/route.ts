@@ -1,18 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
-import { supabase } from '@/lib/supabase'
+import { supabaseAdmin } from '@/lib/supabase/server'
 import { WALLET_PACKAGES, calculateTotalAmount } from '@/lib/walletUtils'
 
 export async function POST(request: NextRequest) {
+  console.log('🔍 Wallet verify-payment API called at:', new Date().toISOString())
+  
   try {
     // Check if Stripe secret key is available
     if (!process.env.STRIPE_SECRET_KEY) {
-      console.error('STRIPE_SECRET_KEY environment variable is not set')
+      console.error('❌ STRIPE_SECRET_KEY environment variable is not set')
       return NextResponse.json(
         { error: 'Payment system not configured' },
         { status: 500 }
       )
     }
+
+    console.log('✅ Stripe secret key found, initializing Stripe...')
 
     // Initialize Stripe after environment check
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
@@ -20,15 +24,17 @@ export async function POST(request: NextRequest) {
     })
 
     const { sessionId, packageId } = await request.json()
+    console.log('📥 Request payload:', { sessionId, packageId })
 
     if (!sessionId || !packageId) {
+      console.error('❌ Missing required parameters:', { sessionId: !!sessionId, packageId: !!packageId })
       return NextResponse.json(
         { error: 'Missing session ID or package ID' },
         { status: 400 }
       )
     }
 
-    console.log('Verifying wallet payment:', { sessionId, packageId })
+    console.log('✅ Valid parameters received, verifying payment:', { sessionId, packageId })
 
     // Retrieve the checkout session from Stripe
     let session
@@ -87,7 +93,7 @@ export async function POST(request: NextRequest) {
     })
 
     // Check if this payment has already been processed
-    const { data: existingTransaction, error: checkError } = await supabase
+    const { data: existingTransaction, error: checkError } = await supabaseAdmin
       .from('wallet_transactions')
       .select('id')
       .eq('stripe_session_id', sessionId)
@@ -111,25 +117,43 @@ export async function POST(request: NextRequest) {
     }
 
     // Get current user balance
-    const { data: userData, error: userError } = await supabase
+    console.log('🔍 Fetching user data for userId:', userId)
+    const { data: userData, error: userError } = await supabaseAdmin
       .from('users')
       .select('wallet_balance')
       .eq('id', userId)
       .single()
 
     if (userError) {
-      console.error('Error fetching user:', userError)
+      console.error('❌ Error fetching user:', {
+        error: userError,
+        code: userError.code,
+        message: userError.message,
+        details: userError.details,
+        hint: userError.hint,
+        userId
+      })
       return NextResponse.json(
         { error: 'User not found' },
         { status: 404 }
       )
     }
 
+    console.log('✅ User found:', { userId, currentBalance: userData.wallet_balance })
+
     const currentBalance = userData.wallet_balance || 0
     const newBalance = currentBalance + totalAmount
 
+    console.log('💰 Calculating new balance:', { 
+      currentBalance, 
+      totalAmount, 
+      newBalance,
+      userId 
+    })
+
     // Update user wallet balance
-    const { data: updatedUser, error: updateError } = await supabase
+    console.log('📝 Updating wallet balance in database...')
+    const { data: updatedUser, error: updateError } = await supabaseAdmin
       .from('users')
       .update({ wallet_balance: newBalance })
       .eq('id', userId)
@@ -137,37 +161,66 @@ export async function POST(request: NextRequest) {
       .single()
 
     if (updateError) {
-      console.error('Error updating wallet balance:', updateError)
+      console.error('❌ Error updating wallet balance:', {
+        error: updateError,
+        code: updateError.code,
+        message: updateError.message,
+        details: updateError.details,
+        hint: updateError.hint,
+        userId,
+        newBalance,
+        operation: 'wallet_balance_update'
+      })
       return NextResponse.json(
         { error: 'Failed to update wallet balance' },
         { status: 500 }
       )
     }
 
+    console.log('✅ Wallet balance updated successfully:', { 
+      userId, 
+      oldBalance: currentBalance, 
+      newBalance: updatedUser.wallet_balance 
+    })
+
     // Create transaction record
-    const { error: transactionError } = await supabase
+    console.log('📋 Creating transaction record...')
+    const transactionData = {
+      user_id: userId,
+      amount: totalAmount,
+      type: 'top_up' as const,
+      description: `Wallet top-up: ${walletPackage.label}${walletPackage.bonus ? ` (+${walletPackage.bonus} AED bonus)` : ''}`,
+      stripe_session_id: sessionId
+    }
+    console.log('📋 Transaction data:', transactionData)
+
+    const { error: transactionError } = await supabaseAdmin
       .from('wallet_transactions')
-      .insert({
-        user_id: userId,
-        amount: totalAmount,
-        type: 'top_up',
-        description: `Wallet top-up: ${walletPackage.label}${walletPackage.bonus ? ` (+${walletPackage.bonus} AED bonus)` : ''}`,
-        stripe_session_id: sessionId
-      })
+      .insert(transactionData)
 
     if (transactionError) {
-      console.error('Error creating transaction record:', transactionError)
+      console.error('❌ Error creating transaction record:', {
+        error: transactionError,
+        code: transactionError.code,
+        message: transactionError.message,
+        details: transactionError.details,
+        hint: transactionError.hint,
+        transactionData,
+        operation: 'transaction_insert'
+      })
       // Don't return error here as the wallet was already updated
+    } else {
+      console.log('✅ Transaction record created successfully')
     }
 
-    console.log('Wallet payment verified successfully:', {
+    console.log('🎉 Wallet payment verified successfully:', {
       userId,
       sessionId,
       amountAdded: totalAmount,
       newBalance
     })
 
-    return NextResponse.json({
+    const response = {
       success: true,
       amount: totalAmount,
       newBalance,
@@ -176,7 +229,10 @@ export async function POST(request: NextRequest) {
         type: 'top_up',
         description: `Wallet top-up: ${walletPackage.label}${walletPackage.bonus ? ` (+${walletPackage.bonus} AED bonus)` : ''}`
       }
-    })
+    }
+
+    console.log('📤 Sending response:', response)
+    return NextResponse.json(response)
 
   } catch (error: any) {
     console.error('Wallet payment verification error:', error)
