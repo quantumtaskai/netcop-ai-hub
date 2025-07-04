@@ -160,6 +160,18 @@ export const useUserStore = create<UserState>()(
           
           console.log('Signout result:', { error })
           
+          // Handle the case where the session is already missing
+          if (error && error.message?.includes('Auth session missing')) {
+            console.log('Session already missing, treating as successful logout')
+            set({ user: null, isLoading: false })
+            console.log('Signout completed (session was already missing)')
+            // Redirect to home page
+            if (typeof window !== 'undefined') {
+              window.location.href = '/'
+            }
+            return
+          }
+          
           if (error) {
             console.error('Signout error:', error)
             throw error
@@ -167,8 +179,25 @@ export const useUserStore = create<UserState>()(
           
           set({ user: null, isLoading: false })
           console.log('Signout completed successfully')
+          
+          // Redirect to home page after successful logout
+          if (typeof window !== 'undefined') {
+            window.location.href = '/'
+          }
         } catch (error: any) {
           console.error('Signout failed:', error)
+          
+          // If it's an auth session missing error, still clear the user state
+          if (error.message?.includes('Auth session missing')) {
+            console.log('Clearing user state despite session missing error')
+            set({ user: null, isLoading: false, error: null })
+            // Redirect to home page even on error
+            if (typeof window !== 'undefined') {
+              window.location.href = '/'
+            }
+            return
+          }
+          
           set({ error: error.message, isLoading: false })
           throw error
         }
