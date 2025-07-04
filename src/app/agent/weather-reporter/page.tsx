@@ -6,6 +6,7 @@ import { toast, Toaster } from 'react-hot-toast'
 import { useUserStore } from '@/store/userStore'
 import { getAgentInfo } from '@/lib/agentUtils'
 import { getAgentPrice } from '@/lib/agentPricing'
+import { supabase } from '@/lib/supabase'
 import AgentLayout from '@/components/agent-shared/AgentLayout'
 import ProcessingStatus from '@/components/agent-shared/ProcessingStatus'
 import ResultsDisplay from '@/components/agent-shared/ResultsDisplay'
@@ -153,8 +154,33 @@ function WeatherReporterForm() {
       setResults(formattedResults)
       setShowResults(true)
 
-      // Step 5: Deduct wallet balance only after successful completion
+      // Step 5: Deduct wallet balance and create transaction record
+      console.log('🔄 Deducting wallet balance for weather report:', agentPrice!.priceDisplay)
       await updateWallet(-agentPrice!.price)
+      
+      // Create transaction record
+      try {
+        const { error: transactionError } = await supabase
+          .from('wallet_transactions')
+          .insert({
+            user_id: user.id,
+            amount: -agentPrice!.price,
+            type: 'agent_usage',
+            description: `Weather Report - ${fullLocationName}`,
+            agent_slug: 'weather-reporter'
+          })
+
+        if (transactionError) {
+          console.error('Failed to create transaction record:', transactionError)
+          // Don't fail the whole process for transaction record issues
+        } else {
+          console.log('✅ Transaction record created for weather report')
+        }
+      } catch (error) {
+        console.error('Transaction record creation error:', error)
+        // Don't fail the whole process for transaction record issues
+      }
+
       toast.success(`Weather report generated! ${agentPrice!.priceDisplay} used.`)
 
     } catch (error) {
@@ -330,7 +356,7 @@ function WeatherReporterForm() {
         <div>
           <WalletBalance
             agentSlug={agentSlug}
-            onUseAgent={getWeatherReport}
+            onProcess={getWeatherReport}
             disabled={!location.trim()}
             processing={isProcessing}
           />
