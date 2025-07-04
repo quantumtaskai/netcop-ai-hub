@@ -22,32 +22,6 @@ function PricingForm() {
     initializeSession()
   }, [])
 
-  // Handle payment success/cancellation from URL params
-  useEffect(() => {
-    const success = searchParams.get('success')
-    const payment = searchParams.get('payment') // Current format from Stripe
-    const cancelled = searchParams.get('cancelled')
-    const sessionId = searchParams.get('session_id')
-
-    if (success === 'true' || payment === 'success') {
-      toast.success('Payment successful! Money has been added to your wallet.')
-      // Force refresh user data to show new wallet balance (with delay to ensure webhook processed)
-      setTimeout(async () => {
-        try {
-          await refreshUser()
-        } catch (error) {
-          console.log('Failed to refresh after payment, but payment was successful')
-        }
-      }, 2000)
-      // Clean up URL
-      router.replace('/pricing')
-    } else if (cancelled === 'true') {
-      toast.error('Payment was cancelled.')
-      // Clean up URL
-      router.replace('/pricing')
-    }
-  }, [searchParams, refreshUser, router])
-
   // Allow public access to pricing page - no redirect needed
 
   const handlePurchase = (packageData: any) => {

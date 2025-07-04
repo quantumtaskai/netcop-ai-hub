@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { headers } from 'next/headers'
 import Stripe from 'stripe'
-import { supabase } from '@/lib/supabase'
+import { supabaseAdmin } from '@/lib/supabase/server'
 import { WALLET_PACKAGES, calculateTotalAmount } from '@/lib/walletUtils'
 
 export async function POST(request: NextRequest) {
@@ -87,7 +87,7 @@ async function handleWalletTopUp(session: Stripe.Checkout.Session) {
     }
 
     // Check if this webhook has already been processed
-    const { data: existingTransaction, error: checkError } = await supabase
+    const { data: existingTransaction, error: checkError } = await supabaseAdmin
       .from('wallet_transactions')
       .select('id')
       .eq('stripe_session_id', session.id)
@@ -120,7 +120,7 @@ async function handleWalletTopUp(session: Stripe.Checkout.Session) {
     })
 
     // Get current user balance
-    const { data: userData, error: userError } = await supabase
+    const { data: userData, error: userError } = await supabaseAdmin
       .from('users')
       .select('wallet_balance')
       .eq('id', userId)
@@ -135,7 +135,7 @@ async function handleWalletTopUp(session: Stripe.Checkout.Session) {
     const newBalance = currentBalance + totalAmount
 
     // Update user wallet balance
-    const { error: updateError } = await supabase
+    const { error: updateError } = await supabaseAdmin
       .from('users')
       .update({ wallet_balance: newBalance })
       .eq('id', userId)
@@ -146,7 +146,7 @@ async function handleWalletTopUp(session: Stripe.Checkout.Session) {
     }
 
     // Create transaction record
-    const { error: transactionError } = await supabase
+    const { error: transactionError } = await supabaseAdmin
       .from('wallet_transactions')
       .insert({
         user_id: userId,
