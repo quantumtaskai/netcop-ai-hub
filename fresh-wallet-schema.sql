@@ -109,33 +109,8 @@ CREATE TRIGGER update_users_updated_at
 -- STEP 6: Verification queries
 -- =====================================================
 
--- Check users table structure
-SELECT column_name, data_type, is_nullable, column_default
-FROM information_schema.columns 
-WHERE table_name = 'users' 
-AND table_schema = 'public'
-ORDER BY ordinal_position;
 
--- Check wallet_transactions table structure
-SELECT column_name, data_type, is_nullable, column_default
-FROM information_schema.columns 
-WHERE table_name = 'wallet_transactions' 
-AND table_schema = 'public'
-ORDER BY ordinal_position;
 
--- Check indexes
-SELECT indexname, tablename, indexdef
-FROM pg_indexes 
-WHERE schemaname = 'public' 
-AND (tablename = 'users' OR tablename = 'wallet_transactions')
-ORDER BY tablename, indexname;
-
--- Check RLS policies
-SELECT schemaname, tablename, policyname, permissive, roles, cmd, qual
-FROM pg_policies 
-WHERE schemaname = 'public' 
-AND (tablename = 'users' OR tablename = 'wallet_transactions')
-ORDER BY tablename, policyname;
 
 -- =====================================================
 -- STEP 7: Test data insertion (optional)
