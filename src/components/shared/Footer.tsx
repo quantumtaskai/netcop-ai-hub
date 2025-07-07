@@ -1,9 +1,8 @@
 'use client'
 
-import React, { useState } from 'react'
+import React from 'react'
 import Link from 'next/link'
-import { colors, gradients, spacing, typography, borderRadius } from '@/lib/designSystem'
-import { styleHelpers, textStyles, stylePatterns } from '@/lib/styleUtils'
+import { colors, spacing, typography } from '@/lib/designSystem'
 
 interface FooterProps {
   onPrivacyModalOpen?: () => void

@@ -1,18 +1,15 @@
 'use client'
 
 import { useState, useEffect, Suspense } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
 import { toast, Toaster } from 'react-hot-toast'
 import { useUserStore } from '@/store/userStore'
 import Header from '@/components/shared/Header'
 import Footer from '@/components/shared/Footer'
 import AuthModal from '@/components/AuthModal'
-import { WALLET_PACKAGES, formatWalletBalance, calculateTotalAmount } from '@/lib/walletUtils'
+import { WALLET_PACKAGES, calculateTotalAmount } from '@/lib/walletUtils'
 
 function PricingForm() {
-  const router = useRouter()
-  const searchParams = useSearchParams()
-  const { user, refreshUser, topUpWallet, initializeSession } = useUserStore()
+  const { user, topUpWallet, initializeSession } = useUserStore()
   const [selectedPackage, setSelectedPackage] = useState<number | null>(null)
   const [isProcessing, setIsProcessing] = useState(false)
   const [showAuthModal, setShowAuthModal] = useState(false)

@@ -42,7 +42,17 @@ logs
 *.log
 
 # Cache
-.cache/home.html
+.cache/
+node_modules/.cache/
 
-# Ignore
-test.html
+# Temporary files
+*.tmp
+*.temp
+
+# Build artifacts
+dist/
+.turbo/
+
+# Package manager lock files (keep package-lock.json)
+# yarn.lock
+# pnpm-lock.yaml

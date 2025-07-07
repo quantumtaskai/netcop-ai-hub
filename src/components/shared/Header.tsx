@@ -7,8 +7,7 @@ import { useUserStore } from '@/store/userStore'
 import AuthModal from '@/components/AuthModal'
 import ProfileModal from '@/components/ProfileModal'
 import { formatWalletBalance, getWalletStatus } from '@/lib/walletUtils'
-import { colors, gradients, spacing, zIndex, transitions, typography } from '@/lib/designSystem'
-import { styleHelpers, buttonStyles, textStyles, animationUtils } from '@/lib/styleUtils'
+import { colors, spacing, zIndex, transitions, typography } from '@/lib/designSystem'
 
 interface HeaderProps {
   currentPage?: 'home' | 'marketplace' | 'pricing' | 'agent'

@@ -2,10 +2,8 @@
 
 import { ReactNode } from 'react'
 import { useRouter } from 'next/navigation'
-import { useUserStore } from '@/store/userStore'
 import Header from '@/components/shared/Header'
-import { colors, gradients, spacing, typography, borderRadius, transitions } from '@/lib/designSystem'
-import { stylePatterns, cardStyles, textStyles, buttonStyles, styleHelpers, animationUtils } from '@/lib/styleUtils'
+import { colors, spacing, typography, borderRadius } from '@/lib/designSystem'
 
 interface AgentLayoutProps {
   children: ReactNode
