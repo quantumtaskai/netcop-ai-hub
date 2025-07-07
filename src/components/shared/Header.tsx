@@ -217,7 +217,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage = 'home' }) => {
                   const walletStatus = getWalletStatus(balance);
                   return (
                     <div 
-                    onClick={() => router.push('/wallet')}
+                    onClick={() => router.push('/pricing')}
                     style={{
                       background: `linear-gradient(135deg, ${walletStatus.color} 0%, ${walletStatus.color}90 100%)`,
                       color: colors.white,
@@ -382,7 +382,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage = 'home' }) => {
                     return (
                       <div 
                         onClick={() => {
-                          router.push('/wallet')
+                          router.push('/pricing')
                           setIsMobileMenuOpen(false)
                         }}
                         style={{
