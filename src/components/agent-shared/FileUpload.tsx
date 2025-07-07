@@ -3,23 +3,30 @@
 import { useRef, useState } from 'react'
 
 interface FileUploadProps {
-  onFileSelect: (file: File) => void
+  onFileSelect: (file: File | null) => void
   acceptedTypes?: string
+  accept?: string // Alternative prop name for accepted types
   maxSize?: number // in MB
   placeholder?: string
   icon?: string
+  disabled?: boolean
 }
 
 export default function FileUpload({ 
   onFileSelect, 
   acceptedTypes = "*", 
+  accept,
   maxSize = 10,
   placeholder = "Click to upload or drag and drop",
-  icon = "📄"
+  icon = "📄",
+  disabled = false
 }: FileUploadProps) {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [isDragging, setIsDragging] = useState(false)
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
+  
+  // Use accept prop if provided, otherwise use acceptedTypes
+  const fileAccept = accept || acceptedTypes
 
   const handleFileSelect = (file: File) => {
     if (maxSize && file.size > maxSize * 1024 * 1024) {
@@ -66,9 +73,10 @@ export default function FileUpload({
       <input
         ref={fileInputRef}
         type="file"
-        accept={acceptedTypes}
+        accept={fileAccept}
         onChange={handleFileChange}
         style={{ display: 'none' }}
+        disabled={disabled}
       />
       
       <div
@@ -147,13 +155,13 @@ export default function FileUpload({
             }}>
               Maximum file size: {maxSize}MB
             </p>
-            {acceptedTypes !== "*" && (
+            {fileAccept !== "*" && (
               <p style={{
                 fontSize: '12px',
                 color: '#9ca3af',
                 marginTop: '4px'
               }}>
-                Accepted types: {acceptedTypes}
+                Accepted types: {fileAccept}
               </p>
             )}
           </div>

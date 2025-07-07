@@ -3,6 +3,7 @@
 import React from 'react'
 import Link from 'next/link'
 import { colors, spacing, typography } from '@/lib/designSystem'
+import { textStyles, stylePatterns } from '@/lib/styleUtils'
 
 interface FooterProps {
   onPrivacyModalOpen?: () => void

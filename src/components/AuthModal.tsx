@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useUserStore } from '@/store/userStore'
 import { toast } from 'react-hot-toast'
 import { colors, spacing, zIndex } from '@/lib/designSystem'
+import { textStyles, stylePatterns } from '@/lib/styleUtils'
 
 interface AuthModalProps {
   isOpen: boolean

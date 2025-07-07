@@ -511,7 +511,7 @@ function FiveWhysChat() {
                     width: '100%'
                   }}
                 >
-                  {isLoading ? '⏳ Generating...' : `📊 Generate Report (${cost} credits)`}
+                  {isLoading ? '⏳ Generating...' : `📊 Generate Report (${agentPrice?.priceDisplay || '8.00 AED'})`}
                 </button>
               </div>
             )}
@@ -542,7 +542,7 @@ function FiveWhysChat() {
         <div>
           <WalletBalance 
             agentSlug={agentSlug}
-            onUseAgent={() => {
+            onProcess={() => {
               if (canGenerateReport()) {
                 generateReport()
               } else {
@@ -807,15 +807,19 @@ function FiveWhysChat() {
                 `
                 
                 const printWindow = window.open('', '_blank')
-                printWindow.document.write(reportContent)
-                printWindow.document.close()
-                
-                // Wait for content to load then trigger print dialog
-                printWindow.onload = () => {
-                  setTimeout(() => {
-                    printWindow.print()
-                    toast.success('📄 Opening PDF save dialog...')
-                  }, 500)
+                if (printWindow) {
+                  printWindow.document.write(reportContent)
+                  printWindow.document.close()
+                  
+                  // Wait for content to load then trigger print dialog
+                  printWindow.onload = () => {
+                    setTimeout(() => {
+                      printWindow.print()
+                      toast.success('📄 Opening PDF save dialog...')
+                    }, 500)
+                  }
+                } else {
+                  toast.error('Unable to open print dialog. Please check your browser settings.')
                 }
                 
                 // Reset button after animation

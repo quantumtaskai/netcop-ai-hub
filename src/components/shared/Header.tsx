@@ -8,6 +8,7 @@ import AuthModal from '@/components/AuthModal'
 import ProfileModal from '@/components/ProfileModal'
 import { formatWalletBalance, getWalletStatus } from '@/lib/walletUtils'
 import { colors, spacing, zIndex, transitions, typography } from '@/lib/designSystem'
+import { textStyles, styleHelpers, animationUtils } from '@/lib/styleUtils'
 
 interface HeaderProps {
   currentPage?: 'home' | 'marketplace' | 'pricing' | 'agent'
@@ -36,7 +37,13 @@ const Header: React.FC<HeaderProps> = ({ currentPage = 'home' }) => {
       }
     `
     document.head.appendChild(style)
-    return () => document.head.removeChild(style)
+    return () => {
+      try {
+        document.head.removeChild(style)
+      } catch (e) {
+        // Style element may have already been removed
+      }
+    }
   }, [])
 
   // Detect mobile screen size

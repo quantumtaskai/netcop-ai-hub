@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
 
     // Initialize Stripe after environment check
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-      apiVersion: '2024-06-20',
+      apiVersion: '2025-06-30.basil',
     })
 
     const { sessionId, packageId } = await request.json()

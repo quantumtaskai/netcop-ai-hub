@@ -3,7 +3,8 @@
 import { ReactNode } from 'react'
 import { useRouter } from 'next/navigation'
 import Header from '@/components/shared/Header'
-import { colors, spacing, typography, borderRadius } from '@/lib/designSystem'
+import { colors, spacing, typography, borderRadius, gradients, transitions } from '@/lib/designSystem'
+import { textStyles, stylePatterns, cardStyles } from '@/lib/styleUtils'
 
 interface AgentLayoutProps {
   children: ReactNode

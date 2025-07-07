@@ -29,7 +29,7 @@ export async function GET(request: NextRequest) {
     }
     
     // Get users with wallet balances (handle missing columns gracefully)
-    let users = []
+    let users: any[] = []
     let usersError = null
     
     try {

@@ -250,14 +250,16 @@ export const textStyles = {
   body: {
     fontSize: typography.fontSize.base,
     lineHeight: typography.lineHeight.relaxed,
-    color: colors.gray[700]
+    color: colors.gray[700],
+    fontWeight: typography.fontWeight.normal
   },
 
   // Small Text
   small: {
     fontSize: typography.fontSize.sm,
     lineHeight: typography.lineHeight.normal,
-    color: colors.gray[600]
+    color: colors.gray[600],
+    fontWeight: typography.fontWeight.normal
   },
 
   // Caption Text
@@ -278,6 +280,11 @@ export const textStyles = {
 
 // Helper Functions
 export const styleHelpers = {
+  // Flex layout helpers
+  flexBetween: stylePatterns.flexBetween,
+  flexCenter: stylePatterns.flexCenter,
+  flexColumn: stylePatterns.flexColumn,
+
   // Create responsive clamp value
   clamp: (min: string, preferred: string, max: string) => 
     `clamp(${min}, ${preferred}, ${max})`,
@@ -334,11 +341,10 @@ export const styleHelpers = {
   getInputStyle: (
     state: 'normal' | 'focused' | 'error' | 'success' = 'normal'
   ) => {
-    const styles = [inputStyles.base]
-    
-    if (state !== 'normal') styles.push(inputStyles[state])
-    
-    return styleHelpers.combine(...styles)
+    if (state === 'normal') {
+      return inputStyles.base
+    }
+    return styleHelpers.combine(inputStyles.base, inputStyles[state])
   },
 
   // Get card style combination

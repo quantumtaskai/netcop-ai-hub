@@ -43,7 +43,7 @@ function DataAnalyzerForm() {
 
   if (!user) return null
 
-  const handleFileSelect = (file: File) => {
+  const handleFileSelect = (file: File | null) => {
     setSelectedFile(file)
     setResults(null)
     setShowResults(false)
@@ -244,7 +244,7 @@ function DataAnalyzerForm() {
         <div>
           <WalletBalance
             agentSlug={agentSlug}
-            onUseAgent={processFile}
+            onProcess={processFile}
             disabled={!selectedFile}
             processing={isProcessing}
           />

@@ -4,8 +4,18 @@ import { useState, useEffect, Suspense } from 'react'
 import { toast, Toaster } from 'react-hot-toast'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useUserStore } from '@/store/userStore'
-import { AgentService } from '@/lib/agentService'
-import { Agent } from '@/lib/supabase'
+// Define Agent type locally
+interface Agent {
+  id: number
+  name: string
+  description: string
+  category: string
+  cost: number
+  rating: number
+  reviews: number
+  initials: string
+  gradient: string
+}
 import { getAgentSlug } from '@/lib/agentUtils'
 import { getAgentPrice } from '@/lib/agentPricing'
 import AuthModal from '@/components/AuthModal'

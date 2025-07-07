@@ -232,7 +232,7 @@ function FAQGeneratorForm() {
               <FileUpload
                 onFileSelect={handleFileSelect}
                 accept=".pdf,.doc,.docx,.txt,.md"
-                maxSize={25 * 1024 * 1024} // 25MB
+                maxSize={25} // 25MB
                 disabled={isProcessing}
               />
               {formData.file && (

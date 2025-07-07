@@ -17,12 +17,12 @@ export async function POST(request: NextRequest) {
 
     // Initialize Stripe after environment check
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-      apiVersion: '2024-06-20',
+      apiVersion: '2025-06-30.basil',
     })
 
     const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET
     const body = await request.text()
-    const headersList = headers()
+    const headersList = await headers()
     const sig = headersList.get('stripe-signature')!
 
     let event: Stripe.Event
