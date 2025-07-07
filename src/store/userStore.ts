@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { supabase, User } from '@/lib/supabase'
+import { validateClientEnvironment, checkForExposedCredentials } from '@/lib/envValidation'
 
 interface UserState {
   user: User | null
@@ -331,6 +332,16 @@ export const useUserStore = create<UserState>()(
       // Initialize session - called on app start
       initializeSession: async () => {
         try {
+          // Validate environment before initializing
+          if (!validateClientEnvironment()) {
+            set({ error: 'Configuration error: Missing required environment variables' })
+            return
+          }
+          
+          if (!checkForExposedCredentials()) {
+            console.error('🚨 Security issue detected in environment configuration')
+          }
+          
           console.log('🚀 Initializing session...')
           const { data: session } = await supabase.auth.getSession()
           
