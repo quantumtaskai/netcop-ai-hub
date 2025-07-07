@@ -5,6 +5,46 @@ All notable changes to the NetCop AI Hub project will be documented in this file
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.0] - 2025-07-07
+
+### 🎨 Enhanced Pricing Page UI & UX
+
+#### Added
+- **Modern Card Design**: Glassmorphism effects with enhanced shadows and gradients
+- **Package Icons**: Unique visual identifiers (💰⭐🚀👑) for each wallet tier
+- **Color-Coded Tiers**: Custom gradient schemes for different package levels
+- **Value Proposition Section**: Highlighted benefits (Instant Results, Transparent Pricing, No Expiration)
+- **Enhanced Usage Examples**: Interactive boxes showing AI agent operation estimates
+- **CSS-Only Hover Effects**: Reliable animations without JavaScript dependencies
+- **Footer Integration**: Complete page layout with company information
+- **Mobile Optimization**: Improved touch targets and responsive scaling
+
+#### Changed
+- **Simplified Header**: Reduced from large emoji heading to clean, minimal text
+- **Card Layout**: Removed redundant "Wallet Balance" text for cleaner appearance
+- **FAQ Content**: Updated from credit-based to AED pricing explanations
+- **Button Styling**: Enhanced gradients, shadows, and loading states
+- **Pricing Copy**: Streamlined descriptions focusing on value propositions
+
+#### Removed
+- **Large Package Labels**: Cleaned up card headers by removing "10 AED", "25 AED" text
+- **Refund FAQ Item**: Removed per business requirements
+- **JavaScript Hover Handlers**: Replaced with CSS for better performance and reliability
+
+#### Fixed
+- **Runtime TypeError**: "scale(1.02) translateY(-2px)" is not a function errors
+- **Event Bubbling Issues**: Problematic mouse event handlers causing crashes
+- **Transform Property Errors**: Dynamic style manipulation causing JavaScript exceptions
+- **Mobile Touch Issues**: Improved active states and touch feedback
+
+#### Technical Improvements
+- **CSS Architecture**: Pure CSS hover effects using classes instead of JavaScript
+- **Type Safety**: Fixed function parameter types for better TypeScript compliance
+- **Performance**: Eliminated DOM manipulation for style changes
+- **Error Handling**: Removed problematic event listeners that caused runtime errors
+
+---
+
 ## [2.0.0] - 2025-07-03
 
 ### 🎯 MAJOR: Complete Wallet System Transformation
