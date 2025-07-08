@@ -221,7 +221,7 @@ function HomePageContent() {
   }
 
 
-  const useAgent = (agent: Agent) => {
+  const handleAgentClick = (agent: Agent) => {
     if (!user) {
       setShowAuthModal(true)
       return
@@ -559,7 +559,7 @@ function HomePageContent() {
                       </span>
                     </div>
                     <button
-                      onClick={() => useAgent(agent)}
+                      onClick={() => handleAgentClick(agent)}
                       disabled={isProcessing === agent.id}
                       style={{
                         background: isProcessing === agent.id
