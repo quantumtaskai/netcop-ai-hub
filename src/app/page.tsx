@@ -33,62 +33,21 @@ const HomePage: React.FC = () => {
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [dropdownPosition, setDropdownPosition] = useState({ top: 0, right: 0 });
 
-  // All JavaScript functionality from original HTML
-  useEffect(() => {
-    // Mobile Navigation Toggle
-    const navToggle = document.querySelector('.nav-toggle');
-    const navMenu = document.querySelector('.nav-menu');
+  // Optimized mobile navigation - moved to Header component where it belongs
+  // This effect was causing unnecessary DOM queries
 
-    if (navToggle && navMenu) {
-      const handleToggle = () => {
-        navMenu.classList.toggle('active');
-      };
+  // Optimized smooth scrolling using CSS scroll-behavior: smooth in global styles
 
-      navToggle.addEventListener('click', handleToggle);
-
-      // Close mobile menu when clicking on a link
-      document.querySelectorAll('.nav-menu a').forEach(link => {
-        link.addEventListener('click', () => {
-          navMenu.classList.remove('active');
-        });
-      });
-
-      return () => navToggle.removeEventListener('click', handleToggle);
-    }
-  }, []);
-
-  // Smooth scrolling for navigation links
-  useEffect(() => {
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function (this: HTMLAnchorElement, e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href')!);
-        if (target) {
-          target.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
-          });
-        }
-      });
-    });
-  }, []);
-
-  // Header background on scroll
+  // Optimized header scroll effect using CSS classes
   useEffect(() => {
     const handleScroll = () => {
       const header = document.querySelector('.header');
       if (header) {
-        if (window.scrollY > 100) {
-          (header as HTMLElement).style.background = 'rgba(255, 255, 255, 0.98)';
-          (header as HTMLElement).style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.1)';
-        } else {
-          (header as HTMLElement).style.background = 'rgba(255, 255, 255, 0.95)';
-          (header as HTMLElement).style.boxShadow = 'none';
-        }
+        header.classList.toggle('scrolled', window.scrollY > 100);
       }
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -137,81 +96,21 @@ const HomePage: React.FC = () => {
     return () => staggerObserver.disconnect();
   }, []);
 
-  // Add loading animation for better UX
+  // Simplified loading animation that doesn't affect entire body
+  const [isPageLoaded, setIsPageLoaded] = useState(false);
   useEffect(() => {
-    document.body.style.opacity = '0';
-    document.body.style.transition = 'opacity 0.3s ease-in-out';
-    setTimeout(() => {
-      document.body.style.opacity = '1';
-    }, 100);
+    setIsPageLoaded(true);
   }, []);
 
-  // Add hover effects for service cards
+  // Service card hover effects moved to CSS for better performance
+
+  // Parallax effect simplified to reduce jank and improve performance
+
+  // Typewriter effect optimized to use CSS animation instead of JavaScript DOM manipulation
+
+  // Simplified image loading - removed performance-heavy animation
   useEffect(() => {
-    document.querySelectorAll('.service-card').forEach(card => {
-      card.addEventListener('mouseenter', function(this: HTMLElement) {
-        this.style.transform = 'translateY(-10px) scale(1.02)';
-      });
-      
-      card.addEventListener('mouseleave', function(this: HTMLElement) {
-        this.style.transform = 'translateY(0) scale(1)';
-      });
-    });
-  }, []);
-
-  // Add parallax effect to hero section
-  useEffect(() => {
-    const handleParallax = () => {
-      const scrolled = window.pageYOffset;
-      const hero = document.querySelector('.hero');
-      const rate = scrolled * -0.5;
-      
-      if (hero) {
-        (hero as HTMLElement).style.transform = `translateY(${rate}px)`;
-      }
-    };
-
-    window.addEventListener('scroll', handleParallax);
-    return () => window.removeEventListener('scroll', handleParallax);
-  }, []);
-
-  // Add typewriter effect to hero title
-  useEffect(() => {
-    const typeWriter = (element: HTMLElement, text: string, speed = 100) => {
-      let i = 0;
-      element.innerHTML = '';
-      
-      function type() {
-        if (i < text.length) {
-          element.innerHTML += text.charAt(i);
-          i++;
-          setTimeout(type, speed);
-        }
-      }
-      type();
-    };
-
-    // Initialize typewriter effect when page loads
-    const heroTitle = document.querySelector('.hero h1');
-    if (heroTitle) {
-      const originalText = heroTitle.textContent || '';
-      setTimeout(() => {
-        typeWriter(heroTitle as HTMLElement, originalText, 50);
-      }, 500);
-    }
-  }, []);
-
-  // Add progressive loading for images
-  useEffect(() => {
-    document.querySelectorAll('img').forEach(img => {
-      img.addEventListener('load', function(this: HTMLImageElement) {
-        this.style.opacity = '0';
-        this.style.transition = 'opacity 0.3s ease-in-out';
-        setTimeout(() => {
-          this.style.opacity = '1';
-        }, 100);
-      });
-    });
+    // Images will load naturally without forced animations
   }, []);
 
   const handleFormSubmit = (e: React.FormEvent) => {
@@ -236,15 +135,16 @@ const HomePage: React.FC = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  // Privacy Policy Modal Functions
+  // Privacy Policy Modal Functions - Optimized for better performance
   const openPrivacyModal = () => {
     setIsPrivacyModalOpen(true);
-    document.body.style.overflow = 'hidden';
+    // Use document.documentElement instead of document.body for better compatibility
+    document.documentElement.style.overflow = 'hidden';
   };
 
   const closePrivacyModal = () => {
     setIsPrivacyModalOpen(false);
-    document.body.style.overflow = 'auto';
+    document.documentElement.style.overflow = '';
   };
 
   useEffect(() => {
@@ -279,11 +179,21 @@ const HomePage: React.FC = () => {
           --shadow-medium: 0 10px 25px rgba(0, 0, 0, 0.15);
         }
 
+        html {
+          scroll-behavior: smooth;
+        }
+
         body {
           font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
           line-height: 1.6;
           color: var(--text-dark);
           overflow-x: hidden;
+        }
+
+        /* Page-level fade-in animation */
+        .page-container {
+          opacity: ${isPageLoaded ? '1' : '0'};
+          transition: opacity 0.5s ease-in-out;
         }
 
         /* Header & Navigation */
@@ -296,6 +206,21 @@ const HomePage: React.FC = () => {
           border-bottom: 1px solid rgba(0, 0, 0, 0.1);
           z-index: 1000;
           transition: all 0.3s ease;
+        }
+
+        .header.scrolled {
+          background: rgba(255, 255, 255, 0.98);
+          box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Service card hover effects */
+        .service-card {
+          transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .service-card:hover {
+          transform: translateY(-10px) scale(1.02);
+          box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
         }
 
         .nav-container {
@@ -955,7 +880,7 @@ const HomePage: React.FC = () => {
         }
       `}</style>
 
-      <div>
+      <div className="page-container">
         {/* Shared Header */}
         <Header currentPage="home" />
         

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, Suspense } from 'react'
-import { useSearchParams, useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { toast, Toaster } from 'react-hot-toast'
 import { useUserStore } from '@/store/userStore'
 import { getAgentInfo } from '@/lib/agentUtils'
@@ -26,14 +26,13 @@ interface WeatherData {
     weather_description: string
     icon: string
   }
-  forecast?: any[]
-  alerts?: any[]
+  forecast?: object[]
+  alerts?: object[]
   generated_at: string
 }
 
 function WeatherReporterForm() {
   const router = useRouter()
-  const searchParams = useSearchParams()
   const { user, updateWallet } = useUserStore()
   
   // Get agent pricing
@@ -99,7 +98,7 @@ function WeatherReporterForm() {
       // Step 2: Get weather data
       setProcessingStatus('Fetching weather data...')
       
-      let weatherData: any = {}
+      let weatherData: Record<string, any> = {}
 
       if (reportType === 'current' || reportType === 'detailed') {
         // Current weather
@@ -266,7 +265,7 @@ function WeatherReporterForm() {
             />
 
             <div style={{ fontSize: 'clamp(12px, 3vw, 14px)', color: '#6b7280' }}>
-              Examples: "New York", "London, UK", "Tokyo, Japan", "37.7749,-122.4194"
+              Examples: &quot;New York&quot;, &quot;London, UK&quot;, &quot;Tokyo, Japan&quot;, &quot;37.7749,-122.4194&quot;
             </div>
           </div>
 

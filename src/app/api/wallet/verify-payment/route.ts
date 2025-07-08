@@ -40,10 +40,10 @@ export async function POST(request: NextRequest) {
     let session
     try {
       session = await stripe.checkout.sessions.retrieve(sessionId)
-    } catch (stripeError: any) {
+    } catch (stripeError: unknown) {
       console.error('Stripe API error:', stripeError)
       return NextResponse.json(
-        { error: 'Invalid session ID or Stripe error', details: stripeError.message },
+        { error: 'Invalid session ID or Stripe error', details: stripeError instanceof Error ? stripeError.message : String(stripeError) },
         { status: 400 }
       )
     }
@@ -234,7 +234,7 @@ export async function POST(request: NextRequest) {
     console.log('📤 Sending response:', response)
     return NextResponse.json(response)
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Wallet payment verification error:', error)
     return NextResponse.json(
       { error: 'Payment verification failed' },

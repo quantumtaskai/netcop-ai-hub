@@ -198,8 +198,8 @@ export function generateWalletTopUpURL(packageId: string, userId: string): strin
   if (!pkg) throw new Error('Invalid package ID')
   
   const baseUrl = typeof window !== 'undefined' ? window.location.origin : process.env.NEXT_PUBLIC_APP_URL
-  const successUrl = `${baseUrl}/wallet?session_id={CHECKOUT_SESSION_ID}&payment=success&package=${packageId}`
-  const cancelUrl = `${baseUrl}/wallet?payment=cancelled`
+  const successUrl = `${baseUrl}/pricing?session_id={CHECKOUT_SESSION_ID}&payment=success&package=${packageId}`
+  const cancelUrl = `${baseUrl}/pricing?payment=cancelled`
   
   return `/api/wallet/create-checkout?package=${packageId}&user=${userId}&success=${encodeURIComponent(successUrl)}&cancel=${encodeURIComponent(cancelUrl)}`
 }

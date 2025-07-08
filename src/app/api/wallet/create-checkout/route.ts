@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { headers } from 'next/headers'
 import Stripe from 'stripe'
 import { WALLET_PACKAGES } from '@/lib/walletUtils'
 
@@ -74,7 +73,7 @@ export async function GET(request: NextRequest) {
 
     // Redirect to Stripe checkout
     return NextResponse.redirect(session.url!)
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Wallet checkout creation error:', error)
     return NextResponse.json(
       { error: 'Failed to create checkout session' },

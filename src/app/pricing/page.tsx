@@ -1,6 +1,7 @@
 'use client'
 
-import { useState, useEffect, Suspense } from 'react'
+import { useState, useEffect, useRef, Suspense } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { toast, Toaster } from 'react-hot-toast'
 import { useUserStore } from '@/store/userStore'
 import Header from '@/components/shared/Header'
@@ -14,11 +15,62 @@ function PricingForm() {
   const [isProcessing, setIsProcessing] = useState(false)
   const [showAuthModal, setShowAuthModal] = useState(false)
   const [authMode, setAuthMode] = useState<'login' | 'register' | 'reset'>('login')
+  const searchParams = useSearchParams()
+  
+  // Prevent duplicate payment messages
+  const messageShownRef = useRef<Set<string>>(new Set())
 
   // Initialize session on component mount
   useEffect(() => {
     initializeSession()
   }, [])
+
+  // Handle payment status from URL parameters
+  useEffect(() => {
+    const payment = searchParams.get('payment')
+    const sessionId = searchParams.get('session_id')
+    const packageId = searchParams.get('package')
+
+    // Create unique key for this payment event
+    const paymentKey = `${payment}-${sessionId || 'cancelled'}-${Date.now()}`
+    
+    // Check if we've already shown a message for this payment event
+    const sessionKey = `payment-message-${payment}-${sessionId || 'cancelled'}`
+    const alreadyShown = sessionStorage.getItem(sessionKey)
+    
+    if (!payment || alreadyShown || messageShownRef.current.has(paymentKey)) {
+      return // Exit early if no payment status or message already shown
+    }
+
+    if (payment === 'success' && sessionId) {
+      messageShownRef.current.add(paymentKey)
+      sessionStorage.setItem(sessionKey, 'true')
+      toast.success('🎉 Payment successful! Your wallet has been topped up.')
+      
+      // Clean up URL immediately and redirect
+      setTimeout(() => {
+        sessionStorage.removeItem(sessionKey) // Clean up for next payment
+        const url = new URL(window.location.href)
+        url.searchParams.delete('payment')
+        url.searchParams.delete('session_id')
+        url.searchParams.delete('package')
+        window.history.replaceState({}, '', url.toString())
+      }, 3000)
+      
+    } else if (payment === 'cancelled') {
+      messageShownRef.current.add(paymentKey)
+      sessionStorage.setItem(sessionKey, 'true')
+      toast.error('❌ Payment was cancelled. No charges were made.')
+      
+      // Clean up URL immediately
+      setTimeout(() => {
+        sessionStorage.removeItem(sessionKey) // Clean up for next payment
+        const url = new URL(window.location.href)
+        url.searchParams.delete('payment')
+        window.history.replaceState({}, '', url.toString())
+      }, 3000)
+    }
+  }, [searchParams])
 
   // Allow public access to pricing page - no redirect needed
 

@@ -120,20 +120,32 @@ export function getSecureConfig(): EnvConfig {
 
 // Client-side safe environment check
 export function validateClientEnvironment() {
+  // Only run validation in the browser, not during SSR
+  if (typeof window === 'undefined') {
+    return true // Skip validation during server-side rendering
+  }
+
   const clientVars = [
     'NEXT_PUBLIC_SUPABASE_URL',
     'NEXT_PUBLIC_SUPABASE_ANON_KEY',
     'NEXT_PUBLIC_APP_URL'
   ]
 
-  const missing = clientVars.filter(varName => 
-    !process.env[varName] || 
-    process.env[varName]!.includes('placeholder') ||
-    process.env[varName]!.includes('your_')
-  )
+  const missing = clientVars.filter(varName => {
+    const value = process.env[varName]
+    return !value || 
+           value.includes('placeholder') ||
+           value.includes('your_') ||
+           value.includes('undefined')
+  })
 
   if (missing.length > 0) {
-    console.error('❌ Missing required client environment variables:', missing)
+    console.warn('⚠️ Missing required client environment variables:', missing)
+    console.warn('🔧 Please check your .env.local file')
+    // Don't block the app in development, just warn
+    if (process.env.NODE_ENV === 'development') {
+      return false // Return false but don't throw
+    }
     return false
   }
 

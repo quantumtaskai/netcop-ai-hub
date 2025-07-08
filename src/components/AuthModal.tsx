@@ -47,8 +47,8 @@ export default function AuthModal({ isOpen, onClose, mode, setAuthMode }: AuthMo
         setPassword('')
         setName('')
       }
-    } catch (error: any) {
-      toast.error(error.message || 'Authentication failed')
+    } catch (error: unknown) {
+      toast.error(error instanceof Error ? error.message : 'Authentication failed')
     } finally {
       setIsLoading(false)
     }
@@ -128,7 +128,7 @@ export default function AuthModal({ isOpen, onClose, mode, setAuthMode }: AuthMo
             }}>
               <div style={{ fontSize: '48px', marginBottom: '16px' }}>📧</div>
               <h3 style={{ fontWeight: 'bold', marginBottom: '8px' }}>Check your email!</h3>
-              <p>We've sent a password reset link to <strong>{email}</strong></p>
+              <p>We&apos;ve sent a password reset link to <strong>{email}</strong></p>
             </div>
             <button
               onClick={() => {
@@ -299,7 +299,7 @@ export default function AuthModal({ isOpen, onClose, mode, setAuthMode }: AuthMo
             borderTop: '1px solid #e5e7eb'
           }}>
             <p style={{ color: '#6b7280', marginBottom: '8px' }}>
-              {mode === 'register' ? 'Already have an account?' : mode === 'reset' ? 'Remember your password?' : "Don't have an account?"}
+              {mode === 'register' ? 'Already have an account?' : mode === 'reset' ? 'Remember your password?' : 'Don\'t have an account?'}
             </p>
             <button
               onClick={() => {

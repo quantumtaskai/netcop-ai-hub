@@ -3,7 +3,7 @@
 import { toast } from 'react-hot-toast'
 
 interface ResultsDisplayProps {
-  results: any
+  results: unknown
   title?: string
   isVisible: boolean
 }
@@ -33,7 +33,7 @@ export default function ResultsDisplay({ results, title = "Results", isVisible }
   }
 
   // Smart content extraction function
-  const extractContent = (results: any): { content: string, filename: string, isClean: boolean } => {
+  const extractContent = (results: unknown): { content: string, filename: string, isClean: boolean } => {
     const timestamp = Date.now()
     
     // Handle simple string results
@@ -46,25 +46,26 @@ export default function ResultsDisplay({ results, title = "Results", isVisible }
     }
 
     // Handle weather reports
-    if (results.location && results.current) {
-      const weatherSummary = `Weather Report for ${results.location}
-Generated: ${results.generated_at ? new Date(results.generated_at).toLocaleString() : new Date().toLocaleString()}
+    if (results && typeof results === 'object' && 'location' in results && 'current' in results) {
+      const resultsObj = results as any
+      const weatherSummary = `Weather Report for ${resultsObj.location}
+Generated: ${resultsObj.generated_at ? new Date(resultsObj.generated_at).toLocaleString() : new Date().toLocaleString()}
 
 Current Weather:
-Temperature: ${results.current.temperature}°C (feels like ${results.current.feels_like}°C)
-Condition: ${results.current.weather_description}
-Humidity: ${results.current.humidity}%
-Wind Speed: ${results.current.wind_speed} km/h
-Pressure: ${results.current.pressure} hPa
-Visibility: ${results.current.visibility} km
+Temperature: ${resultsObj.current.temperature}°C (feels like ${resultsObj.current.feels_like}°C)
+Condition: ${resultsObj.current.weather_description}
+Humidity: ${resultsObj.current.humidity}%
+Wind Speed: ${resultsObj.current.wind_speed} km/h
+Pressure: ${resultsObj.current.pressure} hPa
+Visibility: ${resultsObj.current.visibility} km
 
-${results.forecast && results.forecast.length > 0 ? `
+${resultsObj.forecast && resultsObj.forecast.length > 0 ? `
 5-Day Forecast:
-${results.forecast.slice(0, 5).map((day: any, index: number) => 
+${resultsObj.forecast.slice(0, 5).map((day: any, index: number) => 
   `${new Date(day.dt * 1000).toLocaleDateString('en-US', { weekday: 'long' })}: ${Math.round(day.main.temp)}°C - ${day.weather[0].description}`
 ).join('\n')}` : ''}`
 
-      const locationName = results.location.replace(/[^a-zA-Z0-9]/g, '-')
+      const locationName = resultsObj.location.replace(/[^a-zA-Z0-9]/g, '-')
       return {
         content: weatherSummary,
         filename: `weather-report-${locationName}-${timestamp}.txt`,
@@ -73,15 +74,16 @@ ${results.forecast.slice(0, 5).map((day: any, index: number) =>
     }
 
     // Handle agent results with analysis field (Social Ads, Job Posting, Data Analysis)
-    if (results.analysis) {
+    if (results && typeof results === 'object' && 'analysis' in results) {
+      const resultsObj = results as any
       let filename = `agent-results-${timestamp}.txt`
-      let content = results.analysis
+      const content = resultsObj.analysis
 
       // Detect content type for better filename
       if (content.includes('Job Title:') || content.includes('Position:') || content.includes('About Us:')) {
         filename = `job-posting-${timestamp}.txt`
-      } else if (content.includes('Ad Copy:') || results.platform) {
-        const platform = results.platform ? results.platform.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase() : 'social-media'
+      } else if (content.includes('Ad Copy:') || resultsObj.platform) {
+        const platform = resultsObj.platform ? resultsObj.platform.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase() : 'social-media'
         filename = `social-ad-${platform}-${timestamp}.txt`
       } else if (content.includes('Analysis') || content.includes('Summary') || content.includes('Data')) {
         filename = `data-analysis-${timestamp}.txt`
@@ -95,17 +97,19 @@ ${results.forecast.slice(0, 5).map((day: any, index: number) =>
     }
 
     // Handle other content fields
-    if (results.content) {
+    if (results && typeof results === 'object' && 'content' in results) {
+      const resultsObj = results as any
       return {
-        content: results.content,
+        content: resultsObj.content,
         filename: `content-${timestamp}.txt`,
         isClean: true
       }
     }
 
-    if (results.jobPosting) {
+    if (results && typeof results === 'object' && 'jobPosting' in results) {
+      const resultsObj = results as any
       return {
-        content: results.jobPosting,
+        content: resultsObj.jobPosting,
         filename: `job-posting-${timestamp}.txt`,
         isClean: true
       }
@@ -151,7 +155,8 @@ ${results.forecast.slice(0, 5).map((day: any, index: number) =>
 
     if (typeof results === 'object') {
       // Check if it's a weather report
-      if (results.location && results.current) {
+      if (results && 'location' in results && 'current' in results) {
+        const resultsObj = results as any
         return (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
             {/* Location Header */}
@@ -167,10 +172,10 @@ ${results.forecast.slice(0, 5).map((day: any, index: number) =>
                 fontWeight: '700',
                 margin: '0 0 8px 0'
               }}>
-                🌍 {results.location}
+                🌍 {resultsObj.location}
               </h3>
               <div style={{ fontSize: '14px', opacity: 0.9 }}>
-                Generated at {new Date(results.generated_at).toLocaleString()}
+                Generated at {new Date(resultsObj.generated_at).toLocaleString()}
               </div>
             </div>
 
@@ -206,16 +211,16 @@ ${results.forecast.slice(0, 5).map((day: any, index: number) =>
                   textAlign: 'center'
                 }}>
                   <div style={{ fontSize: '32px', marginBottom: '8px' }}>
-                    {`https://openweathermap.org/img/w/${results.current.icon}.png` ? 
-                      <img src={`https://openweathermap.org/img/w/${results.current.icon}.png`} alt="weather" style={{ width: '50px', height: '50px' }} /> : 
+                    {`https://openweathermap.org/img/w/${resultsObj.current.icon}.png` ? 
+                      <img src={`https://openweathermap.org/img/w/${resultsObj.current.icon}.png`} alt="weather" style={{ width: '50px', height: '50px' }} /> : 
                       '🌤️'
                     }
                   </div>
                   <div style={{ fontSize: '24px', fontWeight: '700', color: '#1f2937' }}>
-                    {results.current.temperature}°C
+                    {resultsObj.current.temperature}°C
                   </div>
                   <div style={{ fontSize: '14px', color: '#6b7280', textTransform: 'capitalize' }}>
-                    {results.current.weather_description}
+                    {resultsObj.current.weather_description}
                   </div>
                 </div>
 
@@ -226,7 +231,7 @@ ${results.forecast.slice(0, 5).map((day: any, index: number) =>
                   border: '1px solid #e5e7eb'
                 }}>
                   <div style={{ fontSize: '14px', color: '#6b7280', marginBottom: '4px' }}>Feels Like</div>
-                  <div style={{ fontSize: '20px', fontWeight: '600' }}>{results.current.feels_like}°C</div>
+                  <div style={{ fontSize: '20px', fontWeight: '600' }}>{resultsObj.current.feels_like}°C</div>
                 </div>
 
                 <div style={{
@@ -236,7 +241,7 @@ ${results.forecast.slice(0, 5).map((day: any, index: number) =>
                   border: '1px solid #e5e7eb'
                 }}>
                   <div style={{ fontSize: '14px', color: '#6b7280', marginBottom: '4px' }}>Humidity</div>
-                  <div style={{ fontSize: '20px', fontWeight: '600' }}>{results.current.humidity}%</div>
+                  <div style={{ fontSize: '20px', fontWeight: '600' }}>{resultsObj.current.humidity}%</div>
                 </div>
 
                 <div style={{
@@ -246,7 +251,7 @@ ${results.forecast.slice(0, 5).map((day: any, index: number) =>
                   border: '1px solid #e5e7eb'
                 }}>
                   <div style={{ fontSize: '14px', color: '#6b7280', marginBottom: '4px' }}>Wind Speed</div>
-                  <div style={{ fontSize: '20px', fontWeight: '600' }}>{results.current.wind_speed} km/h</div>
+                  <div style={{ fontSize: '20px', fontWeight: '600' }}>{resultsObj.current.wind_speed} km/h</div>
                 </div>
 
                 <div style={{
@@ -256,7 +261,7 @@ ${results.forecast.slice(0, 5).map((day: any, index: number) =>
                   border: '1px solid #e5e7eb'
                 }}>
                   <div style={{ fontSize: '14px', color: '#6b7280', marginBottom: '4px' }}>Pressure</div>
-                  <div style={{ fontSize: '20px', fontWeight: '600' }}>{results.current.pressure} hPa</div>
+                  <div style={{ fontSize: '20px', fontWeight: '600' }}>{resultsObj.current.pressure} hPa</div>
                 </div>
 
                 <div style={{
@@ -266,13 +271,13 @@ ${results.forecast.slice(0, 5).map((day: any, index: number) =>
                   border: '1px solid #e5e7eb'
                 }}>
                   <div style={{ fontSize: '14px', color: '#6b7280', marginBottom: '4px' }}>Visibility</div>
-                  <div style={{ fontSize: '20px', fontWeight: '600' }}>{results.current.visibility} km</div>
+                  <div style={{ fontSize: '20px', fontWeight: '600' }}>{resultsObj.current.visibility} km</div>
                 </div>
               </div>
             </div>
 
             {/* Forecast if available */}
-            {results.forecast && results.forecast.length > 0 && (
+            {resultsObj.forecast && resultsObj.forecast.length > 0 && (
               <div style={{
                 background: '#f8fafc',
                 border: '1px solid #e2e8f0',
@@ -296,7 +301,7 @@ ${results.forecast.slice(0, 5).map((day: any, index: number) =>
                   gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
                   gap: '12px'
                 }}>
-                  {results.forecast.slice(0, 5).map((day: any, index: number) => (
+                  {resultsObj.forecast.slice(0, 5).map((day: Record<string, unknown>, index: number) => (
                     <div key={index} style={{
                       background: 'white',
                       padding: '16px',
@@ -305,18 +310,18 @@ ${results.forecast.slice(0, 5).map((day: any, index: number) =>
                       textAlign: 'center'
                     }}>
                       <div style={{ fontSize: '14px', color: '#6b7280', marginBottom: '8px' }}>
-                        {new Date(day.dt * 1000).toLocaleDateString('en-US', { weekday: 'short' })}
+                        {new Date((day.dt as number) * 1000).toLocaleDateString('en-US', { weekday: 'short' })}
                       </div>
                       <img 
-                        src={`https://openweathermap.org/img/w/${day.weather[0].icon}.png`} 
+                        src={`https://openweathermap.org/img/w/${(day.weather as any)?.[0]?.icon || '01d'}.png`} 
                         alt="weather" 
                         style={{ width: '40px', height: '40px', margin: '0 auto 8px auto' }}
                       />
                       <div style={{ fontSize: '16px', fontWeight: '600' }}>
-                        {Math.round(day.main.temp)}°C
+                        {Math.round((day.main as any)?.temp || 0)}°C
                       </div>
                       <div style={{ fontSize: '12px', color: '#6b7280', textTransform: 'capitalize' }}>
-                        {day.weather[0].description}
+                        {(day.weather as any)?.[0]?.description || 'No description'}
                       </div>
                     </div>
                   ))}
@@ -328,7 +333,8 @@ ${results.forecast.slice(0, 5).map((day: any, index: number) =>
       }
 
       // Check if it's an n8n response with specific format
-      if (results.status && results.analysis) {
+      if (results && typeof results === 'object' && 'status' in results && 'analysis' in results) {
+        const resultsObj = results as any
         return (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
             {/* Status Badge */}
@@ -339,18 +345,18 @@ ${results.forecast.slice(0, 5).map((day: any, index: number) =>
               alignSelf: 'flex-start'
             }}>
               <div style={{
-                background: results.status === 'success' ? '#10b981' : '#ef4444',
+                background: resultsObj.status === 'success' ? '#10b981' : '#ef4444',
                 color: 'white',
                 padding: '6px 12px',
                 borderRadius: '6px',
                 fontSize: '14px',
                 fontWeight: '600'
               }}>
-                {results.status === 'success' ? '✅ Analysis Complete' : '❌ Analysis Failed'}
+                {resultsObj.status === 'success' ? '✅ Analysis Complete' : '❌ Analysis Failed'}
               </div>
-              {results.processed_at && (
+              {resultsObj.processed_at && (
                 <span style={{ color: '#6b7280', fontSize: '14px' }}>
-                  {new Date(results.processed_at).toLocaleString()}
+                  {new Date(resultsObj.processed_at).toLocaleString()}
                 </span>
               )}
             </div>
@@ -368,16 +374,16 @@ ${results.forecast.slice(0, 5).map((day: any, index: number) =>
                 color: '#1f2937',
                 marginBottom: '16px'
               }}>
-                {isJobPosting(results.analysis) ? '📝 Generated Job Posting' : '📊 Analysis Results'}
+                {isJobPosting(resultsObj.analysis) ? '📝 Generated Job Posting' : '📊 Analysis Results'}
               </h4>
-              {isJobPosting(results.analysis) ? (
+              {isJobPosting(resultsObj.analysis) ? (
                 <div 
                   style={{
                     lineHeight: '1.7',
                     color: '#374151',
                     fontSize: '15px'
                   }}
-                  dangerouslySetInnerHTML={{ __html: formatJobPosting(results.analysis) }}
+                  dangerouslySetInnerHTML={{ __html: formatJobPosting(resultsObj.analysis) }}
                 />
               ) : (
                 <div style={{
@@ -386,13 +392,13 @@ ${results.forecast.slice(0, 5).map((day: any, index: number) =>
                   color: '#374151',
                   fontSize: '15px'
                 }}>
-                  {results.analysis}
+                  {resultsObj.analysis}
                 </div>
               )}
             </div>
 
             {/* Additional fields if present */}
-            {Object.keys(results).filter(key => !['status', 'analysis', 'processed_at'].includes(key)).map(key => (
+            {Object.keys(resultsObj).filter(key => !['status', 'analysis', 'processed_at'].includes(key)).map(key => (
               <div key={key} style={{
                 background: '#f8fafc',
                 border: '1px solid #e2e8f0',
@@ -409,7 +415,7 @@ ${results.forecast.slice(0, 5).map((day: any, index: number) =>
                   {key.replace(/_/g, ' ')}
                 </h5>
                 <div style={{ color: '#374151' }}>
-                  {typeof results[key] === 'object' ? JSON.stringify(results[key], null, 2) : String(results[key])}
+                  {typeof resultsObj[key] === 'object' ? JSON.stringify(resultsObj[key], null, 2) : String(resultsObj[key])}
                 </div>
               </div>
             ))}

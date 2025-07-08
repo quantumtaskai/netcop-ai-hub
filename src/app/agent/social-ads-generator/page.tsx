@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, Suspense } from 'react'
-import { useSearchParams, useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { toast, Toaster } from 'react-hot-toast'
 import { useUserStore } from '@/store/userStore'
 import { getAgentInfo } from '@/lib/agentUtils'
@@ -10,17 +10,12 @@ import AgentLayout from '@/components/agent-shared/AgentLayout'
 import ProcessingStatus from '@/components/agent-shared/ProcessingStatus'
 import ResultsDisplay from '@/components/agent-shared/ResultsDisplay'
 import WalletBalance from '@/components/agent-shared/WalletBalance'
-import { colors, gradients, spacing, typography, borderRadius, transitions } from '@/lib/designSystem'
-import { stylePatterns, cardStyles, textStyles } from '@/lib/styleUtils'
+import { colors, spacing, typography, borderRadius, transitions } from '@/lib/designSystem'
+import { textStyles } from '@/lib/styleUtils'
 
 function SocialAdsGeneratorForm() {
   const router = useRouter()
-  const searchParams = useSearchParams()
   const { user, updateWallet } = useUserStore()
-  
-  // Get agent info from URL params
-  const agentId = searchParams.get('agentId')
-  const cost = parseInt(searchParams.get('cost') || '25')
   
   // Form state
   const [formData, setFormData] = useState({
@@ -33,11 +28,12 @@ function SocialAdsGeneratorForm() {
   // Component state
   const [isProcessing, setIsProcessing] = useState(false)
   const [processingStatus, setProcessingStatus] = useState('')
-  const [results, setResults] = useState<any>(null)
+  const [results, setResults] = useState<object | null>(null)
   const [showResults, setShowResults] = useState(false)
 
-  // Get agent info
+  // Get agent info and pricing
   const agentInfo = getAgentInfo('social-ads-generator')
+  const agentPrice = getAgentPrice('social-ads-generator')
 
   // Redirect if no user
   useEffect(() => {
@@ -150,17 +146,19 @@ Please create an engaging, platform-optimized social media ad based on this info
         toast.success(`Social ad generated successfully! ${agentPrice.priceDisplay} used.`)
       }
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Processing error:', error)
       
       // Specific error messages
       let errorMessage = 'Failed to generate social ad. Please try again.'
-      if (error.message.includes('not properly configured')) {
-        errorMessage = 'Social Ads service is not properly configured.'
-      } else if (error.message.includes('HTTP 404')) {
-        errorMessage = 'Social Ads service is currently unavailable.'
-      } else if (error.message.includes('HTTP 403')) {
-        errorMessage = 'Access denied to Social Ads service.'
+      if (error instanceof Error) {
+        if (error.message.includes('not properly configured')) {
+          errorMessage = 'Social Ads service is not properly configured.'
+        } else if (error.message.includes('HTTP 404')) {
+          errorMessage = 'Social Ads service is currently unavailable.'
+        } else if (error.message.includes('HTTP 403')) {
+          errorMessage = 'Access denied to Social Ads service.'
+        }
       }
       
       toast.error(errorMessage)
@@ -171,7 +169,7 @@ Please create an engaging, platform-optimized social media ad based on this info
   }
 
   return (
-    <AgentLayout title={agentInfo.title} description={agentInfo.description} icon={agentInfo.icon} cost={cost}>
+    <AgentLayout title={agentInfo.title} description={agentInfo.description} icon={agentInfo.icon} cost={agentPrice?.price || 0}>
       <Toaster position="top-right" />
       
       {/* Sticky Processing Status */}

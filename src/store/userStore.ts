@@ -71,8 +71,8 @@ export const useUserStore = create<UserState>()(
           if (fetchError) throw fetchError;
 
           set({ user: userData, isLoading: false });
-        } catch (error: any) {
-          set({ error: error.message, isLoading: false });
+        } catch (error: unknown) {
+          set({ error: error instanceof Error ? error.message : String(error), isLoading: false });
           throw error;
         }
       },
@@ -143,9 +143,9 @@ export const useUserStore = create<UserState>()(
           } else {
             throw new Error('No user data returned from authentication')
           }
-        } catch (error: any) {
+        } catch (error: unknown) {
           console.error('Signin failed:', error)
-          const errorMessage = error.message || 'Login failed. Please try again.'
+          const errorMessage = error instanceof Error ? error.message : 'Login failed. Please try again.'
           set({ error: errorMessage, isLoading: false })
           throw new Error(errorMessage)
         }
@@ -185,11 +185,12 @@ export const useUserStore = create<UserState>()(
           if (typeof window !== 'undefined') {
             window.location.href = '/'
           }
-        } catch (error: any) {
+        } catch (error: unknown) {
           console.error('Signout failed:', error)
           
           // If it's an auth session missing error, still clear the user state
-          if (error.message?.includes('Auth session missing')) {
+          const errorMessage = error instanceof Error ? error.message : String(error)
+          if (errorMessage.includes('Auth session missing')) {
             console.log('Clearing user state despite session missing error')
             set({ user: null, isLoading: false, error: null })
             // Redirect to home page even on error
@@ -199,7 +200,7 @@ export const useUserStore = create<UserState>()(
             return
           }
           
-          set({ error: error.message, isLoading: false })
+          set({ error: errorMessage, isLoading: false })
           throw error
         }
       },
@@ -215,9 +216,9 @@ export const useUserStore = create<UserState>()(
           if (error) throw error
           set({ isLoading: false })
           console.log('Password reset email sent successfully')
-        } catch (error: any) {
+        } catch (error: unknown) {
           console.error('Password reset failed:', error)
-          set({ error: error.message, isLoading: false })
+          set({ error: error instanceof Error ? error.message : String(error), isLoading: false })
           throw error
         }
       },
@@ -247,9 +248,9 @@ export const useUserStore = create<UserState>()(
 
           set({ user: data })
           console.log('Wallet updated successfully:', data.wallet_balance, 'AED')
-        } catch (error: any) {
+        } catch (error: unknown) {
           console.error('Wallet update failed:', error)
-          set({ error: error.message })
+          set({ error: error instanceof Error ? error.message : String(error) })
           throw error
         }
       },
@@ -292,9 +293,9 @@ export const useUserStore = create<UserState>()(
             wallet_balance: userData.wallet_balance 
           })
           set({ user: userData, error: null })
-        } catch (error: any) {
+        } catch (error: unknown) {
           console.error('❌ Failed to refresh user:', error)
-          set({ error: error.message })
+          set({ error: error instanceof Error ? error.message : String(error) })
           throw error
         }
       },
@@ -310,8 +311,8 @@ export const useUserStore = create<UserState>()(
         
         // Create checkout session URL for wallet top-up
         const baseUrl = typeof window !== 'undefined' ? window.location.origin : process.env.NEXT_PUBLIC_APP_URL
-        const successUrl = `${baseUrl}/wallet?session_id={CHECKOUT_SESSION_ID}&payment=success&package=${packageId}`
-        const cancelUrl = `${baseUrl}/wallet?payment=cancelled`
+        const successUrl = `${baseUrl}/pricing?session_id={CHECKOUT_SESSION_ID}&payment=success&package=${packageId}`
+        const cancelUrl = `${baseUrl}/pricing?payment=cancelled`
         
         const checkoutUrl = `/api/wallet/create-checkout?package=${packageId}&user=${user.id}&success=${encodeURIComponent(successUrl)}&cancel=${encodeURIComponent(cancelUrl)}`
         
@@ -334,8 +335,12 @@ export const useUserStore = create<UserState>()(
         try {
           // Validate environment before initializing
           if (!validateClientEnvironment()) {
-            set({ error: 'Configuration error: Missing required environment variables' })
-            return
+            console.warn('⚠️ Environment validation failed, but continuing initialization')
+            // Don't block initialization in development
+            if (process.env.NODE_ENV === 'production') {
+              set({ error: 'Configuration error: Missing required environment variables' })
+              return
+            }
           }
           
           if (!checkForExposedCredentials()) {
@@ -401,9 +406,9 @@ export const useUserStore = create<UserState>()(
             console.log('ℹ️ No existing session found')
             set({ user: null })
           }
-        } catch (error: any) {
+        } catch (error: unknown) {
           console.error('❌ Failed to initialize session:', error)
-          set({ user: null, error: error.message })
+          set({ user: null, error: error instanceof Error ? error.message : String(error) })
         }
       }
     }),

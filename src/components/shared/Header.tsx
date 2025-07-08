@@ -40,7 +40,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage = 'home' }) => {
     return () => {
       try {
         document.head.removeChild(style)
-      } catch (e) {
+      } catch {
         // Style element may have already been removed
       }
     }

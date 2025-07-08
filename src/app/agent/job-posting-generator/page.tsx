@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, Suspense } from 'react'
-import { useSearchParams, useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { toast, Toaster } from 'react-hot-toast'
 import { useUserStore } from '@/store/userStore'
 import { getAgentInfo } from '@/lib/agentUtils'
@@ -10,17 +10,12 @@ import AgentLayout from '@/components/agent-shared/AgentLayout'
 import ProcessingStatus from '@/components/agent-shared/ProcessingStatus'
 import ResultsDisplay from '@/components/agent-shared/ResultsDisplay'
 import WalletBalance from '@/components/agent-shared/WalletBalance'
-import { colors, gradients, spacing, typography, borderRadius, transitions } from '@/lib/designSystem'
-import { stylePatterns, cardStyles, textStyles } from '@/lib/styleUtils'
+import { colors, spacing, typography, borderRadius, transitions } from '@/lib/designSystem'
+import { cardStyles, textStyles } from '@/lib/styleUtils'
 
 function JobPostingGeneratorForm() {
   const router = useRouter()
-  const searchParams = useSearchParams()
   const { user, updateWallet } = useUserStore()
-  
-  // Get agent info from URL params
-  const agentId = searchParams.get('agentId')
-  const cost = parseInt(searchParams.get('cost') || '25')
   
   // Form state
   const [formData, setFormData] = useState({
@@ -38,11 +33,12 @@ function JobPostingGeneratorForm() {
   // Component state
   const [isProcessing, setIsProcessing] = useState(false)
   const [processingStatus, setProcessingStatus] = useState('')
-  const [results, setResults] = useState<any>(null)
+  const [results, setResults] = useState<object | null>(null)
   const [showResults, setShowResults] = useState(false)
 
-  // Get agent info
+  // Get agent info and pricing
   const agentInfo = getAgentInfo('job-posting-generator')
+  const agentPrice = getAgentPrice('job-posting-generator')
 
   // Redirect if no user
   useEffect(() => {
@@ -104,7 +100,7 @@ Please create a complete, engaging job posting based on this information.`
         },
         sessionId: `job_posting_${Date.now()}`,
         userId: user.id,
-        agentId: agentId || 'job-posting-generator',
+        agentId: 'job-posting-generator',
         jobTitle: formData.jobTitle,
         companyName: formData.companyName
       }
@@ -165,19 +161,21 @@ Please create a complete, engaging job posting based on this information.`
         toast.success(`Job posting generated! ${agentPrice.priceDisplay} used.`)
       }
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Job posting generation error:', error)
       
       let errorMessage = 'Failed to generate job posting. Please try again.'
       
-      if (error.message.includes('webhook not configured')) {
-        errorMessage = 'Job posting generator is not properly configured.'
-      } else if (error.message.includes('HTTP 404')) {
-        errorMessage = 'Job posting service is currently unavailable.'
-      } else if (error.message.includes('HTTP 429')) {
-        errorMessage = 'Too many requests. Please wait a moment and try again.'
-      } else if (error.message.includes('HTTP 500')) {
-        errorMessage = 'Server error occurred. Please try again later.'
+      if (error instanceof Error) {
+        if (error.message.includes('webhook not configured')) {
+          errorMessage = 'Job posting generator is not properly configured.'
+        } else if (error.message.includes('HTTP 404')) {
+          errorMessage = 'Job posting service is currently unavailable.'
+        } else if (error.message.includes('HTTP 429')) {
+          errorMessage = 'Too many requests. Please wait a moment and try again.'
+        } else if (error.message.includes('HTTP 500')) {
+          errorMessage = 'Server error occurred. Please try again later.'
+        }
       }
       
       toast.error(errorMessage)
@@ -188,7 +186,7 @@ Please create a complete, engaging job posting based on this information.`
   }
 
   return (
-    <AgentLayout title={agentInfo.title} description={agentInfo.description} icon={agentInfo.icon} cost={cost}>
+    <AgentLayout title={agentInfo.title} description={agentInfo.description} icon={agentInfo.icon} cost={agentPrice?.price || 0}>
       <Toaster position="top-right" />
       
       {/* Processing Status - Always visible at top */}

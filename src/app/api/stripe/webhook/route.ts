@@ -3,11 +3,11 @@ import Stripe from 'stripe'
 import { supabaseAdmin } from '@/lib/supabase/server'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2023-10-16' as any
+  apiVersion: '2025-06-30.basil'
 })
 
 // Handle both trailing slash and no trailing slash
-export async function GET(request: Request) {
+export async function GET() {
   return NextResponse.json({ 
     status: 'Stripe webhook endpoint is ready',
     time: new Date().toISOString()
@@ -56,8 +56,8 @@ export async function POST(request: Request) {
         process.env.STRIPE_WEBHOOK_SECRET
       )
       console.log('✅ Webhook signature verified:', event.type)
-    } catch (err: any) {
-      console.error('❌ Webhook signature verification failed:', err.message)
+    } catch (err: unknown) {
+      console.error('❌ Webhook signature verification failed:', err instanceof Error ? err.message : String(err))
       return NextResponse.json(
         { error: 'Invalid signature' },
         { status: 400 }
@@ -133,8 +133,8 @@ export async function POST(request: Request) {
           } else {
             console.log('❌ User not found by ID:', error?.message)
           }
-        } catch (err: any) {
-          console.error('❌ Error looking up user by ID:', err.message)
+        } catch (err: unknown) {
+          console.error('❌ Error looking up user by ID:', err instanceof Error ? err.message : String(err))
         }
       }
 
@@ -153,8 +153,8 @@ export async function POST(request: Request) {
           } else {
             console.log('❌ User not found by email:', error?.message)
           }
-        } catch (err: any) {
-          console.error('❌ Error looking up user by email:', err.message)
+        } catch (err: unknown) {
+          console.error('❌ Error looking up user by email:', err instanceof Error ? err.message : String(err))
         }
       }
 
@@ -215,8 +215,8 @@ export async function POST(request: Request) {
           processingTimeMs: processingTime
         })
 
-      } catch (err: any) {
-        console.error('❌ Database error:', err.message)
+      } catch (err: unknown) {
+        console.error('❌ Database error:', err instanceof Error ? err.message : String(err))
         return NextResponse.json(
           { error: 'Database error' },
           { status: 500 }
@@ -228,11 +228,11 @@ export async function POST(request: Request) {
     console.log('ℹ️ Unhandled webhook event:', event.type)
     return NextResponse.json({ received: true })
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     const processingTime = Date.now() - startTime
     console.error('❌ Webhook processing failed:', {
-      error: error.message,
-      stack: error.stack,
+      error: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
       processingTimeMs: processingTime
     })
 

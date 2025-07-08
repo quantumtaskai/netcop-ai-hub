@@ -7,7 +7,6 @@ import { toast, Toaster } from 'react-hot-toast'
 
 function ResetPasswordForm() {
   const router = useRouter()
-  const searchParams = useSearchParams()
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [isLoading, setIsLoading] = useState(false)
@@ -58,8 +57,8 @@ function ResetPasswordForm() {
         router.push('/')
       }, 2000)
 
-    } catch (error: any) {
-      setError(error.message)
+    } catch (error: unknown) {
+      setError(error instanceof Error ? error.message : String(error))
       toast.error('Failed to update password')
     } finally {
       setIsLoading(false)

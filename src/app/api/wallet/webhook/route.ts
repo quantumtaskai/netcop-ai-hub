@@ -29,8 +29,8 @@ export async function POST(request: NextRequest) {
 
     try {
       event = stripe.webhooks.constructEvent(body, sig, endpointSecret)
-    } catch (err: any) {
-      console.error('Webhook signature verification failed:', err.message)
+    } catch (err: unknown) {
+      console.error('Webhook signature verification failed:', err instanceof Error ? err.message : String(err))
       return NextResponse.json(
         { error: 'Invalid signature' },
         { status: 400 }
@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json({ received: true })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Wallet webhook error:', error)
     return NextResponse.json(
       { error: 'Webhook processing failed' },
@@ -168,7 +168,7 @@ async function handleWalletTopUp(session: Stripe.Checkout.Session) {
       newBalance
     })
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error processing wallet top-up webhook:', error)
   }
 }

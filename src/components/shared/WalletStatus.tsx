@@ -21,7 +21,7 @@ export default function WalletStatus({ showAddButton = true, compact = false }: 
   const walletStatus = getWalletStatus(balance)
 
   const handleAddMoney = () => {
-    router.push('/wallet')
+    router.push('/pricing')
   }
 
   if (compact) {

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef, Suspense } from 'react'
-import { useSearchParams, useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { toast, Toaster } from 'react-hot-toast'
 import { useUserStore } from '@/store/userStore'
 import { getAgentInfo } from '@/lib/agentUtils'
@@ -19,7 +19,6 @@ interface Message {
 
 function FiveWhysChat() {
   const router = useRouter()
-  const searchParams = useSearchParams()
   const { user, updateWallet } = useUserStore()
   const chatContainerRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -34,7 +33,7 @@ function FiveWhysChat() {
   const [isLoading, setIsLoading] = useState(false)
   const [reportCompleted, setReportCompleted] = useState(false)
   const [sessionId, setSessionId] = useState('')
-  const [generatedReport, setGeneratedReport] = useState<any>(null)
+  const [generatedReport, setGeneratedReport] = useState<{ analysis: string; [key: string]: any } | null>(null)
   const [showReport, setShowReport] = useState(false)
 
   // Get agent info
@@ -631,7 +630,7 @@ function FiveWhysChat() {
               fontSize: '16px',
               lineHeight: '1.6'
             }}
-            dangerouslySetInnerHTML={{ __html: markdownToHTML(generatedReport.analysis) }}
+            dangerouslySetInnerHTML={{ __html: markdownToHTML(generatedReport?.analysis || '') }}
           />
 
           {/* Download/Copy Actions */}
@@ -650,7 +649,7 @@ function FiveWhysChat() {
                 button.style.transform = 'scale(0.95)'
                 button.style.background = 'linear-gradient(135deg, #1d4ed8 0%, #7c3aed 100%)'
                 
-                navigator.clipboard.writeText(generatedReport.analysis)
+                navigator.clipboard.writeText(generatedReport?.analysis || '')
                 toast.success('📋 Report copied to clipboard!')
                 
                 // Reset button after animation
@@ -690,7 +689,7 @@ function FiveWhysChat() {
                 button.style.transform = 'scale(0.95)'
                 button.style.background = '#f3f4f6'
                 
-                const blob = new Blob([generatedReport.analysis], { type: 'text/plain' })
+                const blob = new Blob([generatedReport?.analysis || ''], { type: 'text/plain' })
                 const url = URL.createObjectURL(blob)
                 const a = document.createElement('a')
                 a.href = url
@@ -801,7 +800,7 @@ function FiveWhysChat() {
                     </style>
                   </head>
                   <body>
-                    ${markdownToHTML(generatedReport.analysis)}
+                    ${markdownToHTML(generatedReport?.analysis || '')}
                   </body>
                   </html>
                 `

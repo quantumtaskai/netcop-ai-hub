@@ -135,7 +135,7 @@ export default function WalletBalance({ agentSlug, onProcess, disabled = false, 
           marginTop: spacing.sm,
           ...textStyles.small
         }}>
-          <a href="/wallet" style={{ color: colors.primary[500], textDecoration: 'underline' }}>
+          <a href="/pricing" style={{ color: colors.primary[500], textDecoration: 'underline' }}>
             Top up wallet
           </a> to use this agent
         </p>

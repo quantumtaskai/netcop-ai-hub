@@ -1,19 +1,26 @@
 import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_DATABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+// Get Supabase configuration with fallbacks for build process
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_DATABASE_URL || 
+                   process.env.NEXT_PUBLIC_SUPABASE_URL || 
+                   'https://placeholder.supabase.co'
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 
+                       'placeholder_anon_key_for_build'
 
-// Environment variables check for debugging
-if (typeof window === 'undefined') {
+// Only show configuration in development
+if (typeof window === 'undefined' && process.env.NODE_ENV === 'development') {
   console.log('Supabase Configuration:')
   console.log('URL:', supabaseUrl)
   console.log('Key exists:', !!supabaseAnonKey)
   console.log('Key length:', supabaseAnonKey?.length)
 }
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  console.error('Missing Supabase environment variables!')
-  console.error('Please check your .env.local file')
+// Warn about missing configuration but don't block build
+if ((!supabaseUrl.includes('supabase.co') || supabaseAnonKey.includes('placeholder')) && 
+    typeof window !== 'undefined' && 
+    process.env.NODE_ENV !== 'production') {
+  console.warn('⚠️ Supabase environment variables not configured properly!')
+  console.warn('Please check your .env.local file')
 }
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
@@ -24,10 +31,16 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   }
 })
 
-// Test the connection (client-side only)
-if (typeof window !== 'undefined') {
+// Test the connection (client-side only, not during build)
+if (typeof window !== 'undefined' && !supabaseAnonKey.includes('placeholder')) {
   supabase.auth.getSession().then(({ data, error }) => {
-    console.log('Supabase connection test:', { data, error })
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Supabase connection test:', { data, error })
+    }
+  }).catch(error => {
+    if (process.env.NODE_ENV === 'development') {
+      console.warn('Supabase connection test failed:', error.message)
+    }
   })
 }
 

@@ -1,7 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase'
 
-export async function GET(request: NextRequest) {
+export async function GET() {
+  // Skip during build process when environment variables are placeholders
+  if (process.env.NEXT_PUBLIC_SUPABASE_URL?.includes('your_supabase_url_here') ||
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.includes('your_supabase_anon_key_here')) {
+    return NextResponse.json({
+      status: 'build_mode',
+      message: 'Database verification skipped during build process'
+    }, { status: 200 })
+  }
+
   try {
     console.log('Verifying database state...')
     
@@ -23,13 +32,13 @@ export async function GET(request: NextRequest) {
       } else {
         transactions = transactionsData || []
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Exception fetching transactions:', error)
       transactionsError = { message: 'Table likely does not exist', code: 'MISSING_TABLE' }
     }
     
     // Get users with wallet balances (handle missing columns gracefully)
-    let users: any[] = []
+    let users: Record<string, unknown>[] = []
     let usersError = null
     
     try {
@@ -56,7 +65,7 @@ export async function GET(request: NextRequest) {
       } else {
         users = usersData || []
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Exception fetching users:', error)
       usersError = { message: 'Users table access failed', code: 'TABLE_ACCESS_ERROR' }
     }
@@ -80,7 +89,7 @@ export async function GET(request: NextRequest) {
         } else {
           recentTransactions = recentData || []
         }
-      } catch (error: any) {
+      } catch {
         recentError = { message: 'Recent transactions query failed', code: 'QUERY_ERROR' }
       }
     } else {
@@ -106,7 +115,7 @@ export async function GET(request: NextRequest) {
         } else {
           stripeTransaction = stripeData || []
         }
-      } catch (error: any) {
+      } catch {
         stripeError = { message: 'Stripe transactions query failed', code: 'QUERY_ERROR' }
       }
     } else {
@@ -138,16 +147,16 @@ export async function GET(request: NextRequest) {
         'Database verification completed successfully'
     })
     
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Database verification error:', error)
     return NextResponse.json({
       success: false,
       error: 'Database verification failed',
-      message: error?.message || 'Unknown error occurred during database verification',
+      message: error instanceof Error ? error.message : 'Unknown error occurred during database verification',
       details: {
         errorType: typeof error,
-        errorMessage: error?.message,
-        errorStack: error?.stack?.split('\n')?.slice(0, 3) // First 3 lines of stack
+        errorMessage: error instanceof Error ? error.message : undefined,
+        errorStack: error instanceof Error ? error.stack?.split('\n')?.slice(0, 3) : undefined // First 3 lines of stack
       }
     }, { status: 500 })
   }

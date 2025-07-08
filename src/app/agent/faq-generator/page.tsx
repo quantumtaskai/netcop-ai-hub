@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, Suspense } from 'react'
-import { useSearchParams, useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { toast, Toaster } from 'react-hot-toast'
 import { useUserStore } from '@/store/userStore'
 import { getAgentInfo } from '@/lib/agentUtils'
@@ -11,17 +11,12 @@ import ProcessingStatus from '@/components/agent-shared/ProcessingStatus'
 import ResultsDisplay from '@/components/agent-shared/ResultsDisplay'
 import WalletBalance from '@/components/agent-shared/WalletBalance'
 import FileUpload from '@/components/agent-shared/FileUpload'
-import { colors, gradients, spacing, typography, borderRadius, transitions } from '@/lib/designSystem'
-import { stylePatterns, cardStyles, textStyles } from '@/lib/styleUtils'
+import { colors, spacing, typography, borderRadius, transitions } from '@/lib/designSystem'
+import { textStyles } from '@/lib/styleUtils'
 
 function FAQGeneratorForm() {
   const router = useRouter()
-  const searchParams = useSearchParams()
   const { user, updateWallet } = useUserStore()
-  
-  // Get agent info from URL params
-  const agentId = searchParams.get('agentId')
-  const cost = parseInt(searchParams.get('cost') || '30')
   
   // Form state
   const [formData, setFormData] = useState({
@@ -33,11 +28,12 @@ function FAQGeneratorForm() {
   // Component state
   const [isProcessing, setIsProcessing] = useState(false)
   const [processingStatus, setProcessingStatus] = useState('')
-  const [results, setResults] = useState<any>(null)
+  const [results, setResults] = useState<object | null>(null)
   const [showResults, setShowResults] = useState(false)
 
-  // Get agent info
+  // Get agent info and pricing
   const agentInfo = getAgentInfo('faq-generator')
+  const agentPrice = getAgentPrice('faq-generator')
 
   // Redirect if no user
   useEffect(() => {
@@ -103,7 +99,7 @@ function FAQGeneratorForm() {
       // Add other form data
       formDataPayload.append('language', formData.language)
       formDataPayload.append('userId', user.id)
-      formDataPayload.append('agentId', agentId || '11')
+      formDataPayload.append('agentId', '11')
 
       setProcessingStatus('Processing content and extracting key information...')
 
@@ -154,19 +150,21 @@ function FAQGeneratorForm() {
         toast.success(`FAQ generated successfully! ${agentPrice.priceDisplay} used.`)
       }
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Processing error:', error)
       
       // Specific error messages
       let errorMessage = 'Failed to generate FAQ. Please try again.'
-      if (error.message.includes('not properly configured')) {
-        errorMessage = 'FAQ Generator service is not properly configured.'
-      } else if (error.message.includes('HTTP 404')) {
-        errorMessage = 'FAQ Generator service is currently unavailable.'
-      } else if (error.message.includes('HTTP 403')) {
-        errorMessage = 'Access denied to FAQ Generator service.'
-      } else if (error.message.includes('File too large')) {
-        errorMessage = 'File is too large. Please upload a smaller file.'
+      if (error instanceof Error) {
+        if (error.message.includes('not properly configured')) {
+          errorMessage = 'FAQ Generator service is not properly configured.'
+        } else if (error.message.includes('HTTP 404')) {
+          errorMessage = 'FAQ Generator service is currently unavailable.'
+        } else if (error.message.includes('HTTP 403')) {
+          errorMessage = 'Access denied to FAQ Generator service.'
+        } else if (error.message.includes('File too large')) {
+          errorMessage = 'File is too large. Please upload a smaller file.'
+        }
       }
       
       toast.error(errorMessage)
@@ -177,7 +175,7 @@ function FAQGeneratorForm() {
   }
 
   return (
-    <AgentLayout title={agentInfo.title} description={agentInfo.description} icon={agentInfo.icon} cost={cost}>
+    <AgentLayout title={agentInfo.title} description={agentInfo.description} icon={agentInfo.icon} cost={agentPrice?.price || 0}>
       <Toaster position="top-right" />
       
       {/* Sticky Processing Status */}

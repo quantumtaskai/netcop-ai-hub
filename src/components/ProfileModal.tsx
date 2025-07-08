@@ -174,8 +174,8 @@ export default function ProfileModal({ isOpen, onClose, userId, position }: Prof
         setSuccess('Profile updated!');
       }
       setLoading(false);
-    } catch (error: any) {
-      setError(`Update failed: ${error.message}`);
+    } catch (error: unknown) {
+      setError(`Update failed: ${error instanceof Error ? error.message : String(error)}`);
       setLoading(false);
     }
   };
@@ -185,7 +185,7 @@ export default function ProfileModal({ isOpen, onClose, userId, position }: Prof
       await signOut();
       onClose(); // Close modal after logout
       toast.success('Logged out successfully');
-    } catch (error) {
+    } catch {
       toast.error('Failed to logout');
     }
   };

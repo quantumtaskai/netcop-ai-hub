@@ -1,4 +1,4 @@
-import { getAgentPrice, AgentPrice } from './agentPricing'
+import { getAgentPrice } from './agentPricing'
 
 // Agent slug mapping utility
 export const getAgentSlug = (agentName: string): string => {

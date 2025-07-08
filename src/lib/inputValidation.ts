@@ -287,7 +287,7 @@ export function validateWebhookUrl(url: string): { isValid: boolean; error?: str
     }
 
     return { isValid: true }
-  } catch (error) {
+  } catch {
     return { isValid: false, error: 'Invalid URL format' }
   }
 }
@@ -295,7 +295,7 @@ export function validateWebhookUrl(url: string): { isValid: boolean; error?: str
 /**
  * Sanitize object for logging (remove sensitive data)
  */
-export function sanitizeForLogging(obj: any): any {
+export function sanitizeForLogging(obj: unknown): unknown {
   const sensitiveKeys = ['password', 'token', 'key', 'secret', 'credential']
   
   if (typeof obj !== 'object' || obj === null) {
@@ -306,7 +306,7 @@ export function sanitizeForLogging(obj: any): any {
     return obj.map(item => sanitizeForLogging(item))
   }
 
-  const sanitized: any = {}
+  const sanitized: Record<string, unknown> = {}
   for (const [key, value] of Object.entries(obj)) {
     if (sensitiveKeys.some(sensitiveKey => key.toLowerCase().includes(sensitiveKey))) {
       sanitized[key] = '[REDACTED]'

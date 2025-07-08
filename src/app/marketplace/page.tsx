@@ -180,7 +180,7 @@ function HomePageContent() {
         refreshUser()
       }
       // Redirect to wallet page
-      router.replace('/wallet')
+      router.replace('/pricing')
     }
   }, [searchParams, user, refreshUser, router])
 
@@ -239,7 +239,7 @@ function HomePageContent() {
     const balance = user.wallet_balance || 0
     if (balance < agentPrice.price) {
       toast.error(`Insufficient balance! You need ${agentPrice.priceDisplay} but only have ${balance.toFixed(2)} AED.`)
-      router.push('/wallet')
+      router.push('/pricing')
       return
     }
 
@@ -724,11 +724,12 @@ function HomePageContent() {
                 marginBottom: '16px'
               }}>
                 <img 
-                  src="/logo-white.png" 
+                  src="/logo.png" 
                   alt="NetCop AI Hub Logo"
                   style={{
                     height: '60px',
-                    width: 'auto'
+                    width: 'auto',
+                    filter: 'brightness(0) invert(1)'
                   }}
                   onError={(e) => {
                     // Fallback if white logo image doesn't exist

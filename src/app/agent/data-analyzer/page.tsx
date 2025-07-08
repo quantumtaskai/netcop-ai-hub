@@ -16,7 +16,6 @@ import { stylePatterns, cardStyles, textStyles } from '@/lib/styleUtils'
 
 function DataAnalyzerForm() {
   const router = useRouter()
-  const searchParams = useSearchParams()
   const { user, updateWallet } = useUserStore()
   
   // Get agent pricing
@@ -28,7 +27,7 @@ function DataAnalyzerForm() {
   const [analysisType, setAnalysisType] = useState('summary')
   const [isProcessing, setIsProcessing] = useState(false)
   const [processingStatus, setProcessingStatus] = useState('')
-  const [results, setResults] = useState<any>(null)
+  const [results, setResults] = useState<object | null>(null)
   const [showResults, setShowResults] = useState(false)
 
   // Get agent info
