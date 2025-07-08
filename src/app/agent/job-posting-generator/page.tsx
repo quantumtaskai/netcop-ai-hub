@@ -526,9 +526,9 @@ Please create a complete, engaging job posting based on this information.`
             <div style={{
               marginBottom: spacing.md,
               padding: spacing.md,
-              backgroundColor: colors.success[50] || '#f0fdf4',
+              backgroundColor: colors.success[50],
               borderRadius: borderRadius.md,
-              border: `1px solid ${colors.success[100] || '#dcfce7'}`
+              border: `1px solid ${colors.success[100]}`
             }}>
               <h4 style={{
                 ...textStyles.small,

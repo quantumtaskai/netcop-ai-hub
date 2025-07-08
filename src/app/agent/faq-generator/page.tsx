@@ -203,9 +203,9 @@ function FAQGeneratorForm() {
           <div style={{
             marginBottom: spacing.xl,
             padding: spacing.lg,
-            backgroundColor: colors.primary[50] || '#eff6ff',
+            backgroundColor: colors.primary[50],
             borderRadius: borderRadius.lg,
-            border: `1px solid ${colors.primary[100] || '#dbeafe'}`
+            border: `1px solid ${colors.primary[100]}`
           }}>
             <h4 style={{
               ...textStyles.small,
@@ -238,7 +238,7 @@ function FAQGeneratorForm() {
                 <div style={{
                   marginTop: spacing.xs,
                   padding: spacing.xs,
-                  background: colors.success[50] || '#f0fdf4',
+                  background: colors.success[50],
                   borderRadius: borderRadius.sm,
                   fontSize: typography.fontSize.sm,
                   color: colors.success[700] || '#15803d'
