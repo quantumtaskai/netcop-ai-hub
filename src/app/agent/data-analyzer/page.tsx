@@ -244,7 +244,7 @@ function DataAnalyzerForm() {
         <div>
           <WalletBalance
             agentSlug={agentSlug}
-            onUseAgent={processFile}
+            onProcess={processFile}
             disabled={!selectedFile}
             processing={isProcessing}
           />

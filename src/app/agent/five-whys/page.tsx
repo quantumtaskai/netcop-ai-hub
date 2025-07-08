@@ -542,7 +542,7 @@ function FiveWhysChat() {
         <div>
           <WalletBalance 
             agentSlug={agentSlug}
-            onUseAgent={() => {
+            onProcess={() => {
               if (canGenerateReport()) {
                 generateReport()
               } else {
