@@ -511,7 +511,7 @@ function FiveWhysChat() {
                     width: '100%'
                   }}
                 >
-                  {isLoading ? '⏳ Generating...' : `📊 Generate Report (${cost} credits)`}
+                  {isLoading ? '⏳ Generating...' : `📊 Generate Report (${agentPrice?.priceDisplay})`}
                 </button>
               </div>
             )}
