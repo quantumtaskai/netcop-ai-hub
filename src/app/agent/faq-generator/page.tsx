@@ -55,7 +55,7 @@ function FAQGeneratorForm() {
   }
 
   // Handle file selection
-  const handleFileSelect = (file: File | null) => {
+  const handleFileSelect = (file: File) => {
     setFormData(prev => ({
       ...prev,
       file: file
@@ -231,9 +231,8 @@ function FAQGeneratorForm() {
               </label>
               <FileUpload
                 onFileSelect={handleFileSelect}
-                accept=".pdf,.doc,.docx,.txt,.md"
-                maxSize={25 * 1024 * 1024} // 25MB
-                disabled={isProcessing}
+                acceptedTypes=".pdf,.doc,.docx,.txt,.md"
+                maxSize={25}
               />
               {formData.file && (
                 <div style={{
